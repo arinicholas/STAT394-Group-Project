@@ -1,12 +1,44 @@
 ---
-title: "Report2"
-author: "Jundi Yang"
-date: "2022-08-09"
-output: pdf_document
+title: "STAT394 Group Project Report2"
+author: "Ken MacIver, Tom Tribe, Jundi Yang, Mei Huang"
+date: "`r Sys.Date()`"
+classoption: 12pt
+output: bookdown::pdf_document2
+bibliography: ./Bibliography/MASTER.bib
+header-includes: \usepackage{float}
+                    \floatplacement{figure}{H}
+                    \floatplacement{table}{H}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Ken MacIver, ken.maciver68@gmail.com, 0000-0001-8999-4598 Jundi Yang, ivyli112358@gmail.com, 0000-0003-0888-9564 Tom Tribe, tom.tribe2016@gmail.com, 0000-0002-5002-8066 Mei Huang, huangmei139@gmail.com, 0000-0003-2401-0679 Alejandro Frery, acfrery@gmail.com
+# Second Project Report
+
+## Introduction
+
+We report on the dataset we have selected for our Group Project. It contains 53940 items of data on diamonds. There are three categorical variables: cut, clarity and color, and seven numerical variables: carat, depth, table, price, and measurements of the diamonds x, y, z. 
+
+## Platform and Data
+
+The data comes from base R datasets, under package "datasets".
+
+Categorical data:
+
+* cut: levels of diamonds proportion, symmetry and polish
+* clarity: levels of clarity
+* color: color of the diamonds
+
+Numeric data:
+
+*  carat = weight in carat
+*  depth = the distance between the culet and the table in millimeters
+*  table = width of the table facet devided by the width of the diamond in percentage
+*  price = price of the diamonds
+*  x = length in mm
+*  y = width in mm
+*  z = depth in mm
+
+## Exploratory Data Analysis (EDA)
+
