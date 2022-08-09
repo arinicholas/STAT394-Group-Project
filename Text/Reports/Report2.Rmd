@@ -1,0 +1,12 @@
+---
+title: "Report2"
+author: "Jundi Yang"
+date: "2022-08-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Ken MacIver, ken.maciver68@gmail.com, 0000-0001-8999-4598 Jundi Yang, ivyli112358@gmail.com, 0000-0003-0888-9564 Tom Tribe, tom.tribe2016@gmail.com, 0000-0002-5002-8066 Mei Huang, huangmei139@gmail.com, 0000-0003-2401-0679 Alejandro Frery, acfrery@gmail.com
