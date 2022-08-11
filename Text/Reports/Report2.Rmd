@@ -22,7 +22,7 @@ We have selected the diamonds dataset for our Group Project. It contains 53940 i
 
 ## Platform and Data
 
-The dataset is freely available on the Kaggle. It can be located from the following link https://www.kaggle.com/datasets/shivam2503/diamonds [@diamondskaggle]
+The dataset is freely available on the Kaggle. It can be located at @diamondskaggle.
 
 Categorical data:
 
@@ -46,3 +46,4 @@ As we have no expertise in subject area of the dataset we will be relying on our
 
 ## Exploratory Data Analysis (EDA)
 
+## Reference list
