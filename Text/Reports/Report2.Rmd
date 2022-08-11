@@ -22,7 +22,7 @@ We have selected the 'diamonds' dataset for our Group Project. It contains 53940
 
 ## Platform and Data
 
-The dataset is freely available on the Kaggle. It can be located at @diamondskaggle. There is also a .csv version available in the 'Data' folder in the GitHub repository for this project. 
+The dataset is freely available on the Kaggle website. It can be located at @diamondskaggle. There is also a .csv version available in the 'Data' folder in the GitHub repository for this project. 
 
 Categorical data:
 
