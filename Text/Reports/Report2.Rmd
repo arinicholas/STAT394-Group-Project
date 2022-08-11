@@ -18,11 +18,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-We report on the dataset we have selected for our Group Project. It contains 53940 items of data on diamonds. There are three categorical variables: cut, clarity and color, and seven numerical variables: carat, depth, table, price, and measurements of the diamonds x, y, z. 
+We have selected the diamonds dataset for our Group Project. It contains 53940 items of data on different diamonds. There are three categorical variables: cut, clarity and color, and seven numerical variables: carat, depth, table, price, and measurements of the diamonds x, y, z. 
 
 ## Platform and Data
 
-The data comes from base R datasets, under package "datasets".
+The dataset is freely available on the Kaggle. It can be located from the following link https://www.kaggle.com/datasets/shivam2503/diamonds
 
 Categorical data:
 
@@ -34,11 +34,15 @@ Numeric data:
 
 *  carat = weight in carat
 *  depth = the distance between the culet and the table in millimeters
-*  table = width of the table facet devided by the width of the diamond in percentage
+*  table = width of the table facet divided by the width of the diamond in percentage
 *  price = price of the diamonds
 *  x = length in mm
 *  y = width in mm
 *  z = depth in mm
+
+Initial Goals:
+
+As we have no expertise in subject area of the dataset we will be relying on our EDA to determine the exact direction of our investigation. A possible initial guiding question could be to investigate which of the variables is most predictive of diamond price which seems like the natural response variable.  
 
 ## Exploratory Data Analysis (EDA)
 
