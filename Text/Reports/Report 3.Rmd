@@ -1,0 +1,52 @@
+---
+title: "STAT394 Group Project Report2"
+author: "Jundi Yang"
+date: "2022-08-18"
+author: "Ken MacIver, Tom Tribe, Jundi Yang, Mei Huang"
+date: "`r Sys.Date()`"
+classoption: 12pt
+output: bookdown::pdf_document2
+bibliography: ./Bibliography/MASTER.bib
+header-includes: \usepackage{float}
+                    \floatplacement{figure}{H}
+                    \floatplacement{table}{H}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(ggplot2)
+require(ggthemes)
+require(xtable)
+require(ggcorrplot)
+require(fitdistrplus)
+require(here)
+```
+
+# EDA summmary
+
+```{r}
+diamonds <- read.csv(here("diamonds.csv"))
+df <- data.frame(diamonds)
+
+MySummary <- function(x){
+  return(c(
+    length(x),
+    min(x),
+    quantile(x, .25),
+    median(x),
+    quantile(x, .75),
+    max(x),
+    IQR(x),
+    sd(x),
+    mad(x),
+    skewness(x),
+    kurtosis(x)
+    )
+  )
+}
+
+#apply(df, MySummary, MARGIN=2) -> EDAsummary
+
+```
+
+
