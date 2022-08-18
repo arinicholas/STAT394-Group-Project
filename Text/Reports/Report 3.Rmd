@@ -1,7 +1,5 @@
 ---
 title: "STAT394 Group Project Report2"
-author: "Jundi Yang"
-date: "2022-08-18"
 author: "Ken MacIver, Tom Tribe, Jundi Yang, Mei Huang"
 date: "`r Sys.Date()`"
 classoption: 12pt
@@ -25,7 +23,7 @@ require(here)
 # EDA summmary
 
 ```{r}
-diamonds <- read.csv(here("diamonds.csv"))
+diamonds <- read.csv("./diamonds.csv")
 df <- data.frame(diamonds)
 
 MySummary <- function(x){
