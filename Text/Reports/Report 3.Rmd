@@ -25,25 +25,11 @@ require(here)
 ```{r}
 diamonds <- read.csv("./diamonds.csv")
 df <- data.frame(diamonds)
-
-MySummary <- function(x){
-  return(c(
-    length(x),
-    min(x),
-    quantile(x, .25),
-    median(x),
-    quantile(x, .75),
-    max(x),
-    IQR(x),
-    sd(x),
-    mad(x),
-    skewness(x),
-    kurtosis(x)
-    )
-  )
-}
-
-#apply(df, MySummary, MARGIN=2) -> EDAsummary
+df$cut <- factor(df$cut)
+df$clarity <- factor((df$clarity))
+df$color <- factor(df$color)
+df$clarity
+summary(df)
 
 ```
 
