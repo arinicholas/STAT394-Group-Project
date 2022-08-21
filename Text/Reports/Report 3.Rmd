@@ -1,5 +1,5 @@
 ---
-title: "STAT394 Group Project Report2"
+title: "STAT394 Group Project Milestone 3: Exploratory Data Analysis"
 author: "Ken MacIver, Tom Tribe, Jundi Yang, Mei Huang"
 date: "`r Sys.Date()`"
 classoption: 12pt
