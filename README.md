@@ -14,3 +14,5 @@ Exploration of the 'diamonds' dataset, accessed from kaggle.com, URL https://www
 
 Report 2 (Milestone 2) completed and in 'Text' folder. 
 A .csv version of the diamonds dataset is available in the 'Data' folder.
+
+Report 3 (Milestone 3) completed and 'Text' folder. 
