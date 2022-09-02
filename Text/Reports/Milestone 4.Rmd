@@ -39,7 +39,7 @@ options(xtable.timestamp = "")
 
 NOTE: The size of this dataset means that rendering to PDF takes a long time.
 
-For the STAT394 Group Project, Group 11 have chosen a dataset called 'diamonds', which presents data on 53940 diamonds. It was accessed it from kaggle.com. There are eleven variables:
+For the STAT394 Group Project, Group 11 have chosen a dataset called 'diamonds', which presents data on 53940 diamonds. It was accessed it from kaggle.com. There are ten variables:
 
 -   carat: the diamond's weight (numerical: 0.2 - 5.01)
 -   cut: a measure of quality (categorical: Fair, Good, Very Good, Premium)\
@@ -51,6 +51,8 @@ For the STAT394 Group Project, Group 11 have chosen a dataset called 'diamonds',
 -   depth: total depth percentage = z/mean(x,y) = 2\*z/(x+y) (43 - 79)
 -   table: width of top of diamond relative to widest point
 -   price: the price of the diamond in US dollars (List adapted from the list at @diamondskaggle). 
+
+We are most interested in how these variables relate to and predict diamond price.
 
 ### Load the dataset into R.
 
@@ -334,9 +336,9 @@ ggcorrplot(cor(diamonds_num),
     
 ```
 
-Figure \@ref(fig:correldiam) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. 
+Figure \@ref(fig:correldiam) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. As "x", "y" and "z" are all measures of size we should expect this and there may be some redundancy in these predictors.  The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. The strongest predictor of price is carat with length, width, depth also strongly correlated with price. Table is only very weakly correlated with price while depth is negatively correlateed with price.
 
-It seems obvious that the diamonds’ weight, length, width, depth are all related to its size and size is the main predictor for price.
+
 
 
 ```{r pairsplot2, fig.cap="The pairs plot for Diamonds numeric values", fig.pos="center", echo=FALSE}
@@ -381,3 +383,27 @@ ggMarginal(diam_deptab, type = "boxplot", notch=TRUE, size = 15,
 ```
 
 Figure \@ref(fig:scatdiamcp) shows the scatterplot with marginal boxplots of the 'carat' and 'price' variables. The expected positive correlation is clearly visible as a dark band running from the bottom left steeply towards the top right. There are vertical bands of visible at the $1, 1.5~and~2$ values of carat. This is a curious finding and one that is an obvious point of investigation for a more comprehensive analysis. Perhaps jewelers are in the habit of rounding down to the nearest whole or half number, despite carat being a continuous variable? Another curious aspect is why the lower parts of those ranges (from 1.5 to 1.6, for example) are so densly packed with observations, while the upper parts (1.8 to 2) appear virtually empty. It seems very unlikely that by chance there were few stones of this weight, so presumably another factor is at play.
+
+
+
+## Mahalanobis Distance
+
+We will examine and display surprsing points in our dataset using the Mahalanobis Distance.
+
+```{r}
+diamonds_num$price <- as.numeric(diamonds_num$price)
+mu.hat <- colMeans(diamonds_num)
+sigma.hat <- cov(diamonds_num)
+dM <- mahalanobis(diamonds_num, center = mu.hat, cov = sigma.hat)
+upper.quantiles <- qchisq(c(.9,.95,.99), df = 7)
+density.at.quantiles <- dchisq(x = upper.quantiles, df = 7)
+cut.points <- data.frame(upper.quantiles, density.at.quantiles)
+```
+
+```{r}
+diamonds_num$dM <- dM
+diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "very"))
+table(diamonds_num$surprise)
+```
+We see that while the vast majority of diamonds are typical there are a reasonable amount of "Surprising" and "Very Surprising" points in this dataset.
+
