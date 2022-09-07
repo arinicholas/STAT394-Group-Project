@@ -165,13 +165,12 @@ Our categorical variables of cut, clarity and color are all ordinal:
 -   color: a measure of colour quality (categorical: J, which is poorest quality, to D, which is best)
 -   clarity: a measure of clearness (categorical: from worst to best = I1, SI2, VS2, VS1, VVS2, IF)
 
-Using a Hotelling's T-test we will test the equality of mean vectors of the lowest and highest level of each categorical variable. We might expect the diamonds with lower quality cut, color and clarity to differ significantly to diamonds with high quality cut, colour and clarity. We will also check the assumption of the equality of covariance matrices for each test.
+Using a Hotelling's T-test we will test the equality of mean vectors of the lowest and highest level of each categorical variable. We might expect the diamonds with lower quality cut, color and clarity to differ significantly to diamonds with high quality cut, colour and clarity. 
 
 
 ```{r}
 (hotelling.test(subset(diamonds, cut == "Fair")[,-(2:4)], subset(diamonds, cut == "Premium")[,-(2:4)]))
 
-(testCov(subset(diamonds, cut == "Fair")[,-(2:4)], subset(diamonds, cut == "Premium")[,-(2:4)]))
 ```
 
 We may reject the null hypothesis that the mean vectors of these two samples are equal.
@@ -179,7 +178,6 @@ We may reject the null hypothesis that the mean vectors of these two samples are
 ```{r}
 (hotelling.test(subset(diamonds, color == "J")[,-(2:4)], subset(diamonds, color == "D")[,-(2:4)]))
 
-(testCov(subset(diamonds, color == "J")[,-(2:4)], subset(diamonds, color == "D")[,-(2:4)]))
 ```
 
 We may reject the null hypothesis that the mean vectors of these two samples are equal.
@@ -187,7 +185,6 @@ We may reject the null hypothesis that the mean vectors of these two samples are
 ```{r}
 (hotelling.test(subset(diamonds, clarity == "I1")[,-(2:4)], subset(diamonds, clarity == "IF")[,-(2:4)]))
 
-(testCov(subset(diamonds, clarity == "I1")[,-(2:4)], subset(diamonds, clarity == "IF")[,-(2:4)]))
 ```
 
 We may reject the null hypothesis that the mean vectors of these two samples are equal.
@@ -220,7 +217,7 @@ qqline(diamonds$depth, col = "blue", lwd =2)
 ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
 ```
 
-Again the QQplot for depth shows substantial deviations from the normal distribution at the tails. The KS test finds evidence to reject the hypothesis that the data is normally dsitributed 
+Again the QQplot for depth shows substantial deviations from the normal distribution at the tails. The KS test finds evidence to reject the hypothesis that the data is normally distributed 
 
 ### Table
 
@@ -277,6 +274,8 @@ qqline(diamonds$depth, col = "blue", lwd =2)
 ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
 ```
 
+
+All of our numerical variables, except perhaps y (width), show obvious deviation from the normal distribution in the QQ plots. The KS goodness of fit test finds evidence that these varaibles do not follow a normal distribution. 
 
 ## Melted version of dataset
 
@@ -536,7 +535,7 @@ Figure \@ref(fig:scatdiamcp) shows the scatterplot with marginal boxplots of the
 
 ## Mahalanobis Distance
 
-We will examine and display surprsing points in our dataset using the Mahalanobis Distance.
+We will examine and display surprising points in our dataset using the Mahalanobis Distance.
 
 ```{r}
 diamonds_num$price <- as.numeric(diamonds_num$price)
