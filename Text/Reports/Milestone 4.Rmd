@@ -30,6 +30,9 @@ library(reshape2)
 library(xtable)
 library(moments)
 library(psych)
+library(Hotelling)
+library(car)
+library(HDtest)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 
@@ -155,10 +158,43 @@ $$
 \end{pmatrix}
 $$
 
+## Multivariate Tests
+
+Our categorical variables of cut, clarity and color are all ordinal:
+-   cut: a measure of quality (categorical: Fair, Good, Very Good, Premium)\
+-   color: a measure of colour quality (categorical: J, which is poorest quality, to D, which is best)
+-   clarity: a measure of clearness (categorical: from worst to best = I1, SI2, VS2, VS1, VVS2, IF)
+
+Using a Hotelling's T-test we will test the equality of mean vectors of the lowest and highest level of each categorical variable. We might expect the diamonds with lower quality cut, color and clarity to differ significantly to diamonds with high quality cut, colour and clarity. We will also check the assumption of the equality of covariance matrices for each test.
+
+
+```{r}
+(hotelling.test(subset(diamonds, cut == "Fair")[,-(2:4)], subset(diamonds, cut == "Premium")[,-(2:4)]))
+
+(testCov(subset(diamonds, cut == "Fair")[,-(2:4)], subset(diamonds, cut == "Premium")[,-(2:4)]))
+```
+
+We may reject the null hypothesis that the mean vectors of these two samples are equal.
+
+```{r}
+(hotelling.test(subset(diamonds, color == "J")[,-(2:4)], subset(diamonds, color == "D")[,-(2:4)]))
+
+(testCov(subset(diamonds, color == "J")[,-(2:4)], subset(diamonds, color == "D")[,-(2:4)]))
+```
+
+We may reject the null hypothesis that the mean vectors of these two samples are equal.
+
+```{r}
+(hotelling.test(subset(diamonds, clarity == "I1")[,-(2:4)], subset(diamonds, clarity == "IF")[,-(2:4)]))
+
+(testCov(subset(diamonds, clarity == "I1")[,-(2:4)], subset(diamonds, clarity == "IF")[,-(2:4)]))
+```
+
+We may reject the null hypothesis that the mean vectors of these two samples are equal.
 
 ## Normality
 
-In our previous EDA we saw that a number of our numeric variables may not follow a normal distribution. We saw this in the Cullen and Frey Plots and also in our summary table by examining the values for kurtosis and skewness. We will create a Normal QQ plot for each numeric variable as well as performing a Kolmogrov-Smirnov Test for each numeric variable. Normality is of interest to us as it is an underlying assumption of many statistical hypothesis tests.
+In our previous EDA we saw that a number of our numeric variables may not follow a normal distribution. We saw this in the Cullen and Frey Plots and also in our summary table by examining the values for kurtosis and skewness. We will create a Normal QQ plot for each numeric variable as well as performing a Kolmogrov-Smirnov goodness of fit test for each numeric variable. 
 
 ### Carat
 
@@ -305,10 +341,10 @@ TukeyHSD(cutanova, conf.level = 0.95)
 
 The only pairs we do not see a significant difference (at a 5% significance level) in mean price between are "very Good" and "Good" as well as "Premium" and "Fair". 
 
-From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. We will also perform a Bartlett test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut. Again, a one way ANOVA is reasonably robust to departures from equal variance if the sample sizes are the same.
+From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. We will also perform a levene test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut. Again, a one way ANOVA is reasonably robust to departures from equal variance if the sample sizes are the same.
 
 ```{r}
-bartlett.test(price ~ cut, data= diamonds)
+leveneTest(price ~ cut, data= diamonds)
 kruskal.test(price ~ cut, data = diamonds)
 ```
 
@@ -361,10 +397,10 @@ TukeyHSD(coloranova, conf.level = 0.95)
 
 We see significant differences in mean price for nearly all pairwise comparisons of diamond colors.
 
-We will also perform a Bartlett test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut.
+We will also perform a levene test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut.
 
 ```{r}
-bartlett.test(price ~ color, data= diamonds)
+leveneTest(price ~ color, data= diamonds)
 kruskal.test(price ~ color, data = diamonds)
 ```
 
@@ -409,10 +445,10 @@ TukeyHSD(clarityanova, conf.level = 0.95)
 
 ```
 
-We will also perform a Bartlett test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut.
+We will also perform a levene test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut.
 
 ```{r}
-bartlett.test(price ~ clarity, data= diamonds)
+leveneTest(price ~ clarity, data= diamonds)
 kruskal.test(price ~ clarity, data = diamonds)
 ```
 
@@ -448,7 +484,7 @@ ggcorrplot(cor(diamonds_num),
     
 ```
 
-Figure \@ref(fig:correldiam) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. As "x", "y" and "z" are all measures of size we should expect this and there may be some redundancy in these predictors.  The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. The strongest predictor of price is carat with length, width, depth also strongly correlated with price. Table is only very weakly correlated with price while depth is negatively correlateed with price.
+Figure \@ref(fig:correldiam) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. As "x", "y" and "z" are all measures of size we should expect this and there may be some redundancy in these predictors.  The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. The strongest predictor of price is carat with length, width, depth also strongly correlated with price. Table is only very weakly correlated with price while depth is negatively correlated with price.
 
 
 
@@ -464,7 +500,7 @@ pairs.panels(diamonds_num, method = "spearman",
 Figure \@ref(fig:pairsplot2) shows the pairs plot for the numeric variables. While the scatterplots are small, it is clear that a number of pairs show little to no correlation, supporting the results from the correlation plot (figure \@ref(fig:correldiam)). 
 
 ## Scatterplots
-Based on the outcome of the correlation pairs plot (figure  \@ref(fig:correldiam)) we have chosen the pairs 'depth' and 'table', and 'price' and 'carat' to produce scatterplots of, because one pair shows a strong positive correlation while the other shows a strong negative correlation.
+Based on the outcome of the correlation pairs plot (figure  \@ref(fig:correldiam)) we have chosen the pairs 'depth' and 'table', and 'price' and 'carat' to produce scatter plots of, because one pair shows a strong positive correlation while the other shows a strong negative correlation.
 
 
 ```{r scatdiamdt, fig.cap="Scatterplot with marginal boxplots of 'depth' vs 'table'", echo=FALSE}
@@ -517,5 +553,6 @@ diamonds_num$dM <- dM
 diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "very"))
 table(diamonds_num$surprise)
 ```
+
 We see that while the vast majority of diamonds are typical there are a reasonable amount of "Surprising" and "Very Surprising" points in this dataset.
 
