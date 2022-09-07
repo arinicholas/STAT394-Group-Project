@@ -33,6 +33,7 @@ library(psych)
 library(Hotelling)
 library(car)
 library(HDtest)
+library(ggpubr)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 
@@ -191,7 +192,67 @@ We may reject the null hypothesis that the mean vectors of these two samples are
 
 ## Normality
 
-In our previous EDA we saw that a number of our numeric variables may not follow a normal distribution. We saw this in the Cullen and Frey Plots and also in our summary table by examining the values for kurtosis and skewness. We will create a Normal QQ plot for each numeric variable as well as performing a Kolmogrov-Smirnov goodness of fit test for each numeric variable. 
+In our previous EDA we saw that a number of our numeric variables may not follow a normal distribution. We saw this in the Cullen and Frey Plots and also in our summary table by examining the values for kurtosis and skewness. We will create a Normal QQ plot for each numeric variable as well as performing a Kolmogrov-Smirnov goodness of fit test for each numeric variable. The density function of each numeric variable indicate strong deviations from the normal distribution. 
+
+
+```{r  fig.cap= "Density of Numeric variables", fig.pos= "center", fig.pos= "H"}
+a <- ggplot(diamonds, aes(x=carat))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Carat")
+
+b <- ggplot(diamonds, aes(x=depth))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Depth")
+
+c <- ggplot(diamonds, aes(x=table))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Table")
+
+d <- ggplot(diamonds, aes(x=price))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Price")
+
+e <- ggplot(diamonds, aes(x=x))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("x")
+
+f <- ggplot(diamonds, aes(x=y))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("y")
+
+g <- ggplot(diamonds, aes(x=z))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("z")
+
+
+ggarrange(a, b, c, d, e, f, g + rremove("x.text"), 
+          labels = c("Carat", "Depth", "Table", "Price", "x", "y", "z"),
+          ncol = 2, nrow = 4)
+```     
+
+Attempting a log transform of numeric variables to increase normality did not yield much success.
+
+```{r  fig.cap= "Density of Numeric variables", fig.pos= "center", fig.pos= "H"}
+a <- ggplot(diamonds, aes(x=log(carat)))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Carat")
+
+b <- ggplot(diamonds, aes(x=log(depth)))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Depth")
+
+c <- ggplot(diamonds, aes(x=log(table)))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Table")
+
+d <- ggplot(diamonds, aes(x=log(price)))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("Price")
+
+e <- ggplot(diamonds, aes(x=log(x)))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("x")
+
+f <- ggplot(diamonds, aes(x=log(y)))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("y")
+
+g <- ggplot(diamonds, aes(x=log(z)))+
+  geom_density(color="darkblue", fill="lightblue") + xlab("z")
+
+
+ggarrange(a, b, c, d, e, f, g + rremove("x.text"), 
+          labels = c("Carat", "Depth", "Table", "Price", "x", "y", "z"),
+          ncol = 2, nrow = 4)
+```     
+
 
 ### Carat
 
@@ -205,6 +266,11 @@ ks.test(diamonds$carat, "pnorm", mean=mean(diamonds$carat), sd=sd(diamonds$carat
 ```
 
 The QQ plot shows strong deviations from the normal distribution particularly at the tails and this is confirmed in our hypothesis test of normality.
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(log(diamonds$carat), xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(log(diamonds$carat), col = "blue", lwd =2)
+```
 
 ### Depth
 
@@ -382,7 +448,7 @@ ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| c
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-We will now test whether there are significant differences in mean price for different diamond colours
+We will now test whether there are significant differences in mean price for different diamond colours. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated ANOVA is reasonably robust to these violations if the sample size is big enough. 
 
 ```{r}
 coloranova <- aov(price ~ color, data = diamonds)
@@ -431,7 +497,7 @@ ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-We will now test whether there are significant differences in mean price for different diamond colours
+We will now test whether there are significant differences in mean price for different diamond colours. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated ANOVA is reasonably robust to these violations if the sample size is big enough. 
 
 ```{r}
 clarityanova <- aov(price ~ clarity, data = diamonds)
@@ -499,6 +565,7 @@ pairs.panels(diamonds_num, method = "spearman",
 Figure \@ref(fig:pairsplot2) shows the pairs plot for the numeric variables. While the scatterplots are small, it is clear that a number of pairs show little to no correlation, supporting the results from the correlation plot (figure \@ref(fig:correldiam)). 
 
 ## Scatterplots
+
 Based on the outcome of the correlation pairs plot (figure  \@ref(fig:correldiam)) we have chosen the pairs 'depth' and 'table', and 'price' and 'carat' to produce scatter plots of, because one pair shows a strong positive correlation while the other shows a strong negative correlation.
 
 
@@ -531,6 +598,18 @@ ggMarginal(diam_deptab, type = "boxplot", notch=TRUE, size = 15,
 
 Figure \@ref(fig:scatdiamcp) shows the scatterplot with marginal boxplots of the 'carat' and 'price' variables. The expected positive correlation is clearly visible as a dark band running from the bottom left steeply towards the top right. There are vertical bands of visible at the $1, 1.5~and~2$ values of carat. This is a curious finding and one that is an obvious point of investigation for a more comprehensive analysis. Perhaps jewelers are in the habit of rounding down to the nearest whole or half number, despite carat being a continuous variable? Another curious aspect is why the lower parts of those ranges (from 1.5 to 1.6, for example) are so densly packed with observations, while the upper parts (1.8 to 2) appear virtually empty. It seems very unlikely that by chance there were few stones of this weight, so presumably another factor is at play.
 
+
+```{r scatdiamxz, fig.cap="Scatterplot with marginal boxplots of 'x' vs 'z'", echo=FALSE}
+diam_deptab <- ggplot(diamonds, aes(x= diamonds$x, y= diamonds$z))+
+  geom_point()+
+  
+ 
+  labs(title = "Scatterplot with marginal boxplots of 'carat' vs 'price'")
+  
+ggMarginal(diam_deptab, type = "boxplot", notch=TRUE, size = 15, 
+           fill="grey")
+```
+Figure \@ref(fig:scatdiamxz) illustrates the strong positve correlation between the measurement dimensions of length and depth (x and z). The Correlation plot shows strong positive correlations between x (length in mm), y (width in mm) and z (depth in mm) indicating that there may be some redundanct between these variables.
 
 
 ## Mahalanobis Distance
