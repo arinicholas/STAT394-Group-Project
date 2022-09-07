@@ -156,6 +156,91 @@ $$
 $$
 
 
+## Normality
+
+In our previous EDA we saw that a number of our numeric variables may not follow a normal distribution. We saw this in the Cullen and Frey Plots and also in our summary table by examining the values for kurtosis and skewness. We will create a Normal QQ plot for each numeric variable as well as performing a Kolmogrov-Smirnov Test for each numeric variable. Normality is of interest to us as it is an underlying assumption of many statistical hypothesis tests.
+
+### Carat
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(diamonds$carat, xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(diamonds$carat, col = "blue", lwd =2)
+```
+
+```{r}
+ks.test(diamonds$carat, "pnorm", mean=mean(diamonds$carat), sd=sd(diamonds$carat))
+```
+
+The QQ plot shows strong deviations from the normal distribution particularly at the tails and this is confirmed in our hypothesis test of normality.
+
+### Depth
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(diamonds$depth, xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(diamonds$depth, col = "blue", lwd =2)
+```
+
+```{r}
+ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
+```
+
+Again the QQplot for depth shows substantial deviations from the normal distribution at the tails. The KS test finds evidence to reject the hypothesis that the data is normally dsitributed 
+
+### Table
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(diamonds$table, xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(diamonds$table, col = "blue", lwd =2)
+```
+
+```{r}
+ks.test(diamonds$table, "pnorm", mean=mean(diamonds$table), sd=sd(diamonds$table))
+```
+
+### Price
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(diamonds$price, xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(diamonds$price, col = "blue", lwd =2)
+```
+
+```{r}
+ks.test(diamonds$price, "pnorm", mean=mean(diamonds$price), sd=sd(diamonds$price))
+```
+
+### x (length)
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(diamonds$x, xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(diamonds$x, col = "blue", lwd =2)
+```
+
+```{r}
+ks.test(diamonds$x, "pnorm", mean=mean(diamonds$x), sd=sd(diamonds$x))
+```
+
+### y (width)
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(diamonds$y, xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(diamonds$y, col = "blue", lwd =2)
+```
+
+```{r}
+ks.test(diamonds$y, "pnorm", mean=mean(diamonds$y), sd=sd(diamonds$y))
+```
+
+### z (depth)
+
+```{r,  fig.pos= "center", fig.pos= "H"}
+qqnorm(diamonds$depth, xlab = "Observations", ylab = "Normal Quantiles", col = "red")
+qqline(diamonds$depth, col = "blue", lwd =2)
+```
+
+```{r}
+ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
+```
+
 
 ## Melted version of dataset
 
@@ -198,12 +283,13 @@ The log transform in Figure \@ref(fig:bxpt1log) gives a much better idea of the 
 
 For two of the variables (measurements 'y', purple, and 'z' pink) in the 'Very Good', 'Premium' and 'Ideal' levels of 'cut' there appear to be some very prominent outliers, as evidenced by the pink and purple dots above and below the boxplots. The variable 'y' is a measure of width in millimeters (mm), while 'z' is a measure of depth in mm. 
 
-## ANOVA of Price by Cut
+## Differences in Price for different levels of Cut
 
 ```{r Distribution of Price for different levels of Cut, echo = FALSE}
 ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "Very Good"| cut == "Fair"), aes(x = price, col = cut, group = cut, fill = cut)) +
   geom_density(aes(y = ..density..), alpha = .7)
 ```
+
 We will now test whether there are significant differences in mean price for different levels of "cut"
 
 ```{r}
@@ -211,13 +297,22 @@ cutanova <- aov(price ~ cut, data = diamonds)
 summary(cutanova)
 ```
 
-We have strong evidence to suggest that mean price differs across levels of "cut". We will no perform a Tukey Test to determine which pairwise differences are significant
+We have strong evidence to suggest that mean price differs across levels of "cut". We will now perform a Tukey Test to determine which pairwise differences are significant
 
 ```{r}
 TukeyHSD(cutanova, conf.level = 0.95)
 ```
 
 The only pairs we do not see a significant difference (at a 5% significance level) in mean price between are "very Good" and "Good" as well as "Premium" and "Fair". 
+
+From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. We will also perform a Bartlett test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut. Again, a one way ANOVA is reasonably robust to departures from equal variance if the sample sizes are the same.
+
+```{r}
+bartlett.test(price ~ cut, data= diamonds)
+kruskal.test(price ~ cut, data = diamonds)
+```
+
+Both tests return significant results indicating that the assumption of equal variance is violated and that we have evidence of a signifiant differnce in median prices for different levels of cut. 
 
 ## Boxplots of 'color'
 
@@ -232,7 +327,7 @@ ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
 ```
 
 ## Boxplots of 'color' in log scale
-As with the 'cut' variable, we redo the boxplots using the log transform on the data. 
+As with the 'cut' variable, we redo the boxplots using the log transform on the data. Figure \@ref(fig:bxpt2log) shows the log transformed version of the boxplots for the 'color' variable.
 
 ```{r bxpt2log, fig.cap="Boxplots of 'color' vs all the numeric variables (log transformed)", echo=FALSE}
 ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
@@ -245,7 +340,7 @@ ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
 
 ```
 
-## ANOVA of Price by Color
+## Differences in Price for different colors
 
 ```{r Distribution of Price for different levels of Color, echo = FALSE}
 ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| color == "F"| color == "E"| color == "D"), aes(x = price, col = color, group = color, fill = color)) +
@@ -258,16 +353,25 @@ We will now test whether there are significant differences in mean price for dif
 coloranova <- aov(price ~ color, data = diamonds)
 summary(cutanova)
 ```
-We have strong evidence to suggest that mean price differs across levels of "cut". We will no perform a Tukey Test to determine which pairwise comparisons are significant
+We have strong evidence to suggest that mean price differs across levels of "color". We will now perform a Tukey Test to determine which pairwise comparisons are significant
 
 ```{r}
 TukeyHSD(coloranova, conf.level = 0.95)
 ```
 
-We see significant differences in mean price for nearly all pairwise comparisons of diamond colours.
+We see significant differences in mean price for nearly all pairwise comparisons of diamond colors.
+
+We will also perform a Bartlett test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut.
+
+```{r}
+bartlett.test(price ~ color, data= diamonds)
+kruskal.test(price ~ color, data = diamonds)
+```
+
+We find a significant difference in the median price for different colour diamonds. 
 
 
-Figure \@ref(fig:bxpt2log) shows the log transformed version of the boxplots for the 'color' variable. 
+ 
 
 ## Boxplots of 'clarity'
 For the 'clarity' variable I have immediately performed a log transform on the data for the boxplots. 
@@ -285,7 +389,7 @@ ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
 
 Figure \@ref(fig:bxpt3log) shows the boxplots for the log transformed data across the different 'clarity' metrics. Much like the previous two graphs, medians and ranges look relatively constant across the variables. 
 
-## Anova of price by clarity
+## Differences in price for different levels of clarity
 
 ```{r Distribution of Price for different levels of Clarity, echo = FALSE}
 ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity =="VS2"| clarity =="VS1"| clarity =="VVS2"| clarity =="VVS1"| clarity =="IF"), aes(x = price, col = clarity, group = clarity, fill = clarity)) +
@@ -304,6 +408,14 @@ We have strong evidence to suggest that mean price differs across levels of "cla
 TukeyHSD(clarityanova, conf.level = 0.95)
 
 ```
+
+We will also perform a Bartlett test to test the assumption of equal variances and then, if significant, a non-parametric Kruskal Wallis test to determine if there are significant differences in median price for different levels of cut.
+
+```{r}
+bartlett.test(price ~ clarity, data= diamonds)
+kruskal.test(price ~ clarity, data = diamonds)
+```
+
 
 ### The covariance matrix
 
