@@ -634,3 +634,10 @@ table(diamonds_num$surprise)
 
 We see that while the vast majority of diamonds are typical there are a reasonable amount of "Surprising" and "Very Surprising" points in this dataset.
 
+
+$y = \alpha + \beta carat + \gamma cut + \tau color + \omega clarity + \epsilon$
+
+```{r}
+lm.milestone4 <- lm(y~carat+cut+color+clarity, data = diamonds, x = T)
+summary(lm.milestone4)
+```
