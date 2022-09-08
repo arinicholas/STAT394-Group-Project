@@ -166,7 +166,7 @@ Our categorical variables of cut, clarity and color are all ordinal:
 -   color: a measure of colour quality (categorical: J, which is poorest quality, to D, which is best)
 -   clarity: a measure of clearness (categorical: from worst to best = I1, SI2, VS2, VS1, VVS2, IF)
 
-Using a Hotelling's T-test we will test the equality of mean vectors of the lowest and highest level of each categorical variable. We might expect the diamonds with lower quality cut, color and clarity to differ significantly to diamonds with high quality cut, colour and clarity. 
+Using a Hotelling's T-test we will test the equality of mean vectors of the lowest and highest level of each categorical variable. We might expect the mean vector of diamonds with lower quality cut, color and clarity to differ significantly to diamonds with high quality cut, colour and clarity. 
 
 
 ```{r}
