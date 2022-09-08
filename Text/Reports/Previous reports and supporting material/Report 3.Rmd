@@ -1,0 +1,75 @@
+---
+title: "STAT394 Group Project Milestone 3: Exploratory Data Analysis"
+author: "Ken MacIver, Tom Tribe, Jundi Yang, Mei Huang"
+date: "`r Sys.Date()`"
+classoption: 12pt
+output: bookdown::pdf_document2
+bibliography: ./Bibliography/MASTER.bib
+header-includes: \usepackage{float}
+                    \floatplacement{figure}{H}
+                    \floatplacement{table}{H}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require(ggplot2)
+require(ggthemes)
+require(extrafont)
+require(matlib)
+require(moments)
+require(xtable)
+require(ggcorrplot)
+require(fitdistrplus)
+require(here)
+```
+
+# EDA summmary
+
+```{r}
+diamonds <- read.csv("./diamonds.csv")
+df <- data.frame(diamonds)
+df$cut <- factor(df$cut)
+df$clarity <- factor((df$clarity))
+df$color <- factor(df$color)
+
+summary(df)
+
+MySummary <- function(x){
+  return(c(
+    length(x),
+    min(x),
+    quantile(x, .25),
+    median(x),
+    quantile(x, .75),
+    max(x),
+    skewness(x),
+    kurtosis(x))
+  )
+} 
+  
+#pply(df[,-(2:4)], MySummary, MARGIN=2) -> MySummary1
+
+#xtable(MySummary1)
+
+
+```
+
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & carat & depth & table & price & x & y & z \\ 
+  \hline
+sample size & 53940 & 53940& 53940& 53940 & 53940 & 53940 & 53940 \\ 
+  minimum & 0.20 & 43.00 & 43.00 & 326.00 & 0.00 & 0.00 & 0.00 \\ 
+  first quartile & 0.40 & 61.00 & 56.00 & 950.00 & 4.71 & 4.72 & 2.91 \\ 
+  median & 0.70 & 61.80 & 57.00 & 2401.00 & 5.70 & 5.71 & 3.53 \\ 
+  third quartile & 1.04 & 62.50 & 59.00 & 5324.25 & 6.54 & 6.54 & 4.04 \\ 
+  maximum & 5.01 & 79.00 & 95.00 & 18823.00 & 10.74 & 58.90 & 31.80 \\ 
+  skewness& 1.12 & -0.08 & 0.80 & 1.62 & 0.38 & 2.43 & 1.52 \\ 
+  kurtosis & 4.26 & 8.74 & 5.80 & 5.18 & 2.38 & 94.21 & 50.08 \\ 
+   \hline
+\end{tabular}
+\end{table}
