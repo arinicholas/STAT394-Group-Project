@@ -354,6 +354,24 @@ diamonds_melt <- melt(data = diamonds, id.vars = c("cut","color","clarity"),
 
 ## Boxplots of 'cut'
 
+**Table: cut count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Cut & Count \\ 
+  \hline
+Fair & 1610\\
+Good & 4960\\
+Ideal & 21551\\
+Premium & 13791\\
+Very Good & 12082\\
+   \hline
+\end{tabular}
+\end{table}
+
+
 ```{r bxpt1, fig.cap="Boxplots of 'cut' vs all the numeric variables", echo=FALSE}
 ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
   
@@ -417,6 +435,26 @@ Both tests return significant results indicating that the assumption of equal va
 
 ## Boxplots of 'color'
 
+**Table: color count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Color & Count \\ 
+  \hline
+D & 6775\\
+E & 9797\\
+F & 9542\\
+G & 11292\\
+H & 8304\\
+I & 5422\\
+J & 2808\\
+   \hline
+\end{tabular}
+\end{table}
+
+
 ```{r bxpt2, echo=FALSE}
 ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
   
@@ -475,6 +513,28 @@ We find a significant difference in the median price for different colour diamon
  
 
 ## Boxplots of 'clarity'
+
+**Table: clarity count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Clarity & Count \\ 
+  \hline
+I1	&741\\
+IF	&1790\\
+SI1&	13065\\
+SI2	&9194\\
+VS1	&8171\\
+VS2	&12258\\
+VVS1&	3655\\
+VVS2&	5066\\
+   \hline
+\end{tabular}
+\end{table}
+
+
 For the 'clarity' variable I have immediately performed a log transform on the data for the boxplots. 
 
 ```{r bxpt3log, fig.cap="Boxplots of 'clarity' vs all the numeric variables (log transformed)", echo=FALSE}
@@ -643,59 +703,3 @@ summary(lm.milestone4)
 #pchisq(lm.milestone4$, df=lm.milestone4$, lower.tail=FALSE)
 ```
 
-**Table: cut count**
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr}
-  \hline
- Cut & Count \\ 
-  \hline
-Fair & 1610\\
-Good & 4960\\
-Ideal & 21551\\
-Premium & 13791\\
-Very Good & 12082\\
-   \hline
-\end{tabular}
-\end{table}
-
-**Table: color count**
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr}
-  \hline
- Color & Count \\ 
-  \hline
-D & 6775\\
-E & 9797\\
-F & 9542\\
-G & 11292\\
-H & 8304\\
-I & 5422\\
-J & 2808\\
-   \hline
-\end{tabular}
-\end{table}
-
-
-**Table: clarity count**
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr}
-  \hline
- Clarity & Count \\ 
-  \hline
-I1	&741\\
-IF	&1790\\
-SI1&	13065\\
-SI2	&9194\\
-VS1	&8171\\
-VS2	&12258\\
-VVS1&	3655\\
-VVS2&	5066\\
-   \hline
-\end{tabular}
-\end{table}
