@@ -642,3 +642,60 @@ lm.milestone4 <- lm(y~carat+cut+color+clarity, data = diamonds, x = T)
 summary(lm.milestone4)
 #pchisq(lm.milestone4$, df=lm.milestone4$, lower.tail=FALSE)
 ```
+
+**Table: cut count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Cut & Count \\ 
+  \hline
+Fair & 1610\\
+Good & 4960\\
+Ideal & 21551\\
+Premium & 13791\\
+Very Good & 12082\\
+   \hline
+\end{tabular}
+\end{table}
+
+**Table: color count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Color & Count \\ 
+  \hline
+D & 6775\\
+E & 9797\\
+F & 9542\\
+G & 11292\\
+H & 8304\\
+I & 5422\\
+J & 2808\\
+   \hline
+\end{tabular}
+\end{table}
+
+
+**Table: clarity count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Clarity & Count \\ 
+  \hline
+I1	&741\\
+IF	&1790\\
+SI1&	13065\\
+SI2	&9194\\
+VS1	&8171\\
+VS2	&12258\\
+VVS1&	3655\\
+VVS2&	5066\\
+   \hline
+\end{tabular}
+\end{table}
