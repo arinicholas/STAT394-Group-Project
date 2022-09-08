@@ -600,11 +600,11 @@ Figure \@ref(fig:scatdiamcp) shows the scatterplot with marginal boxplots of the
 
 
 ```{r scatdiamxz, fig.cap="Scatterplot with marginal boxplots of 'x' vs 'z'", echo=FALSE}
-diam_deptab <- ggplot(diamonds, aes(x= diamonds$x, y= diamonds$z))+
+diam_deptab <- ggplot(diamonds, aes(x= x, y= z))+
   geom_point()+
   
  
-  labs(title = "Scatterplot with marginal boxplots of 'carat' vs 'price'")
+  labs(title = "Scatterplot with marginal boxplots of 'x' vs 'z'")
   
 ggMarginal(diam_deptab, type = "boxplot", notch=TRUE, size = 15, 
            fill="grey")
