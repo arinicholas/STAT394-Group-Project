@@ -640,5 +640,5 @@ $y = \alpha + \beta carat + \gamma cut + \tau color + \omega clarity + \epsilon$
 ```{r}
 lm.milestone4 <- lm(y~carat+cut+color+clarity, data = diamonds, x = T)
 summary(lm.milestone4)
-pchisq(lm.milestone4$, df=lm.milestone4$, lower.tail=FALSE)
+#pchisq(lm.milestone4$, df=lm.milestone4$, lower.tail=FALSE)
 ```
