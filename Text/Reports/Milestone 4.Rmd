@@ -371,7 +371,11 @@ ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth
 Figures \@ref(fig:qqx) (variable 'X') and \@ref(fig:qqz) (variable 'Y') both show deviations from Normality.
 
 
-All of our numerical variables, except perhaps y (width), show obvious deviation from the normal distribution in the QQ plots. The KS goodness of fit test finds evidence that these varaibles do not follow a normal distribution. 
+All of our numerical variables, except perhaps y (width), show obvious deviation from the normal distribution in the QQ plots. The KS goodness of fit test finds evidence that these varaibles do not follow a normal distribution. This is perhaps due to the interaction of different factors from our categorical variables. As we have many levels in our categorical variables we have many factors. See the table below of how many observations were recorded for each factor level.
+
+```{r}
+table(interaction(diamonds$cut, diamonds$color, diamonds$clarity))
+```
 
 ## Melted version of dataset
 
@@ -751,6 +755,18 @@ We see from the output above that while the vast majority of diamonds are typica
 ```{r}
 1839/length(diamonds$carat)
 ```
+
+We can see how many very surprising points (as identified with the Mahalanobis Distance) are members of each level of our categorical variables. This might help to indicate if any classes contain more surprising points than others.
+
+```{r}
+diamonds$surprise <- diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "very"))
+
+VSdiamonds <- subset(diamonds, surprise =="very")
+table(interaction(VSdiamonds$cut))
+table(interaction(VSdiamonds$clarity))
+table(interaction(VSdiamonds$color))
+```
+
 
 ## Linear regression model and model equation
 
