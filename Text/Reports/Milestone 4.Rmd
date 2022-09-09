@@ -382,7 +382,7 @@ diamonds_melt <- melt(data = diamonds, id.vars = c("cut","color","clarity"),
 
 ```
 
-## Boxplots of 'cut'
+## Boxplots and table of 'cut'
 
 **Table: cut count**
 
@@ -401,6 +401,7 @@ Very Good & 12082\\
 \end{tabular}
 \end{table}
 
+The table above gives a breakdown of the how many diamonds are in each level of the 'cut' variable. We can see that most are in the 'Ideal', with a substancial number also in the 'Premium' and 'Very Good'. 
 
 ```{r bxpt1, fig.cap="Boxplots of 'cut' vs all the numeric variables", echo=FALSE}
 ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
@@ -470,6 +471,8 @@ Both tests return significant results (output above) indicating that: a) the ass
 
 ## Boxplots of 'color' in log scale
 
+### Table of 'color' count
+
 **Table: color count**
 
 \begin{table}[ht]
@@ -488,6 +491,8 @@ J & 2808\\
    \hline
 \end{tabular}
 \end{table}
+
+The table above shows the number of diamonds in each level of the 'color' variable. 
 
 As with the 'cut' variable, we redo the boxplots using the log transform on the data. Figure \@ref(fig:bxpt2log) shows the log transformed version of the boxplots for the 'color' variable.
 
@@ -536,7 +541,7 @@ kruskal.test(price ~ color, data = diamonds)
 The output above shows a p-value of < 2.2e-16, meaning that there is strong evidence of a significant difference in the median price for different colour diamonds. 
 
 
-## Boxplots of 'clarity'
+## Boxplots and table of count of 'clarity'
 
 **Table: clarity count**
 
@@ -557,6 +562,8 @@ VVS2&	5066\\
    \hline
 \end{tabular}
 \end{table}
+
+The table above shows the counts for the different levels of the 'clarity' variable. 
 
 For the 'clarity' variable a log transform on the data has been performed for the boxplots. 
 
@@ -747,6 +754,8 @@ We see from the output above that while the vast majority of diamonds are typica
 
 ## Linear regression model and model equation
 
+We have created a linear regression model with model equation:
+
 $y = \alpha + \beta carat + \gamma cut + \tau color + \omega clarity + \epsilon$
 
 ```{r}
@@ -755,5 +764,7 @@ summary(lm.milestone4)
 #pchisq(lm.milestone4$, df=lm.milestone4$, lower.tail=FALSE)
 ```
 
+The output above from the linear regression model shows that most of the variables appear to be useful in predicting price (based on their p-values) except for clarityVVS1 and ClarityIF.  
 
+# References
 
