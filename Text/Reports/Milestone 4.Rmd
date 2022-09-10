@@ -575,7 +575,6 @@ For the 'clarity' variable a log transform on the data has been performed for th
 
 ```{r bxpt3log, fig.cap="Boxplots of 'clarity' vs all the numeric variables (log transformed)", echo=FALSE}
 ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
-  
   geom_boxplot(aes(col=metrics), notch = TRUE) +
   scale_y_log10()+
   facet_grid(~ clarity) +

@@ -83,7 +83,7 @@ ggarrange(a, b, c + rremove("x.text"),
 
 ## Melted Boxplots
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, warning=FALSE}
 diamonds_melt <- melt(data = diamonds, id.vars = c("cut","color","clarity"),
                       variable.name = "metrics")
 
