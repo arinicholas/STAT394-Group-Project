@@ -35,6 +35,7 @@ library(Hotelling)
 library(car)
 library(HDtest)
 library(ggpubr)
+library(nortest)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 
@@ -137,7 +138,7 @@ knitr::kable(summ_diamonds,
              caption = "Summary statistics for 'diamonds' (3 s.f.)")
 ```
 
-Table \@ref(tab:summtablediam) presents the summary statistics for the numerical variables in the diamonds dataset. 
+Table \@ref(tab:summtablediam) presents the summary statistics for the numerical variables in the diamonds dataset. We see that the kurtosis of every single numerical variable is much larger than we would expect if each variable was normally distributed. A postive skewness indicates that most of the variables are skewed to the right. We see that carat, price, y and z are highly skewed to the right.
 
 ### Means vector
 
@@ -204,7 +205,7 @@ It is no surprise to find that the best and worst categories of cut, color and c
 
 ## Normality
 
-In our previous EDA we saw that a number of our numeric variables may not follow a normal distribution. We saw this in the Cullen and Frey Plots and also in our summary table by examining the values for kurtosis and skewness. We will create a Normal QQ plot for each numeric variable as well as performing a Kolmogrov-Smirnov goodness of fit test for each numeric variable. The density function of each numeric variable indicate strong deviations from the normal distribution. 
+In our previous EDA we saw that a number of our numeric variables may not follow a normal distribution. We saw this in the Cullen and Frey Plots and also in our summary table by examining the values for kurtosis and skewness. We will create a Normal QQ plot for each numeric variable as well as performing a Anderson-Darling goodness of fit test for each numeric variable. The density function of each numeric variable indicate strong deviations from the normal distribution. 
 
 
 ```{r denplots, fig.cap= "Density of Numeric variables", fig.pos= "center", fig.pos= "H"}
@@ -282,7 +283,7 @@ qqline(diamonds$carat, col = "blue", lwd =2)
 ```
 
 ```{r}
-ks.test(diamonds$carat, "pnorm", mean=mean(diamonds$carat), sd=sd(diamonds$carat))
+ad.test(diamonds_num$carat)
 ```
 
 The QQ plot shows strong deviations from the normal distribution particularly at the tails and this is confirmed in our hypothesis test of normality.
@@ -302,10 +303,10 @@ qqline(diamonds$depth, col = "blue", lwd =2)
 ```
 
 ```{r}
-ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
+ad.test(diamonds_num$depth)
 ```
 
-Again the QQplot for depth (figure \@ref(fig:qqcaratlt)) shows substantial deviations from the Normal distribution at the tails. The Kolmogorov-Smirnov test returned a p-value of < 2.2e-16 (machine precision zero). Therefore, we reject the null hypothesis that the data is normally distributed. 
+Again the QQplot for depth (figure \@ref(fig:qqcaratlt)) shows substantial deviations from the Normal distribution at the tails. The Anderson-Darling test returned a p-value of < 2.2e-16 (machine precision zero). Therefore, we reject the null hypothesis that the data is normally distributed. 
 
 ### Table
 
@@ -315,10 +316,10 @@ qqline(diamonds$table, col = "blue", lwd =2)
 ```
 
 ```{r}
-ks.test(diamonds$table, "pnorm", mean=mean(diamonds$table), sd=sd(diamonds$table))
+ad.test(diamonds_num$table)
 ```
 
-Figure \@ref(fig:qqtable) of the 'table' variable also suggests deviations from Normality with the upper tail in particular sweeping upward away from the predicted line. The Kolmogorov-Smirnov test returned a p-value of < 2.2e-16, confirming that the data does not follow a Normal distribution. 
+Figure \@ref(fig:qqtable) of the 'table' variable also suggests deviations from Normality with the upper tail in particular sweeping upward away from the predicted line. The Anderson-Darling test returned a p-value of < 2.2e-16, confirming that the data does not follow a Normal distribution. 
 
 ### Price
 
@@ -328,7 +329,7 @@ qqline(diamonds$price, col = "blue", lwd =2)
 ```
 
 ```{r}
-ks.test(diamonds$price, "pnorm", mean=mean(diamonds$price), sd=sd(diamonds$price))
+ad.test(diamonds_num$price)
 ```
 
 Figure \@ref(fig:qqprice) shows an unusually shaped red curve, which strongly suggests a distribution other than the Normal. Again, the Kolmogorov-Smirnov test returned a p-value of < 2.2e-16.
@@ -341,7 +342,7 @@ qqline(diamonds$x, col = "blue", lwd =2)
 ```
 
 ```{r}
-ks.test(diamonds$x, "pnorm", mean=mean(diamonds$x), sd=sd(diamonds$x))
+ad.test(diamonds_num$x)
 ```
 
 ### y (width)
@@ -352,7 +353,7 @@ qqline(diamonds$y, col = "blue", lwd =2)
 ```
 
 ```{r}
-ks.test(diamonds$y, "pnorm", mean=mean(diamonds$y), sd=sd(diamonds$y))
+ad.test(diamonds_num$y)
 ```
 
 Figure \@ref(fig:qqy) shows that the observed values for the 'y' variable actually fit the predicted line quite well, with the exception of two extreme values at the upper end (right hand side). 
@@ -365,7 +366,7 @@ qqline(diamonds$depth, col = "blue", lwd =2)
 ```
 
 ```{r}
-ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
+ad.test(diamonds_num$z)
 ```
 
 Figures \@ref(fig:qqx) (variable 'X') and \@ref(fig:qqz) (variable 'Y') both show deviations from Normality.
@@ -376,6 +377,7 @@ All of our numerical variables, except perhaps y (width), show obvious deviation
 ```{r}
 table(interaction(diamonds$cut, diamonds$color, diamonds$clarity))
 ```
+
 
 ## Melted version of dataset
 
