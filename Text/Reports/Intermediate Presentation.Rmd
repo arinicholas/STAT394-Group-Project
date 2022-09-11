@@ -43,29 +43,50 @@ Mei Huang
 
 ## Variables
 
--   carat: the diamond's weight (numerical: 0.2 - 5.01)
--   cut: a measure of quality (categorical: Fair, Good, Very Good, Premium)
--   color: a measure of colour quality (categorical: J, which is poorest quality, to D, which is best)
--   clarity: a measure of clearness (categorical: from worst to best = I1, SI2, VS2, VS1, VVS2, IF)
--   x: length in mm (0 - 10.74)
--   y: width in mm (0 - 58.9) 
--   z: depth in mm (0 - 31.8)
--   depth: total depth percentage = z/mean(x,y) = 2\*z/(x+y) (43 - 79)
+<span style="color: red;">red font = categorical variable</span>
+
+-   carat: the diamond's weight
+-   <span style="color: red;">cut: a measure of quality</span>
+-   <span style="color: red;">color: a measure of colour quality</span>
+-   <span style="color: red;">clarity: a measure of clearness</span>
+-   x: length in mm
+-   y: width in mm 
+-   z: depth in mm
+-   depth: total depth percentage
 -   table: width of top of diamond relative to widest point
 -   price: the price of the diamond in US dollars 
+
+(List adapted from list at kaggle.com).
 
 ## Data Visualization
 
 ```{r, echo = FALSE}
 diamonds <- read.csv("./diamonds.csv", encoding = "UTF-8")
-diamonds[1:5,]
 diamonds$X <- NULL
-diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
-ggpairs(diamonds_num)
+diamonds[1:5,]
+
 ```
 
 ## Data Visualization
 
+```{r}
+
+diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
+ggpairs(diamonds_num)
+```
+
+
+
 ## Other things of interest
 
+The EDA revealed the following:
+
+- some variables not Normally distributed
+- long right tails due to a few very expensive diamonds
+- some zero values
+
+
 ## Next Steps
+
+- Principal Component Analysis
+- Find best predictor variable for price
