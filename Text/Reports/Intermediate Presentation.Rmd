@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 ---
 title: "Diamonds - Group 11"
 author: "Tom Tribe, Ken MacIver, Jundi Yang, Mei Huang"
@@ -12,6 +11,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+require(ggplot2)
+require(GGally)
 ```
 
 ## Group Members
@@ -56,38 +57,11 @@ Mei Huang
 ## Data Visualization
 
 ```{r, echo = FALSE}
-
 diamonds <- read.csv("./diamonds.csv", encoding = "UTF-8")
 diamonds[1:5,]
 diamonds$X <- NULL
-
-a <- ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
-  
-  geom_boxplot(aes(col=metrics), notch = TRUE) +
-  scale_y_log10()+
-  facet_grid(~ cut) +
-  theme(axis.text.x = element_text(size=7, angle=90, hjust=1),
-        legend.position = "none")
-
-b <- ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
-  
-  geom_boxplot(aes(col=metrics), notch = TRUE) +
-  scale_y_log10()+
-  facet_grid(~ cut) +
-  theme(axis.text.x = element_text(size=7, angle=90, hjust=1),
-        legend.position = "none")
-
-c <- ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
-  
-  geom_boxplot(aes(col=metrics), notch = TRUE) +
-  scale_y_log10()+
-  facet_grid(~ color) +
-  theme(axis.text.x = element_text(size=7, angle=90, hjust=1),
-        legend.position = "none")
-
-ggarrange(a, b, c,+ rremove("x.text"), 
-          labels = c("Cut", "Color", "Clarity"),
-          ncol = 3, nrow = 1)
+diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
+ggpairs(diamonds_num)
 ```
 
 ## Data Visualization
@@ -95,105 +69,3 @@ ggarrange(a, b, c,+ rremove("x.text"),
 ## Other things of interest
 
 ## Next Steps
-=======
-=======
->>>>>>> Stashed changes
----
-title: "Diamonds - Group 11"
-author: "Tom Tribe, Ken MacIver, Jundi Yang, Mei Huang"
-date: "2022-09-07"
-output: 
- ioslides_presentation:
-    widescreen: true
-    smaller: true
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-```
-
-## Group Members
-
-Tom Tribe 
-- tom.tribe2016@gmail.com
-- 0000-0002-5002-8066
-
-Ken MacIver
-- ken.maciver68@gmail.com
-- 0000-0001-8999-4598
-
-Jundi Yang
--  ivyli112358@gmail.com
-- 0000-0003-0888-9564 
-
-Mei Huang 
-- huangmei139@gmail.com
-- 0000-0003-2401-0679
-
-## Dataset
-
-- We have chosen a data set called 'diamonds', which presents data on 53940 diamonds. 
-- It was accessed it from kaggle.com. 
-- There are ten variables: 3 categorical and 7 numerical 
-
-- We choose this data set as it fit the criteria for this project and because it was simple to understand what each variable was a measure of. We are particularly interested in which variables are most predicitve of diamond price. 
-
-## Variables
-
--   carat: the diamond's weight (numerical: 0.2 - 5.01)
--   cut: a measure of quality (categorical: Fair, Good, Very Good, Premium)
--   color: a measure of colour quality (categorical: J, which is poorest quality, to D, which is best)
--   clarity: a measure of clearness (categorical: from worst to best = I1, SI2, VS2, VS1, VVS2, IF)
--   x: length in mm (0 - 10.74)
--   y: width in mm (0 - 58.9) 
--   z: depth in mm (0 - 31.8)
--   depth: total depth percentage = z/mean(x,y) = 2\*z/(x+y) (43 - 79)
--   table: width of top of diamond relative to widest point
--   price: the price of the diamond in US dollars 
-
-## Data Visualization
-
-```{r, echo = FALSE}
-
-diamonds <- read.csv("./diamonds.csv", encoding = "UTF-8")
-diamonds[1:5,]
-diamonds$X <- NULL
-
-a <- ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
-  
-  geom_boxplot(aes(col=metrics), notch = TRUE) +
-  scale_y_log10()+
-  facet_grid(~ cut) +
-  theme(axis.text.x = element_text(size=7, angle=90, hjust=1),
-        legend.position = "none")
-
-b <- ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
-  
-  geom_boxplot(aes(col=metrics), notch = TRUE) +
-  scale_y_log10()+
-  facet_grid(~ cut) +
-  theme(axis.text.x = element_text(size=7, angle=90, hjust=1),
-        legend.position = "none")
-
-c <- ggplot(data=diamonds_melt, aes(x=metrics, y=value)) +
-  
-  geom_boxplot(aes(col=metrics), notch = TRUE) +
-  scale_y_log10()+
-  facet_grid(~ color) +
-  theme(axis.text.x = element_text(size=7, angle=90, hjust=1),
-        legend.position = "none")
-
-ggarrange(a, b, c,+ rremove("x.text"), 
-          labels = c("Cut", "Color", "Clarity"),
-          ncol = 3, nrow = 1)
-```
-
-## Data Visualization
-
-## Other things of interest
-
-## Next Steps
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
