@@ -119,6 +119,9 @@ ggarrange(e, f, g + rremove("x.text"),
 
 ## Other things of interest
 
+- Redundancy among x,y,z as they all measure dimensions?
+- Our numeric variables do not appear to be normally distributed?
+
 ## Next Steps
 
 We intend to do a regression with principal components to help identify the variables most predicitve of diamond price.
