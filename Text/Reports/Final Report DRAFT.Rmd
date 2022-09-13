@@ -1,0 +1,40 @@
+---
+title: "STAT394 Group Project Final Report"
+author: "Ken MacIver, Tom Tribe, Jundi Yang, Mei Huang"
+date: "`r Sys.Date()`"
+classoption: 12pt
+output: bookdown::pdf_document2
+bibliography: ./Bibliography/MASTER.bib
+header-includes: \usepackage{float}
+                    \floatplacement{figure}{H}
+                    \floatplacement{table}{H}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# DRAFT FINAL REPORT
+
+## Experimenting with the relative file pathways
+
+Making sure the relative file pathways work according to Alejandro's file structure from his article @frery2020badging. The bibliography file path in the YAML code above takes us down into the 'Bibliography' folder and then opens the 'MASTER.bib' file. That is working.
+
+```{r, echo=FALSE}
+
+# the double dots take us up one level, so the second set of double dots take us up two hierarchical file levels
+# and then we go down a couple of levels into the 'Data' and 'CSV' folders to open 'diamonds.csv'.
+
+diamonds <- read.csv("../../Data/CSV/diamonds.csv", encoding = "UTF-8")
+diamonds[1:5,]
+
+# remove the index column
+diamonds$X <- NULL
+
+# get an overview of the structure of the data
+str(diamonds)
+```
+
+
+# Bibliography
+
