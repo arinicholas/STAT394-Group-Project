@@ -36,5 +36,5 @@ str(diamonds)
 ```
 
 
-# Bibliography
+# References
 
