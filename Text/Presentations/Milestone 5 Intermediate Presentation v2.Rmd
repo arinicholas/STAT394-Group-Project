@@ -39,8 +39,8 @@ Mei Huang
 
 # Group Members (photos)
 
-
-
+![](./Photos2.jpg)
+NOTE: SECOND PHOTO OF MEI IS A PLACEHOLDER UNTIL TOM'S PHOTO ARRIVES
 
 # The Diamonds dataset
 
