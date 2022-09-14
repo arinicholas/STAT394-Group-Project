@@ -93,5 +93,7 @@ The EDA revealed the following:
 # Next Steps
 
 - Principal Component Analysis
+- Regression using the Principal Components
 - Find best predictor variable for price
+
 
