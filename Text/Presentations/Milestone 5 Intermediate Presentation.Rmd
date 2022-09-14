@@ -68,7 +68,7 @@ Mei Huang
 
 # Data Visualization (the dataset)
 
-\tiny
+\footnotesize
 ```{r, echo = FALSE}
 diamonds <- read.csv("./diamonds.csv", encoding = "UTF-8")
 diamonds$X <- NULL
