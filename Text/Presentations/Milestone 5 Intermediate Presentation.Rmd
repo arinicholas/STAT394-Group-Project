@@ -1,5 +1,5 @@
 ---
-title: 'STAT394 Group Project: Group 11'
+title: 'Group 11, diamonds dataset'
 author: "Tom Tribe, Ken MacIver, Jundi Yang, Mei Huang"
 date: "`r Sys.Date()`"
 output: beamer_presentation
@@ -40,11 +40,11 @@ Mei Huang
 
 # The Diamonds dataset
 
-- Dataset: Diamonds
-- 53940 rows (diamonds)
-- ten variables
-- very large dataset (approx 540,000 values)
-- slow to process!
+- This large dataset has 53940 rows (diamonds) of ten variables (approx 540,000 values) 
+- Slow to process!
+- Nine of the variables are various measures of diamond size and quality, while the tenth is the price 
+- We selected diamonds because it was simple to understand what each variable was measuring, and to have the opportunity to work with a large dataset 
+- Particularly interested in which variables are most predictive of diamond price
 
 # The Variables
  \textcolor{red}{red font = categorical variable}
@@ -68,11 +68,14 @@ Mei Huang
 
 # Data Visualization (the dataset)
 
+\tiny
 ```{r, echo = FALSE}
 diamonds <- read.csv("./diamonds.csv", encoding = "UTF-8")
 diamonds$X <- NULL
 diamonds[1:5,]
 ```
+\normalsize
+
 
 # Data Visualisation (pairs plot)
 
