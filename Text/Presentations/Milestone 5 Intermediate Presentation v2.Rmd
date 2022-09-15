@@ -18,36 +18,39 @@ library(GGally)
 
 ```
 
+# Group Members (photos)
 
-## Group Members
+![](./Photos3.jpg)
 
-Tom Tribe 
+# Group Members (name, email, ORCID)
+
+Tom Tribe
+
 - tom.tribe2016@gmail.com
 - 0000-0002-5002-8066
 
 Ken MacIver
+
 - ken.maciver68@gmail.com
 - 0000-0001-8999-4598
 
 Jundi Yang
--  ivyli112358@gmail.com
-- 0000-0003-0888-9564 
 
-Mei Huang 
+- ivyli112358@gmail.com
+- 0000-0003-0888-9564
+
+Mei Huang
+
 - huangmei139@gmail.com
 - 0000-0003-2401-0679
 
-# Group Members (photos)
-
-![](./Photos2.jpg)
-NOTE: SECOND PHOTO OF MEI IS A PLACEHOLDER UNTIL TOM'S PHOTO ARRIVES
 
 # The Diamonds dataset
 
-- This large dataset has 53940 rows (diamonds) of ten variables (approx 540,000 values) 
-- Slow to process!
-- Nine of the variables are various measures of diamond size and quality, while the tenth is the price 
-- We selected diamonds because it was simple to understand what each variable was measuring, and to have the opportunity to work with a large dataset 
+- This large dataset has 53940 rows (diamonds) of ten variables (approx 540,000 values)\linebreak 
+- Slow to process!\linebreak
+- Nine of the variables are various measures of diamond size and quality, while the tenth is the price\linebreak
+- We selected diamonds because it was simple to understand what each variable was measuring, and to have the opportunity to work with a large dataset\linebreak
 - Particularly interested in which variables are most predictive of diamond price
 
 # The Variables
@@ -89,14 +92,14 @@ diamonds[1:5,]
 
 The EDA revealed the following:
 
-- some variables not Normally distributed
-- long right tails due to a few very expensive diamonds
+- some variables not Normally distributed\linebreak
+- long right tail for 'price' due to a few very expensive diamonds\linebreak
 - some zero values
 
 # Next Steps
 
-- Principal Component Analysis
-- Regression using the Principal Components
+- Principal Component Analysis\linebreak
+- Regression using the Principal Components\linebreak
 - Find best predictor variable for price
 
 
