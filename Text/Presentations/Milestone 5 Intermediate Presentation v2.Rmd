@@ -79,7 +79,7 @@ Mei Huang
 ```{r, echo = FALSE}
 diamonds <- read.csv("./diamonds.csv", encoding = "UTF-8")
 diamonds$X <- NULL
-diamonds[1:10,]
+diamonds[1:15,]
 ```
 \normalsize
 
