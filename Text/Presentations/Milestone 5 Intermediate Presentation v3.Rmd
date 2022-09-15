@@ -57,9 +57,9 @@ Mei Huang
  \textcolor{red}{red font = categorical variable}
  
 -   carat: the diamond's weight
--   \textcolor{red}{cut: a measure of quality}
--   \textcolor{red}{color: a measure of colour quality}
--   \textcolor{red}{clarity: a measure of clearness}
+-   \textcolor{red}{cut: a measure of quality (4 levels)}
+-   \textcolor{red}{color: a measure of colour quality (7 levels)}
+-   \textcolor{red}{clarity: a measure of clearness (6 levels)}
 -   x: length in mm
 -   y: width in mm 
 -   z: depth in mm
