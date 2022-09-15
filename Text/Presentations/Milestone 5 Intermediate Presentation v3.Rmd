@@ -1,0 +1,96 @@
+---
+title: 'Group 11, diamonds dataset'
+author: "Tom Tribe, Ken MacIver, Jundi Yang, Mei Huang"
+date: "`r Sys.Date()`"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning = FALSE}
+# load required packages
+library(ggplot2)
+library(GGally)
+
+
+```
+
+# Group Members (photos)
+
+![](./Photos3.jpg)
+
+# Group Members (name, email, ORCID)
+
+Tom Tribe
+
+- tom.tribe2016@gmail.com
+- 0000-0002-5002-8066
+
+Ken MacIver
+
+- ken.maciver68@gmail.com
+- 0000-0001-8999-4598
+
+Jundi Yang
+
+- ivyli112358@gmail.com
+- 0000-0003-0888-9564
+
+Mei Huang
+
+- huangmei139@gmail.com
+- 0000-0003-2401-0679
+
+
+# The Diamonds dataset
+
+- This large dataset has 53940 rows (diamonds) of ten variables (approx 540,000 values)\linebreak 
+- Slow to process!\linebreak
+- Nine of the variables are various measures of diamond size and quality, while the tenth is the price\linebreak
+- We selected diamonds because it was simple to understand what each variable was measuring, and to have the opportunity to work with a large dataset\linebreak
+- Particularly interested in which variables are most predictive of diamond price
+
+# The Variables
+ \textcolor{red}{red font = categorical variable}
+ 
+-   carat: the diamond's weight
+-   \textcolor{red}{cut: a measure of quality}
+-   \textcolor{red}{color: a measure of colour quality}
+-   \textcolor{red}{clarity: a measure of clearness}
+-   x: length in mm
+-   y: width in mm 
+-   z: depth in mm
+-   depth: total depth percentage
+-   table: width of top of diamond relative to widest point
+-   price: the price of the diamond in US dollars 
+
+(List adapted from list at kaggle.com).
+
+
+# Data Visualisation (pairs plot)
+
+![Pairs plot](./pairs plot.jpg)
+
+# Data Visualization (correlation plot)
+
+![Correlation plot](./Corrplot_diamonds.jpg)
+
+# Other things of interest
+
+The EDA revealed the following:
+
+- some variables not Normally distributed\linebreak
+- long right tail for 'price' due to a few very expensive diamonds\linebreak
+- some zero values\linebreak
+- 'price' probably follows a beta distribution (from the Cullen-Frey plot)
+
+# Next Steps
+
+- Principal Component Analysis\linebreak
+- Regression using the Principal Components\linebreak
+- Find best predictor variable for price
+
+
