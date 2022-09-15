@@ -82,10 +82,9 @@ Mei Huang
 
 The EDA revealed the following:
 
-- some variables not Normally distributed\linebreak
 - long right tail for 'price' due to a few very expensive diamonds\linebreak
-- some zero values\linebreak
-- 'price' probably follows a beta distribution (from the Cullen-Frey plot)
+- 'price' probably follows a beta distribution (from the Cullen-Frey plot)\linebreak
+- some zero values
 
 # Next Steps
 
