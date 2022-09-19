@@ -35,6 +35,16 @@ diamonds$X <- NULL
 str(diamonds)
 ```
 
+# Introduction
 
-# References
+# Methodology
 
+# Results
+
+# Conclusions
+
+# Bibiography
+
+
+
+# Appendices
