@@ -47,9 +47,9 @@ NOTE: The size of this dataset means that rendering to PDF takes a long time.
 For the STAT394 Group Project, Group 11 have chosen a dataset called 'diamonds', which presents data on 53940 diamonds. It was accessed it from kaggle.com. There are ten variables:
 
 -   carat: the diamond's weight (numerical: 0.2 - 5.01)
--   cut: a measure of quality (categorical: Fair, Good, Very Good, Premium)\
--   color: a measure of colour quality (categorical: J, which is poorest quality, to D, which is best)
--   clarity: a measure of clearness (categorical: from worst to best = I1, SI2, VS2, VS1, VVS2, IF)
+-   cut: a measure of quality (categorical: Fair, Good, Very Good, Premium, Ideal)\
+-   color: a measure of colour quality (categorical: J, which is poorest quality, to D, which is best, so J, I, H, G, F, E, D)
+-   clarity: a measure of clearness (categorical: from worst to best = I1, SI2, SI1, VS2, VS1, VVS2, VVS1, IF)
 -   x: length in mm (0 - 10.74)
 -   y: width in mm (0 - 58.9) 
 -   z: depth in mm (0 - 31.8)
