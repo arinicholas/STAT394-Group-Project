@@ -52,11 +52,11 @@ Looking at the eigenvectors we see that the variables of carat, price, x, y and 
 ggbiplot(PCA.diamonds, obs.scale =1, var.scale = 1)
 ```
 
-Due to the vast number of data entries it is hard to interpret what is going on from the visual display. We will not take a smaller sample of 300 from the diamonds data and redo the PCA after first checking that the smaller sample has similar properties to the full sample.
+Due to the vast number of data entries it is hard to interpret what is going on from the visual display. We will not take a smaller sample of 1000 from the diamonds data and redo the PCA after first checking that the smaller sample has similar properties to the full sample.
 
 ```{r}
-set.seed(300525287)
-smallersample <- diamonds[sample(nrow(diamonds), 300), ]
+set.seed(300525287, kind = "Mersenne-Twister")
+smallersample <- diamonds[sample(nrow(diamonds), "500"), ]
 reducedpca <- prcomp(smallersample[,-c(2:4)], center = TRUE, scale = TRUE)
 ```
 
@@ -66,13 +66,13 @@ summary(reducedpca)
 reducedpca$rotation
 ```
 
-We see that a PCA on the smaller sample results in close to identical results. The first PC now accounts  for 69% of the variance, the second PC accounts for 17% and the third PC accounts for 12%. Together the first three components account for 97% of the variance in the dataset.
+We see that a PCA on the smaller sample results in close to identical results. The first PC now accounts  for 69% of the variance, the second PC accounts for 19% and the third PC accounts for 12%. Together the first three components account for 97% of the variance in the dataset.
 
 ```{r}
-ggbiplot(reducedpca, obs.scale =1, var.scale = 1, groups = smallersample$clarity)
+ggbiplot(reducedpca, obs.scale =1, var.scale = 1)
 ```
 
-We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. 
+We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price. 
 
 
 In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other numerical variables as explanatory variables. 
@@ -88,7 +88,7 @@ diamondsmod <- lm(price ~ carat + x + y + z + depth + table, data = diamondscale
 summary(diamondsmod)
 ```
 
-We see from this output that all but one predictor variable (y) are significant in this model when the effects of the other predictors are already accounted for. This model explain 88% of the variation in price. We will now check the regression assumptions.
+We see from this output that all but one predictor variable (y) are significant in this model when the effects of the other predictors are already accounted for. This model explain 86% of the variation in price. We will now check the regression assumptions.
 
 ```{r}
 plot(diamondsmod)
@@ -105,22 +105,25 @@ plot(PCAprice)
 summary(PCAprice)
 ```
 
-The plot above shows the proportion of variation explained by each of the principal component. The first three principal components explain nearly all (99%) the variation in the data. 
+The plot above shows the proportion of variation explained by each of the principal component. The first three principal components explain nearly all (98%) the variation in the data. 
 
 ```{r}
 PCAprice$rotation
 ```
+
+We see that in the first PC carat, x, y and z all have equal weighting. In the second PC depth and table have the strongest weighting. 
 
 ```{r}
 ggbiplot(PCAprice, obs.scale =1, var.scale = 1, groups = smallersample$cut)
 ```
 
 
-With price not included it becomes much harder to distinguish which variables have the strongest influence in each principal component. Multiple variables have influence in each of the first three principal components. 
+Even with price not included we still see the same general structure as the PCA with price.  
 
 ```{r}
 PCApricevars <- prcomp(smallersample[,-c(2:4,7)], center = TRUE, scale = TRUE)$x
 diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] + PCApricevars[,6])
+step(diamondpricePCA, vol ~ 1, direction = "both")
 summary(diamondpricePCA)
 ```
 
@@ -128,10 +131,11 @@ We see that every single principal component is found to be significant in this 
 
 ## Factor Analysis
 
-In our investigation of the principal components of the dataset we observed that there appeared to be two main relationships underpinning the first three principal components and thus the variation in the data. The first was the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative relationship between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors may explain the observations in the diamonds dataset. To investigate this we will conduct a factor analysis. 
+In our investigation of the principal components of the dataset we observed that the first two principal components explained the the vast majority of the variation in the data.  The first was the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative relationship between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors may explain the observations in the diamonds dataset. To investigate this we will conduct a factor analysis. 
 
 ```{r}
-factanal(smallersample[,-c(2:4)], factors =2)
+factanal(diamonds_num, factors =2)
 ```
 
 While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations. 
+
