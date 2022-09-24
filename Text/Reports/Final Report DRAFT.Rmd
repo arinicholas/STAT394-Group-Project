@@ -64,6 +64,7 @@ library(Hotelling)
 library(car)
 library(HDtest)
 library(ggpubr)
+library(cowplot)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 
@@ -424,9 +425,188 @@ diamonds$clarity <- factor(diamonds$clarity,
 diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
 ```
 
-To begin our investigation we first completed an in-depth Exploratory Data Analysis of the data set the consolidated results of which you can find in the results section. We used this to develop our leading questions that we attempt to answer using the mulitvaraite statistical techniques of Principal Components Analysis, Factor Analysis, Linear Disciminant Analysis and Cluster Analysis. 
+When scaling numerical values in our data set we used the scale function 
+When taking smaller samples from our data set to improve the interpretability of visual plots we used a seed of 123456789 and the pseudo random number generator Mersenne Twister.
+
+To begin our investigation we first completed an in-depth Exploratory Data Analysis of the data set the consolidated results of which you can find in the results section. We used this to develop our leading questions that we attempt to answer using the multivariate statistical techniques of Principal Components Analysis, Factor Analysis, Linear Discriminant Analysis and Cluster Analysis. 
 
 # Results
+
+## Consolidated EDA
+
+We will begin by presenting results from our consolidated Exploratory Data Analysis that our relevant to our investigation. 
+
+### Summaries of Data
+
+```{r, echo=FALSE}
+# use the summary function to create the summary data for the numerical variables
+MySummary <- function(x){
+  return(c(
+    length(x),
+    min(x),
+    quantile(x, .25),
+    median(x),
+    mean(x),
+    quantile(x, .75),
+    max(x),
+    IQR(x),
+    sd(x), 
+    skewness(x),
+    kurtosis(x)))
+}
+
+
+summ_diamonds <- apply(diamonds_num, MySummary, MARGIN=2)
+
+rownames(summ_diamonds) <- c("sample size","minimum",
+                                   "first quartile","median",
+                                   "mean","third quartile",
+                                   "maximum","IQR", "standard deviation",
+                            "skewness","kurtosis")
+
+knitr::kable(summ_diamonds,
+             digits = 3,
+             caption = "Summary statistics for 'diamonds' (3 s.f.)")
+```
+
+A brief look at the summary statistics of the numerical variables shows that they all exist on very different scales. We also see high skewness values for carat, price, y and z and high kurtosis values for all variables particularly y and z. Both of these indicate non-normality of our numeric variables. It is also interesting to note that at least one diamond has a zero value for x, y and z as that is the minimum value for those variables. This will be further investigated in the outliers and unusual points section. 
+
+Categorical Summaries
+
+**Table: cut count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Cut & Count \\ 
+  \hline
+Fair & 1610\\
+Good & 4960\\
+Ideal & 21551\\
+Premium & 13791\\
+Very Good & 12082\\
+   \hline
+\end{tabular}
+\end{table}
+
+The table above gives a breakdown of the how many diamonds are in each level of the 'cut' variable. We can see that most are in the 'Ideal', with a substantial number also in the 'Premium' and 'Very Good'. 
+
+### Table of 'color' count
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Color & Count \\ 
+  \hline
+D & 6775\\
+E & 9797\\
+F & 9542\\
+G & 11292\\
+H & 8304\\
+I & 5422\\
+J & 2808\\
+   \hline
+\end{tabular}
+\end{table}
+
+The table above shows the number of diamonds in each level of the 'color' variable.
+
+**Table: clarity count**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Clarity & Count \\ 
+  \hline
+I1	&741\\
+IF	&1790\\
+SI1&	13065\\
+SI2	&9194\\
+VS1	&8171\\
+VS2	&12258\\
+VVS1&	3655\\
+VVS2&	5066\\
+   \hline
+\end{tabular}
+\end{table}
+
+The table above shows the counts for the different levels of the 'clarity' variable.
+
+### Distribution of Numeric Variables 
+
+While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables in our EDA we had reason to believe that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness of fit tests. 
+
+```{r normal QQ plots, fig.cap= "Normal QQ Plots of Numeric Variables", fig.pos= "center", fig.pos= "H"}
+par(mfrow=c(3,3))  ## one row, two columns
+qqnorm(diamonds$carat, xlab = "Observations", ylab = "Normal Quantiles", main = "Carat", col = "red")
+qqline(diamonds$carat, col = "blue", lwd =2)
+qqnorm(diamonds$depth, xlab = "Observations", ylab = "Normal Quantiles", main = "Depth", col = "red")
+qqline(diamonds$depth, col = "blue", lwd =2)
+qqnorm(diamonds$table, xlab = "Observations", ylab = "Normal Quantiles", main = "Table", col = "red")
+qqline(diamonds$table, col = "blue", lwd =2)
+qqnorm(diamonds$price, xlab = "Observations", ylab = "Normal Quantiles", main = "Price", col = "red")
+qqline(diamonds$price, col = "blue", lwd =2)
+qqnorm(diamonds$x, xlab = "Observations", ylab = "Normal Quantiles", main = "x", col = "red")
+qqline(diamonds$x, col = "blue", lwd =2)
+qqnorm(diamonds$y, xlab = "Observations", ylab = "Normal Quantiles", main = "y", col = "red")
+qqline(diamonds$y, col = "blue", lwd =2)
+qqnorm(diamonds$depth, xlab = "Observations", ylab = "Normal Quantiles", main = "z", col = "red")
+qqline(diamonds$depth, col = "blue", lwd =2)
+```
+
+Despite the small size of the Normal QQ plots shown above it is clear they indicate that each numeric variable deviates significantly from a normal distribution. We tested this using Kolmogorov-Smirnov goodness of fit test. The results from these tests are shown in the table below. 
+
+**Table: Kolmogorov-Smirnov GOF Results**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ Variable & Test Statistic & p-value \\ 
+  \hline
+Carat & 0.12274 & < 2.2e-16 \\
+Depth & 0.075871 & < 2.2e-16  \\
+Table & 0.13225 & < 2.2e-16\\
+Price & 0.18467 &  < 2.2e-16 \\
+x & 0.093545 & < 2.2e-16 \\
+y & 0.088528 & < 2.2e-16 \\
+z & 0.075871 & < 2.2e-16 \\
+   \hline
+\end{tabular}
+\end{table}
+
+The table above shows that for each numeric variable the KS goodness of fit test gave evidence that it did not follow a normal distribution 
+
+### Correlation Matrix
+
+```{r corrplot, fig.cap="A Visualization of the Correlation Matrix", echo=FALSE}
+ggcorrplot(cor(diamonds_num),
+           method = "circle",
+           hc.order = TRUE,
+           type = "lower")
+```
+
+
+Figure \@ref(fig:corrplot) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. As "x", "y" and "z" are all measures of size we should expect this and there may be some redundancy in these predictors.  The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. The strongest predictor of price is carat with length, width, depth also strongly correlated with price. Table is only very weakly correlated with price while depth is negatively correlated with price.
+
+
+### Price differences across Categorical Variables
+
+As our leading question is investigating which variables are most predictive or price we decided to investigate if there are significant differences in price across levels of each categorical variable. 
+
+
+
+
+### Outliers and Unusual Points 
+
+### Interactions 
+
+### Multiple Regression and Stepwise Model Selection
+
+## Principal Components Analysis 
 
 # Conclusions
 
