@@ -286,7 +286,7 @@ diamonds.df[diamonds$y==0,]
 diamonds.df[diamonds$z==0,]
 ```
 
-The outputs above show that the zero values for 'x', 'y' and 'z' are all errors. We can tell this because these diamonds have carat, depth and price values, meaning that they cannot have zero length (x), width (y) and depth (z). Note that for a lot of the observations with zero values in one of these variables also have zero values in the others. The variabel 'y' is a good example; the output shows that every observation with a zero value for 'y' also has zero values for 'x' and 'z'.  
+The outputs above show that the zero values for 'x', 'y' and 'z' are all errors. We can tell this because these diamonds have carat, depth and price values, meaning that they cannot have zero length (x), width (y) and depth (z). Note that for a lot of the observations with zero values in one of these variables also have zero values in the others. The variable 'y' is a good example; the output shows that every observation with a zero value for 'y' also has zero values for 'x' and 'z'.  
 
 ### Upper-value outliers
 
@@ -368,9 +368,63 @@ The output above shows that neither 'depth' nor 'price' have any extreme values.
 
 
 
-# Introduction
+# Introduction  
+
+Our multivariate statistical investigation uses the Diamonds data set (reference). This data set is a base data set in R and is also freely available on Kaggle (reference). It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while 7 are numerical. 
+
+## Variables
+
+Carat
+- Carat is a measure of the diamond's weight. One carat equals 1/5 gram. In this data set we have diamonds with a carat ranging from 0.2 - 5.01. 
+Cut
+- A diamonds Cut defines its proportions and its ability to reflect light. This variable has five levels: Fair, Good, Very Good, Premium Ideal. 
+Color
+- A diamonds color refers to how clear/colorless a diamond is. This variable has seven levels: J (lowest quality), I, H, G, F, E, D (highest quality)
+Clarity 
+- Clarity measures small imperfections on the surface and within the stone. This variable has eight levels:  I1 (lowest clarity), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (highest clarity)
+x
+- x is a diamonds length in mm. In this data set we have diamonds with a length ranging from 0 - 10.74 
+y
+- x is a diamonds width in mm. In this data set we have diamonds with a width ranging from 0 - 58.9  
+z
+- x is a diamonds depth in mm. In this data set we have diamonds with a depth ranging from 0 - 31.8 
+Depth
+-  Depth measures a diamonds total depth percentage total depth percentage. This is calculate by dividing the total width by the total depth. Depth percentage impacts how light reflects of the diamond. In this data set we have diamonds with a depth percentage ranging from 43% - 79%
+Table
+- The flat facet on the top of a diamond is called its table. Table in this data set measures table percentage which calculated by dividing table width by the total width. Table percentage impacts how light reflects of the diamond. In this data set we have diamonds with a table percentage ranging from 43% - 95%
+Price 
+- The price of the diamond in US dollars. In this data set we have diamonds with a price ranging from $326 - $18823
+
+
+We chose this data set as the variables were simple to understand conceptually and we hoped this would increase the ease to which we could make inferences about it compared to a data set on a subject we had little knowledge of. This data set also allows us to undertake an investigation from which we glean insights about diamonds that have real-world application and use. 
+
+Our study seeks to investigate which variables are most closely related to, and best predictors of, diamond price. We hypothesise that increased diamond size (x, y and z) and weight will be positively associated with diamond price. We also expect to see diamond price to be higher at the higher levels of the categorical variables compared to the lower levels. We are unsure how diamond depth and table percentage while relate to diamond price. 
+
+We also seek to classify.... (something about classes so we can use LDA/CA)
 
 # Methodology
+
+The diamonds data set was accessed through Kaggle while all statistical analysis and reporting was completed in R/R Markdown. Github was used a repository for storing all relevant documents and code during this investigation.
+
+Upon loading the data set into R we first used the following code to delete unnecessary columns, ensure categorical variables were treated as factors with set levels and created a subset data set containing only the numeric variables.
+
+```{r}
+# Read the data set into R
+diamonds <- read.csv("./diamonds.csv", encoding = "UTF-8")
+# Remove the index column
+diamonds$X <- NULL
+# Set categorical variables as factors and set levels
+diamonds$cut <- factor(diamonds$cut, 
+                       levels = c("Fair","Good","Very Good","Premium","Ideal"))
+diamonds$color <- factor(diamonds$color, 
+                         levels = c("J","I","H","G","F","E","D"))
+diamonds$clarity <- factor(diamonds$clarity,
+                           levels = c("I1","SI2","SI1","VS2","VS1","VVS2","VVS1","IF"))
+# Make data frame of just the numerical variables
+diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
+```
+
+To begin our investigation we first completed an in-depth Exploratory Data Analysis of the data set the consolidated results of which you can find in the results section. We used this to develop our leading questions that we attempt to answer using the mulitvaraite statistical techniques of Principal Components Analysis, Factor Analysis, Linear Disciminant Analysis and Cluster Analysis. 
 
 # Results
 
