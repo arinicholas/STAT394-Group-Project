@@ -135,5 +135,5 @@ In our investigation of the principal components of the dataset we observed that
 factanal(diamonds_num, factors =2)
 ```
 
-While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations. 
+While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations. Specifically, carat and dimension z in factor 2 are not strongly relevant enough for building factors. 
 
