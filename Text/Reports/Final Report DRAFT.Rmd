@@ -517,7 +517,7 @@ As we have 3 categorical variables: color, clarity and cut with 7, 8 and 5 level
 
 ### Multiple Regression 
 
-As we are interested in predicting price we thought it would be appropriate to do an initial multiple regression including all variables to see which are thought to be significant in predicting price when all other variables are included in the model. We will first scale the variables. 
+As we are interested in predicting price we thought it would be appropriate to do an initial multiple regression including all variables to see which are thought to be significant in predicting price when all other variables are included in the model. We will first scale the variables. We will use a smaller sample to make interpretation of the visual diagnostic plots more easily
 
 ```{r}
 diamondslm <- lm(price ~ scale(carat) + scale(x) + scale(y) + scale(z) + scale(depth) + scale(table) + cut + clarity + color, data = diamonds)
@@ -527,6 +527,10 @@ summary(diamondslm)
 An initial multiple regression indicates that all variables but y and z are significant in the model (once the effect of the other predictors has been accounted for). This model accounts of 91.98% of the variation in the data.  
 
 ## Principal Components Analysis 
+
+
+
+
 
 # Principal Component Analysis
 

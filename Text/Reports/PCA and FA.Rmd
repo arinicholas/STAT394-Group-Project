@@ -45,7 +45,7 @@ We see that the first principal component explains the majority of the variance 
 PCA.diamonds$rotation
 ```
 
-Looking at the eigenvectors we see that the variables of carat, price, x, y and z are all have equal weight in PC1. The variables with the most weight in PC2 are depth and table. We see a similar patten in PC3 but now price is also has more weight. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation.  A visualization of the PCA is shown in the Biplot below. 
+Looking at the eigenvectors we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth a table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation.  A visualization of the PCA is shown in the Biplot below. 
 
 
 ```{r}
@@ -63,7 +63,6 @@ reducedpca <- prcomp(smallersample[,-c(2:4)], center = TRUE, scale = TRUE)
 ```{r}
 plot(reducedpca)
 summary(reducedpca)
-reducedpca$rotation
 ```
 
 We see that a PCA on the smaller sample results in close to identical results. The first PC now accounts  for 69% of the variance, the second PC accounts for 19% and the third PC accounts for 12%. Together the first three components account for 97% of the variance in the dataset.
@@ -123,7 +122,6 @@ Even with price not included we still see the same general structure as the PCA 
 ```{r}
 PCApricevars <- prcomp(smallersample[,-c(2:4,7)], center = TRUE, scale = TRUE)$x
 diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] + PCApricevars[,6])
-step(diamondpricePCA, vol ~ 1, direction = "both")
 summary(diamondpricePCA)
 ```
 
