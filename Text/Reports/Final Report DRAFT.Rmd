@@ -418,6 +418,14 @@ The output above shows that x, y and z all have a number of zero values, which p
 
 ### Idendifying whether the zero observations are errors
 
+## Make a data.frame version of dataset
+
+```{r}
+diamonds.df <- data.frame(diamonds)
+diamonds.df[1:4,]
+
+```
+
 ```{r}
 # display the zero values for 'x'
 diamonds.df[diamonds$x==0,]
@@ -515,9 +523,95 @@ The output above shows that neither 'depth' nor 'price' have any extreme values.
 
 As we have 3 categorical variables: color, clarity and cut with 7, 8 and 5 levels respectively we have 280 separate interactions in our data set. This makes it likely that there will be unknown classes in our data. 
 
-### Multiple Regression 
+### Simple and Multiple Regression 
 
-As we are interested in predicting price we thought it would be appropriate to do an initial multiple regression including all variables to see which are thought to be significant in predicting price when all other variables are included in the model. We will first scale the variables. We will use a smaller sample to make interpretation of the visual diagnostic plots more easily
+As we are interested in predicting price we thought it would be appropriate to do an initial multiple regression including all variables to see which are thought to be significant in predicting price when all other variables are included in the model. We have done this firstly with the raw variables and then with scaled versions of the variables.
+
+# Simple linear regression using 'carat'
+
+```{r, echo=FALSE}
+carpricecor <- signif(cor(diamonds$carat, diamonds$price),4)
+carpricecor
+```
+
+We theorised that 'carat' would be a very good predictor of 'price' based on the fact that 'carat' was the variable most highly correlated with 'price', with a correlation of `r carpricecor`between the two variables. Here we fit a simple linear regression model using 'carat' as the sole predictor variable. 
+
+```{r}
+# fit the linear regression model
+carat.lm <- lm(price~carat, data = diamonds, x=T)
+
+# display summary
+summary(carat.lm)
+
+# get anova table of linear regression model
+anova(carat.lm)
+```
+
+```{r, echo=FALSE, results='hide'}
+# sandpit for extracting values from model. will not show in rendered pdf
+carlmsumm <- summary(carat.lm)
+caranova <- anova(carat.lm)
+carlmsumm[[10]]
+carlmsumm[[11]]
+
+F_stat <- caranova[[4]][1]
+F_stat
+
+caranova
+caranova[[5]][1]
+
+```
+
+
+The output from the linear regression model above shows that 'carat' is a good predictor of 'price'. The t-test statistic is `r F_stat`, which is an enormous number, and the p-value is `r caranova[[5]][1]`. So, with a p-value of zero, we have very strong evidence to say that 'carat' is a good predictor of 'price'. 
+
+## Testing to find the best regression model
+
+### The Akaike Information Criterion (AIC) test
+We now use the Akaike Information Criterion (AIC) stepwise regression test in R to find the best regression model that has 'price' as the response variable. We are particularly interested in whether any other models outperform the simple 'carat' model.
+
+```{r}
+# fit the linear regression model with all predictors
+full.lm <- lm(price ~ .,data = diamonds)
+
+# display the model summary
+summary(full.lm)
+
+# use the step() function to perform the stepwise AIC test
+step(full.lm, direction = "both")
+```
+
+Based on the output from the stepwise AIC regression comparison above, the best model which balances accuracy against parsimony is the one with predictors carat + cut + color + clarity + depth + table + x. In other words, the predictors that were dropped are y and z. The AIC value for this model is 758425 compared with 758426 for the next best. The difference between the two is only 1, but the principle of parsimony dictates that we select the simplest model, which means selecting the one that drops the variable 'y'. 
+
+### Bayes Information Criterion (BIC) model comparison
+
+```{r}
+# store the sample size in a variable 
+n <- length(diamonds$price)
+
+# repeat the step test with the added 'k' argument to perform the BIC
+step(full.lm, direction = "both", k=log(n))
+```
+
+The model comparison using the Bayes Information Criterion (BIC) confirms that the best model is the one with variables carat + cut + color + clarity + depth + table + x (output above). The BIC value for this model is 758621, compared with 758629 for the next best. 
+
+## Fitting the best model
+
+The 'best' model (as found by the AIC test above) is fitted below.
+
+```{r}
+best.lm <- lm(price ~ carat + cut + color + clarity +
+                depth + table + x, data = diamonds)
+
+summary(best.lm)
+
+```
+
+The summary output for the 'best' model above shows how the categorical variables, all of which measure diamond quality, add a lot to the accuracy of the model. For example, 'Clarity', which has 8 levels, adds from 2702.077 (lowest quality clarity) to 5344.338 (highest quality clarity) to price depending on which level the diamond is categorised at. This is a wide range and cannot be obtained with these categorical variables dropped from the model.
+
+## Scaled multiple regression model
+
+In this version we scale the variables. 
 
 ```{r}
 diamondslm <- lm(price ~ scale(carat) + scale(x) + scale(y) + scale(z) + scale(depth) + scale(table) + cut + clarity + color, data = diamonds)
@@ -526,21 +620,9 @@ summary(diamondslm)
 
 An initial multiple regression indicates that all variables but y and z are significant in the model (once the effect of the other predictors has been accounted for). This model accounts of 91.98% of the variation in the data.  
 
-## Principal Components Analysis 
-
-
-
 
 
 # Principal Component Analysis
-
-## Make a data.frame version of dataset
-
-```{r}
-diamonds.df <- data.frame(diamonds)
-diamonds.df[1:4,]
-
-```
 
 ## Create the Principal Components object
 
