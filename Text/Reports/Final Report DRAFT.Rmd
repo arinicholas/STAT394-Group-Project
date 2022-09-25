@@ -524,9 +524,7 @@ diamondslm <- lm(price ~ scale(carat) + scale(x) + scale(y) + scale(z) + scale(d
 summary(diamondslm)
 ```
 
-An initial multiple regression indicates that all variables but y and z are significant in the model (once the effect of the other predictors has been accounted for). This model accounts of 91.98% of the variation in the data. We shall now check the assumptions of the regression model using diagnostic plots. 
-
-
+An initial multiple regression indicates that all variables but y and z are significant in the model (once the effect of the other predictors has been accounted for). This model accounts of 91.98% of the variation in the data.  
 
 ## Principal Components Analysis 
 
@@ -658,6 +656,7 @@ Figure \@ref(fig:caratcolor) shows the scatterplot of 'carat' versus 'price' and
 In the three scatterplots figures \@ref(fig:caratcut), \@ref(fig:caratclarity) and \@ref(fig:caratcolor) we see a clear trend of lighter diamonds (lower 'carat' values) that are most expensive (so, in the upper left of the plot) having the highest quality of 'cut', 'clarity' and 'color'. This is no surprise, as we would expect the most expensive lighter diamonds to be of the best quality. 
 
 Conversely, we can also see some heavier diamonds which are of lower quality and lower price. Note in figure \@ref(fig:caratcut) that some of the lowest quality diamonds in terms of 'cut' (orange dots in the centre of the plot, on the vertical value of 2) are relatively cheap, despite being heavier than some of the lighter more expensive diamonds. But eventually the weight of the diamonds drives the price up regardless of the quality of 'cut', as we can see from the three orange dots in the top right of the plot. These are of the lowest quality cut, but are the three heaviest diamonds in the dataset, and so end up being expensive.
+
 # Conclusions
 
 # Bibiography
