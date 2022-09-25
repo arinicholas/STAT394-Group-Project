@@ -12,41 +12,6 @@ header-includes: \usepackage{float}
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-# DRAFT FINAL REPORT
-
-######################################################################################
-# DELETE FROM FINAL
-## Experimenting with the relative file pathways
-
-Making sure the relative file pathways work according to Alejandro's file structure from his article @frery2020badging. The bibliography file path in the YAML code above takes us down into the 'Bibliography' folder and then opens the 'MASTER.bib' file. That is working.
-
-#####################################################################################
-
-```{r, echo=FALSE}
-
-# the double dots take us up one level, so the second set of double dots take us up two hierarchical file levels
-# and then we go down a couple of levels into the 'Data' and 'CSV' folders to open 'diamonds.csv'.
-
-diamonds <- read.csv("../../Data/CSV/diamonds.csv", encoding = "UTF-8")
-diamonds[1:5,]
-
-# remove the index column
-diamonds$X <- NULL
-
-# get an overview of the structure of the data
-str(diamonds)
-```
-
-################################################################################
-# BEGIN PASTE
-# Data preparation
-
-## Load the required packages
-
-```{r, message=FALSE}
-# load the required packages
 require(ggplot2)
 require(ggthemes)
 library(ggstance)
@@ -67,306 +32,17 @@ library(ggpubr)
 library(cowplot)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
-
-# assignment 4 packages: not sure if they are needed
-library(png)
-library(rgl)
-require(graphics)
-require(pixmap)
-
-
-
 ```
 
-## Load the data into R
+# DRAFT FINAL REPORT
 
-```{r, echo=FALSE}
+######################################################################################
+# DELETE FROM FINAL
+## Experimenting with the relative file pathways
 
-diamonds <- read.csv("../../Data/CSV/diamonds.csv", encoding = "UTF-8")
-diamonds[1:5,]
+Making sure the relative file pathways work according to Alejandro's file structure from his article @frery2020badging. The bibliography file path in the YAML code above takes us down into the 'Bibliography' folder and then opens the 'MASTER.bib' file. That is working.
 
-# remove the index column
-diamonds$X <- NULL
-
-# get an overview of the structure of the data
-str(diamonds)
-```
-
-## Create factor levels and view summary
-
-```{r, echo=FALSE}
-# set categorical variables as factors and set levels
-diamonds$cut <- factor(diamonds$cut, 
-                       levels = c("Fair","Good","Very Good","Premium","Ideal"))
-diamonds$color <- factor(diamonds$color, 
-                         levels = c("J","I","H","G","F","E","D"))
-diamonds$clarity <- factor(diamonds$clarity,
-                           levels = c("I1","SI2","SI1","VS2","VS1","VVS2","VVS1","IF"))
-
-# make data frame of just the numerical variables
-diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
-
-# display first rows to check
-diamonds_num[1:4,]
-
-# display summary data
-summary(diamonds_num)
-```
-
-## Melted version of dataset
-
-```{r}
-# create melted version of the dataset to allow easy graphical manipulation
-diamonds_melt <- melt(data = diamonds, id.vars = c("cut","color","clarity"),
-                      variable.name = "metrics")
-
-```
-
-# Principal Component Analysis
-
-## Make a data.frame version of dataset
-
-```{r}
-diamonds.df <- data.frame(diamonds)
-diamonds.df[1:4,]
-
-```
-
-## Create the Principal Components object
-
-```{r}
-pca.diamonds <- prcomp(subset(diamonds.df, select = c(1,5:10)),
-                       center=TRUE, scale. = TRUE, retx=TRUE)
-pca.diamonds
-
-```
-
-## Plot PC1 and PC2
-
-```{r}
-# display the first 10 rows
-pca.diamonds$x[1:10,]
-```
-
-```{r}
-# calculate values for the scatterplot and screeplot
-pca.var <- pca.diamonds$sdev^2
-pca.var.per <- round(pca.var/sum(pca.var)*100,1)
-pca.var.per
-sum(pca.var.per[1:3])
-```
-
-```{r pconevpctwo, fig.cap="Scatterplot of PC1 vs PC2"}
-plot(pca.diamonds$x[,1], pca.diamonds$x[,2],
-     main="Scatterplot of PC1 vs PC2",
-      xlab=(paste("PC1 - ", pca.var.per[1], "%", sep="")),
-      ylab=(paste("PC2 - ", pca.var.per[2], "%", sep="")))
-```
-
-Figure \@ref(fig:pconevpctwo) shows the scatterplot of PC1 versus PC2. Of note are the two significant outliers to the far right, which are extreme values of PC1. The percentage of variation retained by each Principal Component is included in the axis labels.
-
-# DO THESE AFFECT THE QUALITY OF THE PCA?
-
-## Identify the extreme PC1 values
-
-```{r}
-sort(decreasing=T,(pca.diamonds$x[,1]))[1:10]
-```
-
-The output above identifies the two upper extreme values of PC1. 
-
-## Scree plot
-
-
-```{r pcascree, fig.cap="Scree plot of the Principal Components"}
-barplot(pca.var.per, names.arg = pca.var.per,
-        xlab = "Principal Components 1 to 7",
-        ylab = "% information retained by each PC",
-        main="Screeplot of the Principal Components")
-
-```
-
-Figure \@ref(fig:pcascree) shows the scree plot for the Principal Components of the diamonds dataset. PC1 contains `r pca.var.per[1]`% of the variance, PC2 contains `r pca.var.per[2]`%, while PC3 contains `r pca.var.per[3]`%. Between them they contain `r sum(pca.var.per[1:3])`%, which is clearly very good.   
-
-
-```{r}
-## discover which measurements contribute most to PC1
-
-loading_scores <- pca.diamonds$rotation[,1]
-diam_scores <- abs(loading_scores) ## get the magnitudes
-diam_score_ranked <- sort(diam_scores, decreasing=TRUE)
-top_diam <- names(diam_score_ranked[1:7])
-
-top_diam ## show the names
-
-pca.diamonds$rotation[top_diam,1] 
-```
-
-From the output above, we can see that 'x' is the measurement that contributes the most to PC1, although 'carat' is virtually identical.
-
-# Further Exploratory Data Analysis (EDA)
-
-This section presents additional EDA steps that did not appear in the previous Milestone reports, but which were identified by the team members subsequently and considered to be worth including. 
-
-## Colour-coded scatterplots
-
-### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Cut'
-
-```{r caratcut, fig.cap="Carat vs Price, coloured by Cut"}
-
-# scatterplot of carat vs price, but also colouring the observations
-# by 'cut'
-ggplot(data=diamonds, aes(x=carat, y=price, color=cut))+
-  geom_point()
-```
-
-Figure \@ref(fig:caratcut) shows the scatterplot of 'carat' versus 'price' and coloured by 'cut'.
-
-### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Clarity'
-
-```{r caratclarity, fig.cap="Carat vs Price coloured by Clarity"}
-
-# scatterplot of carat vs price, but also colouring the observations
-# by 'cut'
-ggplot(data=diamonds, aes(x=carat, y=price, color=clarity))+
-  geom_point()
-```
-
-
-Figure \@ref(fig:caratclarity) shows the scatterplot of 'carat' versus 'price' and coloured by 'clarity'. 
-
-
-### Scatterplot of 'Carat' vs 'Price', colour coded by 'Color'
-
-```{r caratcolor, fig.cap="Carat vs Price coloured by Color"}
-
-# scatterplot of carat vs price, but also colouring the observations
-# by 'cut'
-ggplot(data=diamonds, aes(x=carat, y=price, color=color))+
-  geom_point()
-```
-
-
-Figure \@ref(fig:caratcolor) shows the scatterplot of 'carat' versus 'price' and coloured by 'color'. 
-
-In the three scatterplots figures \@ref(fig:caratcut), \@ref(fig:caratclarity) and \@ref(fig:caratcolor) we see a clear trend of lighter diamonds (lower 'carat' values) that are most expensive (so, in the upper left of the plot) having the highest quality of 'cut', 'clarity' and 'color'. This is no surprise, as we would expect the most expensive lighter diamonds to be of the best quality. 
-
-Conversely, we can also see some heavier diamonds which are of lower quality and lower price. Note in figure \@ref(fig:caratcut) that some of the lowest quality diamonds in terms of 'cut' (orange dots in the centre of the plot, on the vertical value of 2) are relatively cheap, despite being heavier than some of the lighter more expensive diamonds. But eventually the weight of the diamonds drives the price up regardless of the quality of 'cut', as we can see from the three orange dots in the top right of the plot. These are of the lowest quality cut, but are the three heaviest diamonds in the dataset, and so end up being expensive.
-
-## Zero values (minimum values)
-
-In this section we identify any zero values and determine whether or not they are errors.
-
-```{r}
-sort(decreasing=F, diamonds$carat)[1:10]
-sort(decreasing=F, diamonds$x)[1:10]
-sort(decreasing=F, diamonds$y)[1:10]
-sort(decreasing=F, diamonds$z)[1:22]
-sort(decreasing=F, diamonds$depth)[1:10]
-sort(decreasing=F, diamonds$table)[1:10]
-sort(decreasing=F, diamonds$price)[1:10]
-```
-
-The output above shows that x, y and z all have a number of zero values, which presumably are errors.
-
-### Idendifying whether the zero observations are errors
-
-```{r}
-# display the zero values for 'x'
-diamonds.df[diamonds$x==0,]
-```
-
-
-```{r}
-# display the zero values for 'y'
-diamonds.df[diamonds$y==0,]
-```
-
-```{r}
-# display the zero values for 'z'
-diamonds.df[diamonds$z==0,]
-```
-
-The outputs above show that the zero values for 'x', 'y' and 'z' are all errors. We can tell this because these diamonds have carat, depth and price values, meaning that they cannot have zero length (x), width (y) and depth (z). Note that for a lot of the observations with zero values in one of these variables also have zero values in the others. The variable 'y' is a good example; the output shows that every observation with a zero value for 'y' also has zero values for 'x' and 'z'.  
-
-### Upper-value outliers
-
-The outputs below show the upper values for the seven numerical variables. This output guides further investigation as to which are likely to be genuine and which are probably errors. 
-
-```{r}
-# show ten largest values for each of the seven numerical variables
-sort(decreasing=T, diamonds$carat)[1:10]
-sort(decreasing=T, diamonds$x)[1:10]
-sort(decreasing=T, diamonds$y)[1:10]
-sort(decreasing=T, diamonds$z)[1:10]
-sort(decreasing=T, diamonds$depth)[1:10]
-sort(decreasing=T, diamonds$table)[1:10]
-sort(decreasing=T, diamonds$price)[1:10]
-```
-
-The output above shows the ten largest values for each of the seven numerical variables. At a glance (informal inference) it appears that 'carat', 'y', 'z' and 'table' all have one or more values that are considerably higher than the rest, with y and z having maximums that are so extreme it is worth considering whether they are erroneous.   
-
-## Determining whether the outliers are errors
-
-### The 'x' variable: probably no upper value errors
-
-```{r}
-# display the values of 'x' that are greater than or equal to 10
-diamonds.df[diamonds$x>=10,]
-
-```
-
-The output above shows that the largest 'x' values are not outrageously larger than the rest. Additionally, the values of the other variables for the largest 'x' value are reasonably aligned in terms of magnitude, suggesting that these large 'x' values are genuine.
-
-### The 'y' variable: probably 2 upper value errors
-
-```{r}
-# display the values of 'x' that are greater than or equal to 11
-diamonds.df[diamonds$y>=10,]
-
-```
-
-The output above suggests that the two extreme values for 'y' are almost certainly errors. They are 58.90	and 31.80; both are far larger than the next highest value, which is 10.54. It is very unlikely that diamonds with such enormous width values do not also have extreme length and depth values, or that they did not sell for more money. 
-
-### The 'z' variable: probably 2 upper value errors
-
-```{r}
-diamonds.df[diamonds$z>=8,]
-
-```
-
-Similarly with the extreme value of 'z' (31.80). The other dimensions of this diamond do not tally with the extreme depth value, nor does the relatively low price. The next highest value has been included for comparison (8.06). This is almost certainly an error.
-
-### The 'carat' variable: probably no upper value errors
-
-```{r}
-diamonds.df[diamonds.df$carat>4,]
-```
-
-The output above shows that the highest value for 'carat' (5.01) is not outrageously higher than the next highest (4.50), suggesting that this is a genuine value. Also, the other variables are comparible between the highest and second highest, so it is likely that this value can be trusted. 
-
-### The 'table' variable: probably no upper value errors
-
-```{r}
-# display the values of 'table' that are greater than or equal to 73
-diamonds.df[diamonds.df$table>=73,]
-```
-
-The output above for the highest values of 'table' show that the diamond with the largest value (95) was also considerably larger in other ways and was much more expensive. This suggests that this is a genuine value, rather than an error.  
-
-### 'depth' and 'price': probably no upper value errors
-
-```{r}
-sort(diamonds.df$depth, decreasing = TRUE)[1:10]
-sort(diamonds.df$price, decreasing = TRUE)[1:10]
-```
-
-The output above shows that neither 'depth' nor 'price' have any extreme values. We can probably safely conclude that these are all genuine upper values.
-
-# END PASTE
-##################################################################################
-
-
+#####################################################################################
 
 
 # Introduction  
@@ -565,7 +241,7 @@ Despite the small size of the Normal QQ plots shown above it is clear they indic
 \centering
 \begin{tabular}{rrr}
   \hline
- Variable & Test Statistic & p-value \\ 
+ Variable & Test Statistic (D) & p-value \\ 
   \hline
 Carat & 0.12274 & < 2.2e-16 \\
 Depth & 0.075871 & < 2.2e-16  \\
@@ -573,7 +249,7 @@ Table & 0.13225 & < 2.2e-16\\
 Price & 0.18467 &  < 2.2e-16 \\
 x & 0.093545 & < 2.2e-16 \\
 y & 0.088528 & < 2.2e-16 \\
-z & 0.075871 & < 2.2e-16 \\
+z & 0.089273 & < 2.2e-16 \\
    \hline
 \end{tabular}
 \end{table}
@@ -597,17 +273,391 @@ Figure \@ref(fig:corrplot) shows the correlation plot for the numerical variable
 
 As our leading question is investigating which variables are most predictive or price we decided to investigate if there are significant differences in price across levels of each categorical variable. 
 
+#### Cut 
 
+```{r, echo = FALSE}
+tapply(diamonds$price, diamonds$cut, mean)
+```
+
+We see that the mean price of diamonds does differ for different levels of "cut". However, we see that improved cut does not necessarily lead to increased price.
+
+```{r cutlevels, echo = FALSE}
+ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "Very Good"| cut == "Fair"), aes(x = price, col = cut, group = cut, fill = cut)) +
+  geom_density(aes(y = ..density..), alpha = .7)
+```
+
+Figure \@ref(fig:cutlevels)shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. We conducted a Analysis of Variance to see if these differences in mean price across levels of cut were significant. we also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If significant we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The results are summarised on the table below and the code for theses tests may be found in the appendices. 
+
+**Table: ANOVA of Price by Cut**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ Test & Test Statistic & p-value \\ 
+  \hline
+ANOVA & 175.7 & < 2.2e-16 \\
+Levene's Test & 123.6 & < 2.2e-16  \\
+Kruskal Wallis & 978.62 & < 2.2e-16\\
+   \hline
+\end{tabular}
+\end{table}
+
+The ANOVA results above return a p-value of < 2.2e-16, meaning that there is strong evidence to suggest that mean price differs across levels of "cut". The Tukey Test indicated that at the 5% significance level, the only pairs between which we do not see a significant difference in mean price are "very Good" and "Good" as well as "Premium" and "Fair". Both the Levene's test and Kruskal Wallis Test return significant results  indicating that: a) the assumption of equal variance is violated and; b) that we have evidence of a significant difference in median prices for different levels of cut.  
+
+#### Clarity
+
+```{r, echo = FALSE}
+tapply(diamonds$price, diamonds$clarity, mean)
+```
+
+Again, we see an indication the the mean price of diamonds does vary across different levels of clarity. Interestingly the diamonds with the two highest clarities show the lowest mean price. 
+
+```{r claritydensity, echo = FALSE}
+ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity =="VS2"| clarity =="VS1"| clarity =="VVS2"| clarity =="VVS1"| clarity =="IF"), aes(x = price, col = clarity, group = clarity, fill = clarity)) +
+  geom_density(aes(y = ..density..), alpha = .7)
+```
+
+Figure \@ref(fig:claritydensity) shows the densities of the different levels of 'clarity' for price. A prominent peak is visible near the left for the better quality levels (IF, best, pink; WS1 second best, purple; WS2, third best, blue). We conducted a Analysis of Variance to see if these differences in mean price across levels of clarity were significant. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough.  We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
+
+**Table: ANOVA of Price by Clarity**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ Test & Test Statistic & p-value \\ 
+  \hline
+ANOVA & 215 & < 2.2e-16 \\
+Levene's Test & 77.809 & < 2.2e-16  \\
+Kruskal Wallis & 2718.2 & < 2.2e-16\\
+   \hline
+\end{tabular}
+\end{table}
+
+The output frpm the ANOVA returns a p-value of < 2.2e-16, meaning there is strong evidence to suggest that mean price differs across levels of "clarity". The output of the Levene's test and Kruskal Wallis test above show that there is not equal variances between the levels, and that there is a significant difference between different levels of clarity. A tukey test showed that most pairwise combinations show a significant difference. There are only six that do not show a difference and they are: SI1-I1; VS2-I1; VS1-I1; VS2-SI1; VS1-VS2; and IF-VVS1.
+
+#### Color
+
+```{r, echo = FALSE}
+tapply(diamonds$price, diamonds$color, mean)
+```
+
+Again, we see an indication the the mean price of diamonds does vary across different levels of color. Interestingly the diamonds with the two highest color quality show the lowest mean price. 
+
+```{r densitycol, echo = FALSE, fig.cap="Densities of 'price' for the different levels of 'color'", echo = FALSE}
+ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| color == "F"| color == "E"| color == "D"), aes(x = price, col = color, group = color, fill = color)) +
+  geom_density(aes(y = ..density..), alpha = .7)
+```
+
+Figure \@ref(fig:densitycol) shows the density plots of 'price' for the different levels of the 'color' variable. There is a prominent peak on the left for the better quality levels of color (D in pink, E in purple, and F in blue), but otherwise the densities appear to be fairly similar. We will now test whether there are significant differences in mean price for different diamond colours. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough. We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
+
+**Table: ANOVA of Price by Clarity**
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ Test & Test Statistic & p-value \\ 
+  \hline
+ANOVA & 175.7 & < 2.2e-16 \\
+Levene's Test & 219.12 & < 2.2e-16  \\
+Kruskal Wallis & 1335.6 & < 2.2e-16\\
+   \hline
+\end{tabular}
+\end{table}
+
+We have strong evidence to suggest that mean price differs across levels of "color". The output of the Levene's test and Kruskal Wallis test above show that there is not equal variances between the levels, and that there is a significant difference in median price across different levels of clarity. The output from the Tukey Test showed significant differences in mean price for nearly all pairwise comparisons of diamond colors.
 
 
 ### Outliers and Unusual Points 
 
+#### Mahalanobis Distance
+
+We decided too investigate outliers and unusual points in our dataset. These points may have increased leverage or influence when we come to using variables to predict price. We began by using the Mahalanobis Distance to identify surprising and very surprising points.
+
+```{r, echo = FALSE}
+diamonds_num$price <- as.numeric(diamonds_num$price)
+mu.hat <- colMeans(diamonds_num)
+sigma.hat <- cov(diamonds_num)
+dM <- mahalanobis(diamonds_num, center = mu.hat, cov = sigma.hat)
+upper.quantiles <- qchisq(c(.9,.95,.99), df = 7)
+density.at.quantiles <- dchisq(x = upper.quantiles, df = 7)
+cut.points <- data.frame(upper.quantiles, density.at.quantiles)
+diamonds_num$dM <- dM
+diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "very"))
+table(diamonds_num$surprise)
+```
+
+We see from the output above that while the vast majority of diamonds are typical there are a reasonable amount of "Surprising" and "Very Surprising" points in this dataset. We can see how many very surprising points (as identified with the Mahalanobis Distance) are members of each level of our categorical variables. This might help to indicate if any classes contain more surprising points than others.
+
+```{r, echo = FALSE}
+diamonds$surprise <- diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "very"))
+
+VSdiamonds <- subset(diamonds, surprise =="very")
+table(interaction(VSdiamonds$cut))
+table(interaction(VSdiamonds$clarity))
+table(interaction(VSdiamonds$color))
+```
+
+#### Zero Values 
+
+In this section we identify any zero values and determine whether or not they are errors.
+
+```{r, echo = FALSE}
+sort(decreasing=F, diamonds$carat)[1:10]
+sort(decreasing=F, diamonds$x)[1:10]
+sort(decreasing=F, diamonds$y)[1:10]
+sort(decreasing=F, diamonds$z)[1:22]
+sort(decreasing=F, diamonds$depth)[1:10]
+sort(decreasing=F, diamonds$table)[1:10]
+sort(decreasing=F, diamonds$price)[1:10]
+```
+
+The output above shows that x, y and z all have a number of zero values, which presumably are errors.
+
+### Idendifying whether the zero observations are errors
+
+```{r}
+# display the zero values for 'x'
+diamonds.df[diamonds$x==0,]
+```
+
+
+```{r}
+# display the zero values for 'y'
+diamonds.df[diamonds$y==0,]
+```
+
+```{r}
+# display the zero values for 'z'
+diamonds.df[diamonds$z==0,]
+```
+
+The outputs above show that the zero values for 'x', 'y' and 'z' are all errors. We can tell this because these diamonds have carat, depth and price values, meaning that they cannot have zero length (x), width (y) and depth (z). Note that for a lot of the observations with zero values in one of these variables also have zero values in the others. The variable 'y' is a good example; the output shows that every observation with a zero value for 'y' also has zero values for 'x' and 'z'.  
+
+### Upper-value outliers
+
+The outputs below show the upper values for the seven numerical variables. This output guides further investigation as to which are likely to be genuine and which are probably errors. 
+
+```{r}
+# show ten largest values for each of the seven numerical variables
+sort(decreasing=T, diamonds$carat)[1:10]
+sort(decreasing=T, diamonds$x)[1:10]
+sort(decreasing=T, diamonds$y)[1:10]
+sort(decreasing=T, diamonds$z)[1:10]
+sort(decreasing=T, diamonds$depth)[1:10]
+sort(decreasing=T, diamonds$table)[1:10]
+sort(decreasing=T, diamonds$price)[1:10]
+```
+
+The output above shows the ten largest values for each of the seven numerical variables. At a glance (informal inference) it appears that 'carat', 'y', 'z' and 'table' all have one or more values that are considerably higher than the rest, with y and z having maximums that are so extreme it is worth considering whether they are erroneous.   
+
+## Determining whether the outliers are errors
+
+### The 'x' variable: probably no upper value errors
+
+```{r}
+# display the values of 'x' that are greater than or equal to 10
+diamonds.df[diamonds$x>=10,]
+
+```
+
+The output above shows that the largest 'x' values are not outrageously larger than the rest. Additionally, the values of the other variables for the largest 'x' value are reasonably aligned in terms of magnitude, suggesting that these large 'x' values are genuine.
+
+### The 'y' variable: probably 2 upper value errors
+
+```{r}
+# display the values of 'x' that are greater than or equal to 11
+diamonds.df[diamonds$y>=10,]
+
+```
+
+The output above suggests that the two extreme values for 'y' are almost certainly errors. They are 58.90	and 31.80; both are far larger than the next highest value, which is 10.54. It is very unlikely that diamonds with such enormous width values do not also have extreme length and depth values, or that they did not sell for more money. 
+
+### The 'z' variable: probably 2 upper value errors
+
+```{r}
+diamonds.df[diamonds$z>=8,]
+
+```
+
+Similarly with the extreme value of 'z' (31.80). The other dimensions of this diamond do not tally with the extreme depth value, nor does the relatively low price. The next highest value has been included for comparison (8.06). This is almost certainly an error.
+
+### The 'carat' variable: probably no upper value errors
+
+```{r}
+diamonds.df[diamonds.df$carat>4,]
+```
+
+The output above shows that the highest value for 'carat' (5.01) is not outrageously higher than the next highest (4.50), suggesting that this is a genuine value. Also, the other variables are comparible between the highest and second highest, so it is likely that this value can be trusted. 
+
+### The 'table' variable: probably no upper value errors
+
+```{r}
+# display the values of 'table' that are greater than or equal to 73
+diamonds.df[diamonds.df$table>=73,]
+```
+
+The output above for the highest values of 'table' show that the diamond with the largest value (95) was also considerably larger in other ways and was much more expensive. This suggests that this is a genuine value, rather than an error.  
+
+### 'depth' and 'price': probably no upper value errors
+
+```{r}
+sort(diamonds.df$depth, decreasing = TRUE)[1:10]
+sort(diamonds.df$price, decreasing = TRUE)[1:10]
+```
+
+The output above shows that neither 'depth' nor 'price' have any extreme values. We can probably safely conclude that these are all genuine upper values.
+
+
 ### Interactions 
 
-### Multiple Regression and Stepwise Model Selection
+As we have 3 categorical variables: color, clarity and cut with 7, 8 and 5 levels respectively we have 280 separate interactions in our data set. This makes it likely that there will be unknown classes in our data. 
+
+### Multiple Regression 
+
+As we are interested in predicting price we thought it would be appropriate to do an initial multiple regression including all variables to see which are thought to be significant in predicting price when all other variables are included in the model. We will first scale the variables. 
+
+```{r}
+diamondslm <- lm(price ~ scale(carat) + scale(x) + scale(y) + scale(z) + scale(depth) + scale(table) + cut + clarity + color, data = diamonds)
+summary(diamondslm)
+```
+
+An initial multiple regression indicates that all variables but y and z are significant in the model (once the effect of the other predictors has been accounted for). This model accounts of 91.98% of the variation in the data. We shall now check the assumptions of the regression model using diagnostic plots. 
+
+
 
 ## Principal Components Analysis 
 
+# Principal Component Analysis
+
+## Make a data.frame version of dataset
+
+```{r}
+diamonds.df <- data.frame(diamonds)
+diamonds.df[1:4,]
+
+```
+
+## Create the Principal Components object
+
+```{r}
+pca.diamonds <- prcomp(subset(diamonds.df, select = c(1,5:10)),
+                       center=TRUE, scale. = TRUE, retx=TRUE)
+pca.diamonds
+
+```
+
+## Plot PC1 and PC2
+
+```{r}
+# display the first 10 rows
+pca.diamonds$x[1:10,]
+```
+
+```{r}
+# calculate values for the scatterplot and screeplot
+pca.var <- pca.diamonds$sdev^2
+pca.var.per <- round(pca.var/sum(pca.var)*100,1)
+pca.var.per
+sum(pca.var.per[1:3])
+```
+
+```{r pconevpctwo, fig.cap="Scatterplot of PC1 vs PC2"}
+plot(pca.diamonds$x[,1], pca.diamonds$x[,2],
+     main="Scatterplot of PC1 vs PC2",
+      xlab=(paste("PC1 - ", pca.var.per[1], "%", sep="")),
+      ylab=(paste("PC2 - ", pca.var.per[2], "%", sep="")))
+```
+
+Figure \@ref(fig:pconevpctwo) shows the scatterplot of PC1 versus PC2. Of note are the two significant outliers to the far right, which are extreme values of PC1. The percentage of variation retained by each Principal Component is included in the axis labels.
+
+# DO THESE AFFECT THE QUALITY OF THE PCA?
+
+## Identify the extreme PC1 values
+
+```{r}
+sort(decreasing=T,(pca.diamonds$x[,1]))[1:10]
+```
+
+The output above identifies the two upper extreme values of PC1. 
+
+## Scree plot
+
+
+```{r pcascree, fig.cap="Scree plot of the Principal Components"}
+barplot(pca.var.per, names.arg = pca.var.per,
+        xlab = "Principal Components 1 to 7",
+        ylab = "% information retained by each PC",
+        main="Screeplot of the Principal Components")
+
+```
+
+Figure \@ref(fig:pcascree) shows the scree plot for the Principal Components of the diamonds dataset. PC1 contains `r pca.var.per[1]`% of the variance, PC2 contains `r pca.var.per[2]`%, while PC3 contains `r pca.var.per[3]`%. Between them they contain `r sum(pca.var.per[1:3])`%, which is clearly very good.   
+
+
+```{r}
+## discover which measurements contribute most to PC1
+
+loading_scores <- pca.diamonds$rotation[,1]
+diam_scores <- abs(loading_scores) ## get the magnitudes
+diam_score_ranked <- sort(diam_scores, decreasing=TRUE)
+top_diam <- names(diam_score_ranked[1:7])
+
+top_diam ## show the names
+
+pca.diamonds$rotation[top_diam,1] 
+```
+
+From the output above, we can see that 'x' is the measurement that contributes the most to PC1, although 'carat' is virtually identical.
+
+# Ken's Scatterplots (wasn't sure where would be best to place these- thought you'd have a better idea Ken)
+
+## Colour-coded scatterplots
+
+### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Cut'
+
+```{r caratcut, fig.cap="Carat vs Price, coloured by Cut"}
+
+# scatterplot of carat vs price, but also colouring the observations
+# by 'cut'
+ggplot(data=diamonds, aes(x=carat, y=price, color=cut))+
+  geom_point()
+```
+
+Figure \@ref(fig:caratcut) shows the scatterplot of 'carat' versus 'price' and coloured by 'cut'.
+
+### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Clarity'
+
+```{r caratclarity, fig.cap="Carat vs Price coloured by Clarity"}
+
+# scatterplot of carat vs price, but also colouring the observations
+# by 'cut'
+ggplot(data=diamonds, aes(x=carat, y=price, color=clarity))+
+  geom_point()
+```
+
+
+Figure \@ref(fig:caratclarity) shows the scatterplot of 'carat' versus 'price' and coloured by 'clarity'. 
+
+
+### Scatterplot of 'Carat' vs 'Price', colour coded by 'Color'
+
+```{r caratcolor, fig.cap="Carat vs Price coloured by Color"}
+
+# scatterplot of carat vs price, but also colouring the observations
+# by 'cut'
+ggplot(data=diamonds, aes(x=carat, y=price, color=color))+
+  geom_point()
+```
+
+
+Figure \@ref(fig:caratcolor) shows the scatterplot of 'carat' versus 'price' and coloured by 'color'. 
+
+In the three scatterplots figures \@ref(fig:caratcut), \@ref(fig:caratclarity) and \@ref(fig:caratcolor) we see a clear trend of lighter diamonds (lower 'carat' values) that are most expensive (so, in the upper left of the plot) having the highest quality of 'cut', 'clarity' and 'color'. This is no surprise, as we would expect the most expensive lighter diamonds to be of the best quality. 
+
+Conversely, we can also see some heavier diamonds which are of lower quality and lower price. Note in figure \@ref(fig:caratcut) that some of the lowest quality diamonds in terms of 'cut' (orange dots in the centre of the plot, on the vertical value of 2) are relatively cheap, despite being heavier than some of the lighter more expensive diamonds. But eventually the weight of the diamonds drives the price up regardless of the quality of 'cut', as we can see from the three orange dots in the top right of the plot. These are of the lowest quality cut, but are the three heaviest diamonds in the dataset, and so end up being expensive.
 # Conclusions
 
 # Bibiography
@@ -615,3 +665,45 @@ As our leading question is investigating which variables are most predictive or 
 
 
 # Appendices
+
+## Code for Producing KS Tests
+
+```{r, include = FALSE }
+ks.test(diamonds$carat, "pnorm", mean=mean(diamonds$carat), sd=sd(diamonds$carat))
+ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
+ks.test(diamonds$table, "pnorm", mean=mean(diamonds$table), sd=sd(diamonds$table))
+ks.test(diamonds$price, "pnorm", mean=mean(diamonds$price), sd=sd(diamonds$price))
+ks.test(diamonds$x, "pnorm", mean=mean(diamonds$x), sd=sd(diamonds$x))
+ks.test(diamonds$y, "pnorm", mean=mean(diamonds$y), sd=sd(diamonds$y))
+ks.test(diamonds$z, "pnorm", mean=mean(diamonds$z), sd=sd(diamonds$z))
+```
+
+
+## Code for producing ANOVA/Levene's Test/Kruskal Wallis/Tukey of Price by Cut
+
+```{r, include = FALSE}
+cutanova <- aov(price ~ cut, data = diamonds)
+summary(cutanova)
+leveneTest(price ~ cut, data= diamonds)
+kruskal.test(price ~ cut, data = diamonds)
+TukeyHSD(cutanova, conf.level = 0.95)
+```
+
+## Code for producing ANOVA/Levene's Test/Kruskal Wallis/Tukey of Price by Clarity
+
+```{r, include = FALSE}
+clarityanova <- aov(price ~ clarity, data = diamonds)
+summary(clarityanova)
+leveneTest(price ~ clarity, data= diamonds)
+kruskal.test(price ~ clarity, data = diamonds)
+TukeyHSD(clarityanova, conf.level = 0.95)
+```
+
+##  Code for producing ANOVA/Levene's Test/Kruskal Wallis/Tukey of Price by Color
+
+```{r, include = FALSE}
+coloranova <- aov(price ~ color, data = diamonds)
+summary(coloranova)
+leveneTest(price ~ color, data= diamonds)
+kruskal.test(price ~ color, data = diamonds)
+TukeyHSD(coloranova, conf.level = 0.95)
