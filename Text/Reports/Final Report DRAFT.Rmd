@@ -281,12 +281,12 @@ tapply(diamonds$price, diamonds$cut, mean)
 
 We see that the mean price of diamonds does differ for different levels of "cut". However, we see that improved cut does not necessarily lead to increased price.
 
-```{r cutlevels, echo = FALSE}
+```{r densitycut, echo = FALSE}
 ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "Very Good"| cut == "Fair"), aes(x = price, col = cut, group = cut, fill = cut)) +
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-Figure \@ref(fig:cutlevels)shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. We conducted a Analysis of Variance to see if these differences in mean price across levels of cut were significant. we also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If significant we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The results are summarised on the table below and the code for theses tests may be found in the appendices. 
+Figure \@ref(fig:densityclar)shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. We conducted a Analysis of Variance to see if these differences in mean price across levels of cut were significant. we also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If significant we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The results are summarised on the table below and the code for theses tests may be found in the appendices. 
 
 **Table: ANOVA of Price by Cut**
 
@@ -313,12 +313,12 @@ tapply(diamonds$price, diamonds$clarity, mean)
 
 Again, we see an indication the the mean price of diamonds does vary across different levels of clarity. Interestingly the diamonds with the two highest clarities show the lowest mean price. 
 
-```{r claritydensity, echo = FALSE}
+```{r densityclar, echo = FALSE}
 ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity =="VS2"| clarity =="VS1"| clarity =="VVS2"| clarity =="VVS1"| clarity =="IF"), aes(x = price, col = clarity, group = clarity, fill = clarity)) +
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-Figure \@ref(fig:claritydensity) shows the densities of the different levels of 'clarity' for price. A prominent peak is visible near the left for the better quality levels (IF, best, pink; WS1 second best, purple; WS2, third best, blue). We conducted a Analysis of Variance to see if these differences in mean price across levels of clarity were significant. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough.  We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
+Figure \@ref(fig:densityclar) shows the densities of the different levels of 'clarity' for price. A prominent peak is visible near the left for the better quality levels (IF, best, pink; WS1 second best, purple; WS2, third best, blue). We conducted a Analysis of Variance to see if these differences in mean price across levels of clarity were significant. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough.  We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
 
 **Table: ANOVA of Price by Clarity**
 
