@@ -704,7 +704,8 @@ Firstly, create a new version of the dataset in which the three categorical vari
 
 ```{r}
 # create new version to transform
-diamonds2 <- diamonds
+
+diamonds2 <- diamonds[,-11]
 
 # transform the categorical variables to numerical
 diamonds2$cut <-as.numeric(diamonds2$cut)
@@ -912,3 +913,6 @@ summary(coloranova)
 leveneTest(price ~ color, data= diamonds)
 kruskal.test(price ~ color, data = diamonds)
 TukeyHSD(coloranova, conf.level = 0.95)
+```
+
+
