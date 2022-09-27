@@ -30,6 +30,8 @@ library(car)
 library(HDtest)
 library(ggpubr)
 library(cowplot)
+library(devtools)
+library(ggbiplot)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 ```
@@ -624,40 +626,31 @@ An initial multiple regression indicates that all variables but y and z are sign
 
 # Principal Component Analysis
 
-## Create the Principal Components object
+We will perform a PCA with the aim of being able to explain the variation in the data set with fewer dimensions. We also hope to then create a parsimonious model for predicting diamond price through principal components regression.
+
 
 ```{r}
 pca.diamonds <- prcomp(subset(diamonds.df, select = c(1,5:10)),
                        center=TRUE, scale. = TRUE, retx=TRUE)
-pca.diamonds
-
+plot(pca.diamonds)
+summary(pca.diamonds)
 ```
 
-## Plot PC1 and PC2
+We see that the first principal component explains the majority of the variance (68%) in the dataset with second (18%) and third (10%) principal components explaining a noticeable amount. Components beyond the third principal component explain minimal variance (less than 4%). This indicates we can describe the data using only the first three principal components without losing much information. We will now examine which variables contribute most strongly to each Principal Component. 
+
 
 ```{r}
-# display the first 10 rows
-pca.diamonds$x[1:10,]
+pca.diamonds$rotation
 ```
+
+Looking at the eigenvectors we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth a table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation.  A visualization of the PCA is shown in the Biplot below. 
+
 
 ```{r}
-# calculate values for the scatterplot and screeplot
-pca.var <- pca.diamonds$sdev^2
-pca.var.per <- round(pca.var/sum(pca.var)*100,1)
-pca.var.per
-sum(pca.var.per[1:3])
+ggbiplot(pca.diamonds, obs.scale =1, var.scale = 1)
 ```
 
-```{r pconevpctwo, fig.cap="Scatterplot of PC1 vs PC2"}
-plot(pca.diamonds$x[,1], pca.diamonds$x[,2],
-     main="Scatterplot of PC1 vs PC2",
-      xlab=(paste("PC1 - ", pca.var.per[1], "%", sep="")),
-      ylab=(paste("PC2 - ", pca.var.per[2], "%", sep="")))
-```
-
-Figure \@ref(fig:pconevpctwo) shows the scatterplot of PC1 versus PC2. Of note are the two significant outliers to the far right, which are extreme values of PC1. The percentage of variation retained by each Principal Component is included in the axis labels.
-
-# DO THESE AFFECT THE QUALITY OF THE PCA?
+Due to the vast number of data entries it is hard to interpret what is going on from the visual display. We will not take a smaller sample of 1000 from the diamonds data and redo the PCA after first checking that the smaller sample has similar properties to the full sample. Also of note in this biplot are two significant outliers to the far right, which are extreme values of PC1. We shall idetify those before creating the smaller sample.
 
 ## Identify the extreme PC1 values
 
@@ -665,36 +658,63 @@ Figure \@ref(fig:pconevpctwo) shows the scatterplot of PC1 versus PC2. Of note a
 sort(decreasing=T,(pca.diamonds$x[,1]))[1:10]
 ```
 
-The output above identifies the two upper extreme values of PC1. 
-
-## Scree plot
-
-
-```{r pcascree, fig.cap="Scree plot of the Principal Components"}
-barplot(pca.var.per, names.arg = pca.var.per,
-        xlab = "Principal Components 1 to 7",
-        ylab = "% information retained by each PC",
-        main="Screeplot of the Principal Components")
-
-```
-
-Figure \@ref(fig:pcascree) shows the scree plot for the Principal Components of the diamonds dataset. PC1 contains `r pca.var.per[1]`% of the variance, PC2 contains `r pca.var.per[2]`%, while PC3 contains `r pca.var.per[3]`%. Between them they contain `r sum(pca.var.per[1:3])`%, which is clearly very good.   
-
+## PCA with Smaller Sample
 
 ```{r}
-## discover which measurements contribute most to PC1
-
-loading_scores <- pca.diamonds$rotation[,1]
-diam_scores <- abs(loading_scores) ## get the magnitudes
-diam_score_ranked <- sort(diam_scores, decreasing=TRUE)
-top_diam <- names(diam_score_ranked[1:7])
-
-top_diam ## show the names
-
-pca.diamonds$rotation[top_diam,1] 
+set.seed(300525287, kind = "Mersenne-Twister")
+smallersample <- diamonds[sample(nrow(diamonds), "1000"), ]
+reducedpca <- prcomp(smallersample[,-c(2:4,11)], center = TRUE, scale = TRUE)
 ```
 
-From the output above, we can see that 'x' is the measurement that contributes the most to PC1, although 'carat' is virtually identical.
+```{r}
+plot(reducedpca)
+summary(reducedpca)
+```
+
+```{r}
+ggbiplot(reducedpca, obs.scale =1, var.scale = 1)
+```
+
+
+We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price.  The percentage of variation retained by each Principal Component is included in the axis labels.
+
+In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other numerical variables as explanatory variables. 
+
+## Principal Components Regression
+
+We will now perform a principal regression analysis with price as the response variable and and all other numerical variables as the explanatory variables. We Will again use the smaller sample to increase the ease of interpretation of the visual plots. 
+
+```{r}
+PCAprice <- prcomp(smallersample[,-c(2:4,7,11)], center = TRUE, scale = TRUE)
+plot(PCAprice)
+summary(PCAprice)
+```
+
+The plot above shows the proportion of variation explained by each of the principal component. The first three principal components explain nearly all (99%) the variation in the data. 
+
+```{r}
+PCAprice$rotation
+```
+
+We see that in the first PC carat, x, y and z all have approximately equal weighting. Again this reflects the strong positive correlation between these two varaibles. In the second PC depth and table have the strongest weighting. 
+
+```{r}
+ggbiplot(PCAprice, obs.scale =1, var.scale = 1, groups = smallersample$cut)
+```
+
+Even with price not included we still see the same general structure as the PCA with price.
+
+```{r}
+PCApricevars <- prcomp(smallersample[,-c(2:4,7,11)], center = TRUE, scale = TRUE)$x
+diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] + PCApricevars[,6])
+summary(diamondpricePCA)
+```
+
+We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore we have failed to create a more parsimonious model for predicting price through using regression with principal components. It is possible that PCR does not work well with diamonds dataset as the categorical variables of cut, clarity and color are also important predictors of price but these could not be included in the PCR model.
+
+
+
+
 
 # Factor analysis using an encoded version of the dataset
 
