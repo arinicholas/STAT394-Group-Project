@@ -942,9 +942,6 @@ So, using 'carat' alone to predict these prices clearly is not enough; given the
 
 # Conclusions
 
-# Bibiography
-
-
 
 # Appendices
 
@@ -991,4 +988,4 @@ kruskal.test(price ~ color, data = diamonds)
 TukeyHSD(coloranova, conf.level = 0.95)
 ```
 
-
+# Bibiography
