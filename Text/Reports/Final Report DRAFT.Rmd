@@ -56,7 +56,7 @@ Our multivariate statistical investigation uses the Diamonds data set (reference
 Carat
 - Carat is a measure of the diamond's weight. One carat equals 1/5 gram. In this data set we have diamonds with a carat ranging from 0.2 - 5.01. 
 Cut
-- A diamonds Cut defines its proportions and its ability to reflect light. This variable has five levels: Fair, Good, Very Good, Premium Ideal. 
+- A diamonds Cut defines its proportions and its ability to reflect light. This variable has five levels: Fair, Good, Very Good, Premium and Ideal. 
 Color
 - A diamonds color refers to how clear/colorless a diamond is. This variable has seven levels: J (lowest quality), I, H, G, F, E, D (highest quality)
 Clarity 
@@ -611,6 +611,14 @@ summary(best.lm)
 
 The summary output for the 'best' model above shows how the categorical variables, all of which measure diamond quality, add a lot to the accuracy of the model. For example, 'Clarity', which has 8 levels, adds from 2702.077 (lowest quality clarity) to 5344.338 (highest quality clarity) to price depending on which level the diamond is categorised at. This is a wide range and cannot be obtained with these categorical variables dropped from the model.
 
+## Check Regression Assumptions
+
+```{r}
+plot(best.lm)
+```
+
+By examining the residual plots we see that it is likely that the assumptions underlying a multiple linear regression such as linearity, homogeneity of the variance and normality of the residuals are violated. There also appears to be a number of points with high leverage and influence. We should therefore be cautious in concluding much from this regression model. 
+
 ## Scaled multiple regression model
 
 In this version we scale the variables. 
@@ -713,10 +721,18 @@ summary(diamondpricePCA)
 We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore we have failed to create a more parsimonious model for predicting price through using regression with principal components. It is possible that PCR does not work well with diamonds dataset as the categorical variables of cut, clarity and color are also important predictors of price but these could not be included in the PCR model.
 
 
+## Factor Analysis
+
+In our investigation of the principal components of the dataset we observed that the first two principal components explained the the vast majority of the variation in the data.  The first was the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative correlation between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors may explain the observations in the diamonds dataset. To investigate this we will conduct a factor analysis. 
+
+```{r}
+factanal(diamonds[,-c(2:4,11)], factors =2)
+```
+
+While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations.  
 
 
-
-# Factor analysis using an encoded version of the dataset
+# Encoded Version of Dataset
 
 In this section we create a new version of the dataset which encodes the categorical variables as numerical. Then we repeat the Principal Component analysis and multiple linear regression, and also perform a factor analysis (FA). 
 
@@ -746,9 +762,18 @@ Repeat the Principal Component process.
 ```{r}
 pca.diamonds2 <- prcomp(diamonds2,
                        center=TRUE, scale. = TRUE, retx=TRUE)
-pca.diamonds2
-
+plot(pca.diamonds2)
+summary(pca.diamonds2)
 ```
+
+```{r}
+pca.diamonds2$rotation
+```
+
+```{r}
+ggbiplot(pca.diamonds2, obs.scale =1, var.scale = 1)
+```
+
 
 ## Plot PC1 and PC2
 
