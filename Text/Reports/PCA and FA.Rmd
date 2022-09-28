@@ -93,7 +93,7 @@ We see from this output that all but one predictor variable (y) are significant 
 plot(diamondsmod)
 ```
 
-The regression diagnositic plots indicate significant deviations from the assumptions of a linear regression. It appears the assumptions of linearity, normality and homogeneity of variance have all been violated as well as several highly influential points. 
+The regression diagnostic plots indicate significant deviations from the assumptions of a linear regression. It appears the assumptions of linearity, normality and homogeneity of variance have all been violated as well as several highly influential points. 
 
 
 We will now perform a principal regression analysis with price as the response variable and and all other numerical variables as the explanatory variables. 
@@ -129,11 +129,11 @@ We see that every single principal component is found to be significant in this 
 
 ## Factor Analysis
 
-In our investigation of the principal components of the dataset we observed that the first two principal components explained the the vast majority of the variation in the data.  The first was the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative relationship between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors may explain the observations in the diamonds dataset. To investigate this we will conduct a factor analysis. 
+In our investigation of the principal components of the dataset we observed that the first two principal components explained the the vast majority of the variation in the data.  The first was the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative correlation between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors may explain the observations in the diamonds dataset. To investigate this we will conduct a factor analysis. 
 
 ```{r}
 factanal(diamonds_num, factors =2)
 ```
 
-While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations. Specifically, carat and dimension z in factor 2 are not strongly relevant enough for building factors. 
+While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations.  
 
