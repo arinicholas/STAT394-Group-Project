@@ -909,6 +909,32 @@ In the three scatterplots figures \@ref(fig:caratcut), \@ref(fig:caratclarity) a
 
 Conversely, we can also see some heavier diamonds which are of lower quality and lower price. Note in figure \@ref(fig:caratcut) that some of the lowest quality diamonds in terms of 'cut' (orange dots in the centre of the plot, on the vertical value of 2) are relatively cheap, despite being heavier than some of the lighter more expensive diamonds. But eventually the weight of the diamonds drives the price up regardless of the quality of 'cut', as we can see from the three orange dots in the top right of the plot. These are of the lowest quality cut, but are the three heaviest diamonds in the dataset, and so end up being expensive.
 
+### Modified version of dataset only containing carat values between 1 and 1.1
+
+```{r}
+library(dplyr)
+diamonds_car2 <- diamonds[,c(1,4,7)]
+diamonds_car2[1:4,]
+diamonds_car19_21 <- filter(diamonds_car2, between(carat, 1, 1.1))
+diamonds_car19_21[1:4,]
+```
+
+
+```{r carat1to11clarity, fig.cap="Carat (limited values) vs Price coloured by Clarity"}
+
+# scatterplot of carat vs price, but also colouring the observations
+# by 'cut'
+ggplot(data=diamonds_car19_21, aes(x=carat, y=price, color=clarity))+
+  geom_point()+
+  guides(colour=guide_legend(reverse = T))
+```
+
+Figure \@ref(fig:carat1to11clarity) shows a the scatterplot of 'price' vs 'carat' vs 'clarity', but just for values of 'carat' between 1 and 1.1, which helps us see the pattern more clearly. Firstly, note the vertical spread of the data points; most of the values begin at around 2500 USD and generally have extreme upper values larger than 15,000 USD, so a spread of approximately 10,000 USD. There are clear colour bands running horizontally, with the lowest quality 'clarity' diamonds near the bottom of the price range, while the highest values are near the top.
+
+So, using 'carat' alone to predict these prices clearly is not enough; given the spread of price for any given value of carat, the categorical variables play an important in determining where in the range any given diamond will be. This was the reason our regression models that excluded the categorical variables did not perform nearly as well as those that included them.
+
+
+
 # Conclusions
 
 # Bibiography
