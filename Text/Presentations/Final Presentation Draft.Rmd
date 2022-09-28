@@ -126,9 +126,13 @@ knitr::kable(summ_diamonds,
 
 ![Pairs plot](./pairs plot.jpg)
 
-# Data Visualization (correlation plot)
+# Normal QQ Plots
 
-![Correlation plot](./Corrplot_diamonds.jpg)
+![Normal QQ Plots](./Normal QQ Plots.jpg)
+
+# Ccorrelation Plot
+
+![Correlation Plot](./Corrplot_diamonds.jpg)
 
 # Other things of interest
 
