@@ -218,7 +218,7 @@ The table above shows the counts for the different levels of the 'clarity' varia
 While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables in our EDA we had reason to believe that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness of fit tests. 
 
 ```{r normal QQ plots, fig.cap= "Normal QQ Plots of Numeric Variables", fig.pos= "center", fig.pos= "H"}
-par(mfrow=c(3,3))  ## one row, two columns
+par(mfrow=c(3,3))  
 qqnorm(diamonds$carat, xlab = "Observations", ylab = "Normal Quantiles", main = "Carat", col = "red")
 qqline(diamonds$carat, col = "blue", lwd =2)
 qqnorm(diamonds$depth, xlab = "Observations", ylab = "Normal Quantiles", main = "Depth", col = "red")
@@ -314,6 +314,21 @@ tapply(diamonds$price, diamonds$clarity, mean)
 ```
 
 Again, we see an indication the the mean price of diamonds does vary across different levels of clarity. Interestingly the diamonds with the two highest clarities show the lowest mean price. 
+
+```{r}
+cutplot <- ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "Very Good"| cut == "Fair"), aes(x = price, col = cut, group = cut, fill = cut)) +
+  geom_density(aes(y = ..density..), alpha = .7)
+
+clarityplot <- ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity =="VS2"| clarity =="VS1"| clarity =="VVS2"| clarity =="VVS1"| clarity =="IF"), aes(x = price, col = clarity, group = clarity, fill = clarity)) +
+  geom_density(aes(y = ..density..), alpha = .7)
+
+colorplot <- ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| color == "F"| color == "E"| color == "D"), aes(x = price, col = color, group = color, fill = color)) +
+  geom_density(aes(y = ..density..), alpha = .7)
+
+ggarrange(cutplot, clarityplot, colorplot, ncol =2, nrow =2)
+  
+```
+
 
 ```{r densityclar, echo = FALSE}
 ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity =="VS2"| clarity =="VS1"| clarity =="VVS2"| clarity =="VVS1"| clarity =="IF"), aes(x = price, col = clarity, group = clarity, fill = clarity)) +
@@ -613,8 +628,13 @@ The summary output for the 'best' model above shows how the categorical variable
 
 ## Check Regression Assumptions
 
+
 ```{r}
-plot(best.lm)
+par(mfrow=c(2,2))
+plot(best.lm, 1)
+plot(best.lm, 2)
+plot(best.lm, 3)
+plot(best.lm, 4)
 ```
 
 By examining the residual plots we see that it is likely that the assumptions underlying a multiple linear regression such as linearity, homogeneity of the variance and normality of the residuals are violated. There also appears to be a number of points with high leverage and influence. We should therefore be cautious in concluding much from this regression model. 

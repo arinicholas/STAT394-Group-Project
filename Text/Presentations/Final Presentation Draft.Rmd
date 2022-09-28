@@ -33,9 +33,9 @@ diamonds$clarity <- factor(diamonds$clarity,
 diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
 ```
 
-# Title Page
+# Group 11: Diamonds Dataset
 
-
+![](./Diamonds.jpg)
 
 # Group Members (photos)
 
@@ -72,6 +72,7 @@ Mei Huang
 - We selected diamonds because it was simple to understand what each variable was measuring, and to have the opportunity to work with a large dataset\linebreak
 - Particularly interested in which variables are most predictive of diamond price
 
+
 # The Variables
  \textcolor{red}{red font = categorical variable}
  
@@ -88,62 +89,96 @@ Mei Huang
 
 (List adapted from list at kaggle.com).
 
-# Summary 
+# Summary of Numeric Variables 
 
-```{r, echo = FALSE}
-
-MySummary <- function(x){
-  return(c(
-    length(x),
-    min(x),
-    quantile(x, .25),
-    median(x),
-    mean(x),
-    quantile(x, .75),
-    max(x),
-    IQR(x),
-    sd(x), 
-    skewness(x),
-    kurtosis(x)))
-}
+|                   |    carat|    depth|    table|    price|        x|        y|        z|
+|:------------------|--------:|--------:|--------:|--------:|--------:|--------:|--------:|
+|sample size        |    53940|    53940|    53940|    53940|    53940|    53940|    53940|
+|minimum            |     0.20|    43.00|    43.00|   326.00|     0.00|     0.00|     0.00|
+|first quartile     |     0.40|    61.00|    56.00|   950.00|     4.71|     4.72|     2.91|
+|median             |     0.70|    61.80|    57.00|  2401.00|     5.70|     5.71|     3.53|
+|mean               |     0.80|    61.75|    57.46|  3932.80|     5.73|     5.73|     3.54|
+|third quartile     |     1.04|    62.50|    59.00|  5324.25|     6.54|     6.54|     4.04|
+|maximum            |     5.01|    79.00|    95.00| 18823.00|    10.74|    58.90|    31.80|
+|IQR                |     0.64|     1.50|     3.00|  4374.25|     1.83|     1.82|     1.13|
+|standard deviation |     0.47|     1.43|     2.23|  3989.44|     1.12|     1.14|     0.71|
+|skewness           |     1.12|    -0.08|     0.80|     1.62|     0.38|     2.43|     1.52|
+|kurtosis           |     4.26|     8.74|     5.80|     5.18|     2.38|    94.21|    50.08|
 
 
-summ_diamonds <- apply(diamonds_num, MySummary, MARGIN=2)
+# Cateogrical Summary
 
-rownames(summ_diamonds) <- c("sample size","minimum",
-                                   "first quartile","median",
-                                   "mean","third quartile",
-                                   "maximum","IQR", "standard deviation",
-                            "skewness","kurtosis")
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ Cut\vline & Fair & Good & Very Good & Ideal & Premium \\ 
+  \hline
+Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
+   \hline
+\end{tabular}
+\end{table}
 
-knitr::kable(summ_diamonds,
-             digits = 3,
-             caption = "Summary statistics for 'Diamonds' (3 s.f.)")
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrr}
+  \hline
+ Color\vline & D & E & F & G & H & I & J \\ 
+  \hline
+ Count\vline & 6775 & 9797 & 9542 & 11292 & 8304 & 5422 & 2808\\
+   \hline
+\end{tabular}
+\end{table}
 
-```
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrr}
+  \hline
+ Clarity\vline & I1 & IF & SI1 & SI2 & VS1 & VS2 & VVS1 & VVS2 \\ 
+  \hline
+  Count\vline & 741 & 1790 & 13065 & 9194 & 8171 & 12258 & 3655 & 5066\\
+   \hline
+\end{tabular}
+\end{table}
 
-# Data Visualisation (pairs plot)
+
+# Pairs Plot
 
 ![Pairs plot](./pairs plot.jpg)
 
 # Normal QQ Plots
 
-![Normal QQ Plots](./Normal QQ Plots.jpg)
+![Normal QQ Plots](./Normal QQ Plots.jpeg)
 
-# Ccorrelation Plot
+# Correlation Plot
 
 ![Correlation Plot](./Corrplot_diamonds.jpg)
 
-# Other things of interest
+# Price by Cateogrical 
 
-The EDA revealed the following:
+![Price by Categorical](./pricebycategorical.jpeg)
 
-- long right tail for 'price' due to a few very expensive diamonds\linebreak
-- 'price' probably follows a beta distribution (from the Cullen-Frey plot)\linebreak
-- some zero values
+# Leading Question 1
 
-# Next Steps
+- How can we best predict diamond price?\linebreak 
+- We intend to use the following techniques to investigate this question:\linebreak
+- Stepwise Regression, Principal Components Analysis, Principal Components Regression and an Exploratory Factor Analysis\linebreak
 
-- Principal Component Analysis\linebreak
-- Regression using the Principal Components\linebreak
-- Find best predictor variable for price
+# Multiple Regression
+
+- Starting with the full model we used a stepwise regression procedure to find the best model for predicting diamond price.\linebreak
+- According to AIC the best model was:\linebreak
+- price ~ carat + cut + color + clarity + depth + table + x\linebreak 
+- All variables excluding y and z are significant in the model\linebreak
+- The 'best' model had an Adjusted $R^2$ of 91.98%\linebreak 
+
+# Regression Assumptions
+
+![Regression Diagnostics](./Regression Diagnostics.jpeg)
+
+# Principal Components Analysis
+
+# Principal Components Regression
+
+# Factor Analysis 
+
