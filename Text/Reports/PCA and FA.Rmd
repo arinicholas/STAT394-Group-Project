@@ -57,18 +57,25 @@ Due to the vast number of data entries it is hard to interpret what is going on 
 ```{r}
 set.seed(300525287, kind = "Mersenne-Twister")
 smallersample <- diamonds[sample(nrow(diamonds), "500"), ]
-reducedpca <- prcomp(smallersample[,-c(2:4)], center = TRUE, scale = TRUE)
+PCA <- prcomp(smallersample[,-c(2:4)], center = TRUE, scale = TRUE)
 ```
 
 ```{r}
-plot(reducedpca)
-summary(reducedpca)
+plot(PCA)
+summary(PCA)
+PCA$rotation
 ```
 
-We see that a PCA on the smaller sample results in close to identical results. The first PC now accounts  for 69% of the variance, the second PC accounts for 19% and the third PC accounts for 12%. Together the first three components account for 97% of the variance in the dataset.
+```{r}
+par(mfrow=c(1,2))
+plot(PCA)
+screeplot(PCA, type = "line", main = "Screeplot")
+```
+
+We see that a PCA on the smaller sample results in close to identical results. The first PC now accounts  for 69% of the variance, the second PC accounts for 20% and the third PC accounts for 9%. Together the first three components account for 97% of the variance in the dataset.
 
 ```{r}
-ggbiplot(reducedpca, obs.scale =1, var.scale = 1)
+ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5)
 ```
 
 We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price. 
@@ -123,6 +130,9 @@ Even with price not included we still see the same general structure as the PCA 
 PCApricevars <- prcomp(smallersample[,-c(2:4,7)], center = TRUE, scale = TRUE)$x
 diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] + PCApricevars[,6])
 summary(diamondpricePCA)
+step(diamondpricePCA, direction = "both",  k=log(53940))
+diamondpricePCA2 <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2])
+summary(diamondpricePCA2)
 ```
 
 We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore we have failed to create a more parsimonious model for predicting price through using regression with principal components. It is possible that PCR does not work well with diamonds dataset as the categorical variables of cut, clarity and color are also important predictors of price but these could not be included in the PCR model.
@@ -137,3 +147,54 @@ factanal(diamonds_num, factors =2)
 
 While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations.  
 
+
+# PCA encoded
+
+```{r}
+diamonds2 <- diamonds[,-11]
+
+# transform the categorical variables to numerical
+diamonds2$cut <-as.numeric(diamonds2$cut)
+diamonds2$color <-as.numeric(diamonds2$color)
+diamonds2$clarity <-as.numeric(diamonds2$clarity)
+
+```
+
+```{r}
+
+encodedpca <- prcomp(diamonds2, , center = TRUE, scale = TRUE)
+summary(encodedpca)
+plot(encodedpca)
+encodedpca$rotation
+```
+
+
+```{r}
+set.seed(300525287, kind = "Mersenne-Twister")
+smallersample <- diamonds2[sample(nrow(diamonds2), "500"), ]
+reducedpca <- prcomp(smallersample, center = TRUE, scale = TRUE)
+```
+
+```{r}
+summary(reducedpca)
+plot(reducedpca)
+```
+
+```{r}
+ggbiplot(reducedpca, obs.scale =1, var.scale = 1)
+```
+
+```{r}
+PCAprice <- prcomp(smallersample[,-7], center = TRUE, scale = TRUE)
+summary(PCAprice)
+```
+
+```{r}
+PCApricevars <- prcomp(smallersample[,-7], center = TRUE, scale = TRUE)$x
+diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] + PCApricevars[,6] + PCApricevars[,7] + PCApricevars[,8]  + PCApricevars[,9])
+summary(diamondpricePCA)
+```
+
+```{r}
+factanal(diamonds2, factors =4)
+```
