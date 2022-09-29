@@ -836,7 +836,111 @@ Figure \@ref(fig:carat1to11clarity) shows a the scatterplot of 'price' vs 'carat
 
 So, using 'carat' alone to predict these prices clearly is not enough; given the spread of price for any given value of carat, the categorical variables play an important in determining where in the range any given diamond will be. This was the reason our regression models that excluded the categorical variables did not perform nearly as well as those that included them.
 
+## Discriminant analysis using the reduced dataset (price, carat and clarity)
 
+```{r}
+dim(diamonds_car19_21)
+str(diamonds_car19_21)
+```
+
+```{r}
+# split dataset into 'train' and 'test'
+set.seed(1234567890, kind = "Mersenne-Twister")
+ind <- sample(c("Tr","Te"),
+              nrow(diamonds_car19_21),replace = TRUE,prob = c(0.6,0.4))
+
+# display first few elements to check
+ind[1:20]
+```
+
+```{r}
+# check that the proprortions have come out as expected
+nrow(diamonds_car19_21)
+table(ind)
+prop.table(table(ind))
+```
+
+### Create training and test subsets
+
+```{r}
+Train <- diamonds_car19_21[ind=="Tr",]
+Test <- diamonds_car19_21[ind=="Te",]
+
+Train[1:10,]
+Test[1:10,]
+
+dim(Train)
+dim(Test)
+
+dim(Train)[1]+dim(Test)[1]
+
+dim(diamonds_car19_21)
+
+```
+
+### Create LDA and display summary
+
+```{r}
+library(MASS)
+LDA.diam <- lda(clarity~carat+price,
+           data=Train)
+
+```
+
+### Boxplots of the LDA means
+
+```{r}
+boxplot(t(LDA.diam$means))
+```
+
+### Create Prediction object
+
+```{r}
+Pred <- predict(LDA.diam)
+
+```
+
+### Biplot
+
+```{r biplot2, fig.cap="Biplot of 'carat', 'price' against 'clarity'"}
+library(klaR)
+library(ggord)
+library(devtools)
+ggord(LDA.diam,Train$clarity)
+```
+
+Figure \@ref(fig:biplot2) shows the biplot for 'carat' versus 'price' against the different levels of 'clarity'.  
+
+### Partition plot
+
+```{r partplot2, fig.cap="Partition plot for levels of 'clairty' as predicted by 'carat' and 'price'"}
+partimat(clarity~carat+price, data = Train, method="lda")
+```
+
+Figure \@ref(fig:partplot2) shows the partition plot for the discriminant analysis (DA) of the different levels of the 'clarity' variable as predicted by 'carat' and 'price'. As a reminder, the levels are (from lowest to highest): Fair, Good, Very Good, Premium and Ideal.  
+
+
+```{r}
+RealisticPredicted <- predict(LDA.diam,Test)$class
+RCM <- table(RealisticPredicted, Actual=Test$clarity)
+RCM
+```
+
+The confusion matrix above shows that there were many mis-categorisations. There is a pattern evident. The leading diagonal shows the correct predictions. There are many incorrect predictions for values immediately above and below the leading diagonal, meaning that the DA partitions struggled to separate adjacent categories. 
+
+```{r}
+prop_succ <- sum(diag(RCM))/sum(RCM)
+prop_succ
+
+per_succ <- signif(prop_succ*100,4)
+per_succ
+```
+
+The output above shows that the percentage of successful predictions was `r per_succ`%, indicating that this LDA is a mediocre predictor. 
+
+### Summary of LDA
+
+The relatively poor performance of LDA in this instance is perhaps not surprising given the amount of overlap we saw in figure \@ref(fig:carat1to11clarity) earlier (the scatterplot of 'price' vs 'carat' vs 'clarity' for 'carat' values between 1 and 1.1); there simply isn't enough geometrical separation between the different levels of 'clarity' for the algorithm to accurately categorise the boundary cases.
 
 # Conclusions
 
