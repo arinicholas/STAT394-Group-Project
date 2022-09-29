@@ -727,7 +727,15 @@ diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] 
 summary(diamondpricePCA)
 ```
 
-We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore we have failed to create a more parsimonious model for predicting price through using regression with principal components. It is possible that PCR does not work well with diamonds dataset as the categorical variables of cut, clarity and color are also important predictors of price but these could not be included in the PCR model.
+We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore initially it seems we have failed to create a more parsimonious model for predicting price through using regression with principal components. However if we refit the model with just the first two principal components (see below) we still create a model that is able to explain over 80% of the variance in price with only two components. While this is not as good as the model with all the principal components (which explains 85%) it is still reasonably good and is much more simple. 
+
+```{r}
+diamondpricePCA2 <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2])
+summary(diamondpricePCA2)
+```
+
+
+It is likely that the remaining, unexplained variation could be explained by the categorical variables in the dataset. As Principal Components Analysis/Regression can only be used for numerical variables we had to leave out the variables of cut, clarity and color.
 
 
 ## Factor Analysis
@@ -740,136 +748,6 @@ factanal(diamonds[,-c(2:4,11)], factors =2)
 
 While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations.  
 
-
-# Encoded Version of Dataset
-
-In this section we create a new version of the dataset which encodes the categorical variables as numerical. Then we repeat the Principal Component analysis and multiple linear regression, and also perform a factor analysis (FA). 
-
-Firstly, create a new version of the dataset in which the three categorical variables are transformed to numerical variables. 
-
-```{r}
-# create new version to transform
-
-diamonds2 <- diamonds[,-11]
-
-# transform the categorical variables to numerical
-diamonds2$cut <-as.numeric(diamonds2$cut)
-diamonds2$color <-as.numeric(diamonds2$color)
-diamonds2$clarity <-as.numeric(diamonds2$clarity)
-```
-
-
-```{r}
-# display the first 10 rows to check that it has worked.
-diamonds2[1:10,]
-```
-
-## Diamonds2: Create the Principal Components object
-
-Repeat the Principal Component process.
-
-```{r}
-pca.diamonds2 <- prcomp(diamonds2,
-                       center=TRUE, scale. = TRUE, retx=TRUE)
-plot(pca.diamonds2)
-summary(pca.diamonds2)
-```
-
-```{r}
-pca.diamonds2$rotation
-```
-
-```{r}
-ggbiplot(pca.diamonds2, obs.scale =1, var.scale = 1)
-```
-
-
-## Plot PC1 and PC2
-
-```{r}
-# display the first 10 rows
-pca.diamonds2$x[1:10,]
-```
-
-```{r}
-# calculate values for the scatterplot and screeplot
-pca.var2 <- pca.diamonds2$sdev^2
-pca.var.per2 <- round(pca.var2/sum(pca.var2)*100,1)
-pca.var.per2
-sum(pca.var.per2[1:3])
-```
-
-```{r pconevpctwo2, fig.cap="Scatterplot of PC1 vs PC2 (encoded version)"}
-plot(pca.diamonds2$x[,1], pca.diamonds2$x[,2],
-     main="Scatterplot of PC1 vs PC2",
-      xlab=(paste("PC1 - ", pca.var.per2[1], "%", sep="")),
-      ylab=(paste("PC2 - ", pca.var.per2[2], "%", sep="")))
-```
-
-Figure \@ref(fig:pconevpctwo2) shows the scatterplot of PC1 versus PC2. 
-
-
-## Identify the extreme PC1 values
-
-```{r}
-sort(decreasing=T,(pca.diamonds2$x[,1]))[1:10]
-```
-
-The output above identifies the two upper extreme values of PC1. 
-
-## Scree plot
-
-
-```{r pcascree2, fig.cap="Scree plot of the Principal Components"}
-barplot(pca.var.per2, names.arg = pca.var.per2,
-        xlab = "Principal Components 1 to 10",
-        ylab = "% information retained by each PC",
-        main="Screeplot of the Principal Components")
-
-```
-
-Figure \@ref(fig:pcascree2) shows the scree plot for the Principal Components of the diamonds dataset. PC1 contains `r pca.var.per2[1]`% of the variance, PC2 contains `r pca.var.per2[2]`%, while PC3 contains `r pca.var.per2[3]`%. Between them they contain `r sum(pca.var.per2[1:3])`%, which is clearly very good.   
-
-
-```{r}
-## discover which measurements contribute most to PC1
-
-loading_scores2 <- pca.diamonds2$rotation[,1]
-diam_scores2 <- abs(loading_scores2) ## get the magnitudes
-diam_score_ranked2 <- sort(diam_scores2, decreasing=TRUE)
-top_diam2 <- names(diam_score_ranked2[1:10])
-
-top_diam2 ## show the names
-
-pca.diamonds2$rotation[top_diam2,1] 
-```
-
-From the output above, we can see that 'x' is the measurement that contributes the most to PC1, although 'carat' is virtually identical.
-
-# Factor analysis process
-
-```{r}
-factanal(diamonds2, factors =2)
-```
-
-```{r}
-factanal(diamonds2, factors =4)
-```
-
-# Multiple regression using diamonds2 (numerically coded)
-
-```{r}
-diam2.lm <- lm(price~.,data = diamonds2)
-summary(diam2.lm)
-```
-
-```{r}
-# use the step() function to perform the stepwise AIC test
-step(diam2.lm, direction = "both")
-```
-
-
-The output above shows that the multiple linear regression model using the modified dataset with numerically coded categorical variables did not perform better than the one using the original data. The best model according to the AIC test for the numerically coded 'diamonds2' dataset contained eight predictor variables, compared with seven from the best original dataset. 
 
 # Ken's Scatterplots (wasn't sure where would be best to place these- thought you'd have a better idea Ken)
 
