@@ -36,16 +36,6 @@ options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 ```
 
-# DRAFT FINAL REPORT
-
-######################################################################################
-# DELETE FROM FINAL
-## Experimenting with the relative file pathways
-
-Making sure the relative file pathways work according to Alejandro's file structure from his article @frery2020badging. The bibliography file path in the YAML code above takes us down into the 'Bibliography' folder and then opens the 'MASTER.bib' file. That is working.
-
-#####################################################################################
-
 
 # Introduction  
 
@@ -53,26 +43,25 @@ Our multivariate statistical investigation uses the Diamonds data set (reference
 
 ## Variables
 
-Carat
-- Carat is a measure of the diamond's weight. One carat equals 1/5 gram. In this data set we have diamonds with a carat ranging from 0.2 - 5.01. 
-Cut
-- A diamonds Cut defines its proportions and its ability to reflect light. This variable has five levels: Fair, Good, Very Good, Premium and Ideal. 
-Color
-- A diamonds color refers to how clear/colorless a diamond is. This variable has seven levels: J (lowest quality), I, H, G, F, E, D (highest quality)
-Clarity 
-- Clarity measures small imperfections on the surface and within the stone. This variable has eight levels:  I1 (lowest clarity), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (highest clarity)
-x
-- x is a diamonds length in mm. In this data set we have diamonds with a length ranging from 0 - 10.74 
-y
-- x is a diamonds width in mm. In this data set we have diamonds with a width ranging from 0 - 58.9  
-z
-- x is a diamonds depth in mm. In this data set we have diamonds with a depth ranging from 0 - 31.8 
-Depth
--  Depth measures a diamonds total depth percentage total depth percentage. This is calculate by dividing the total width by the total depth. Depth percentage impacts how light reflects of the diamond. In this data set we have diamonds with a depth percentage ranging from 43% - 79%
-Table
-- The flat facet on the top of a diamond is called its table. Table in this data set measures table percentage which calculated by dividing table width by the total width. Table percentage impacts how light reflects of the diamond. In this data set we have diamonds with a table percentage ranging from 43% - 95%
-Price 
-- The price of the diamond in US dollars. In this data set we have diamonds with a price ranging from $326 - $18823
+- Carat: a measure of the diamond's weight. One carat equals 1/5 gram. In this data set we have diamonds with a carat ranging from 0.2 - 5.01.  
+
+- Cut: A diamond's cut defines its proportions and its ability to reflect light. This variable has five levels: Fair (lowest quality), Good, Very Good, Premium and Ideal (highest quality).  
+
+- Color: A diamond's color refers to how clear/colorless it is. This variable has seven levels: J (lowest quality), I, H, G, F, E, D (highest quality)
+
+- Clarity: measures small imperfections on the surface and within the stone. This variable has eight levels:  I1 (lowest clarity), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (highest clarity)  
+
+- x: length in mm. In this data set there are diamonds with a length ranging from 0 - 10.74 
+
+- y: width in mm. In this data set there are diamonds with a width ranging from 0 - 58.9  
+
+- z: depth in mm. In this data set there are diamonds with a depth ranging from 0 - 31.8 
+
+- Depth: total depth percentage. This is calculated by dividing the total width by the total depth $depth=\frac{2\times z}{(x+y)}$. Depth percentage impacts how light reflects of the diamond. In this data set we have diamonds with a depth percentage ranging from 43% - 79%
+
+- Table: The flat facet on the top of a diamond is called its table. Table is calculated by dividing table width by the total width. Table percentage impacts how light reflects of the diamond. In this data set there are diamonds with a table percentage ranging from 43% - 95%
+
+- Price: price of the diamond in United States dollars (USD). In this data set there are diamonds with a price ranging from $326 - $18823
 
 
 We chose this data set as the variables were simple to understand conceptually and we hoped this would increase the ease to which we could make inferences about it compared to a data set on a subject we had little knowledge of. This data set also allows us to undertake an investigation from which we glean insights about diamonds that have real-world application and use. 
