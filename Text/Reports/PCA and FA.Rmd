@@ -148,53 +148,25 @@ factanal(diamonds_num, factors =2)
 While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations.  
 
 
-# PCA encoded
+# Cluster Analysis
 
 ```{r}
-diamonds2 <- diamonds[,-11]
-
-# transform the categorical variables to numerical
-diamonds2$cut <-as.numeric(diamonds2$cut)
-diamonds2$color <-as.numeric(diamonds2$color)
-diamonds2$clarity <-as.numeric(diamonds2$clarity)
-
+clusters <- kmeans(scale(smallersample[,-c(2:4)]), algorithm = "MacQueen", centers = 4, iter.max = 100, nstart = 50)
+print(clusters)
 ```
 
 ```{r}
-
-encodedpca <- prcomp(diamonds2, , center = TRUE, scale = TRUE)
-summary(encodedpca)
-plot(encodedpca)
-encodedpca$rotation
-```
-
-
-```{r}
-set.seed(300525287, kind = "Mersenne-Twister")
-smallersample <- diamonds2[sample(nrow(diamonds2), "500"), ]
-reducedpca <- prcomp(smallersample, center = TRUE, scale = TRUE)
+fviz_cluster(clusters, data = (scale(smallersample[,-c(2:4)])),
+             geom = "point",
+             ellipse.type = "norm", 
+             ggtheme = theme_bw()
+             )
 ```
 
 ```{r}
-summary(reducedpca)
-plot(reducedpca)
+fviz_nbclust((scale(smallersample)), kmeans, method = "wss") +
+    geom_vline(xintercept = 4, linetype = 2)+
+  labs(subtitle = "Elbow method")
 ```
 
-```{r}
-ggbiplot(reducedpca, obs.scale =1, var.scale = 1)
-```
 
-```{r}
-PCAprice <- prcomp(smallersample[,-7], center = TRUE, scale = TRUE)
-summary(PCAprice)
-```
-
-```{r}
-PCApricevars <- prcomp(smallersample[,-7], center = TRUE, scale = TRUE)$x
-diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] + PCApricevars[,6] + PCApricevars[,7] + PCApricevars[,8]  + PCApricevars[,9])
-summary(diamondpricePCA)
-```
-
-```{r}
-factanal(diamonds2, factors =4)
-```
