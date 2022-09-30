@@ -14,6 +14,8 @@ header-includes: \usepackage{float}
 knitr::opts_chunk$set(echo = TRUE)
 library(devtools)
 library(ggbiplot)
+library(factoextra)
+
 ```
 
 # Load the data
@@ -155,6 +157,8 @@ clusters <- kmeans(scale(smallersample[,-c(2:4)]), algorithm = "MacQueen", cente
 print(clusters)
 ```
 
+
+
 ```{r}
 fviz_cluster(clusters, data = (scale(smallersample[,-c(2:4)])),
              geom = "point",
@@ -164,9 +168,7 @@ fviz_cluster(clusters, data = (scale(smallersample[,-c(2:4)])),
 ```
 
 ```{r}
-fviz_nbclust((scale(smallersample)), kmeans, method = "wss") +
+fviz_nbclust((scale(smallersample[,-c(2:4)])), kmeans, method = "wss") +
     geom_vline(xintercept = 4, linetype = 2)+
   labs(subtitle = "Elbow method")
 ```
-
-
