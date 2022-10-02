@@ -807,7 +807,7 @@ In the three scatterplots figures \@ref(fig:caratcut), \@ref(fig:caratclarity) a
 
 Conversely, we can also see some heavier diamonds which are of lower quality and lower price. Note in figure \@ref(fig:caratcut) that some of the lowest quality diamonds in terms of 'cut' (orange dots in the centre of the plot, on the vertical value of 2) are relatively cheap, despite being heavier than some of the lighter more expensive diamonds. But eventually the weight of the diamonds drives the price up regardless of the quality of 'cut', as we can see from the three orange dots in the top right of the plot. These are of the lowest quality cut, but are the three heaviest diamonds in the dataset, and so end up being expensive.
 
-# LDA
+# Linear Discriminant Analysis (LDA)
 
 As discussed previously the diamonds dataset has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. We will attempt too use Linear Discriminant Analysis to classify observations more simply using one of the categorical variables at a time.
 
@@ -830,14 +830,16 @@ LDAclarity <- lda(clarity ~ carat + depth + table + price
 
 We see that mean carat and mean price seem to differ the most across levels of "cut". In LD1 x and y weight significantly more than the other variables.  
 
-```{r}
+```{r ordplot, fig.cap="Ordination plot"}
+library(ggord)
+
 g1 <- ggord(LDAcut, diamonds.Train$cut, alpha = 0.5, )
 g2 <- ggord(LDAcolor, diamonds.Train$color, alpha = 0.5 )
 g3 <- ggord(LDAclarity, diamonds.Train$clarity, alpha = 0.5)
 ggarrange(g1, g2, g3, ncol = 2, nrow =2)
 ```
 
-All three plots show a lot of overlap between different levels of the categorical variables. It seems unlikely that a linear discriminant function would have much success in partition the data according to these classes. We shall compute the confusion matrix for each LDA and assess the overall accuracy of each model.
+All three ordination plots (figure \@ref(fig:ordplot)) show a lot of overlap between different levels of the categorical variables. It seems unlikely that a linear discriminant function would have much success in partitioning the data according to these classes. We shall compute the confusion matrix for each LDA and assess the overall accuracy of each model.
 
 ```{r}
 RPcut <- predict(LDAcut, diamonds.Test)$class
@@ -854,7 +856,7 @@ Coloracc <- sum(diag(RCMcolor))/sum(RCMcolor)
 Clarityacc <- sum(diag(RCMclarity))/sum(RCMclarity)
 ```
 
-**Table: Classification Accuracy for Different LDA's
+**Table: Classification Accuracy for Different LDA's**
 
 \begin{table}[ht]
 \centering
@@ -893,7 +895,8 @@ diamonds_car19_21[1:4,]
 # by 'cut'
 ggplot(data=diamonds_car19_21, aes(x=carat, y=price, color=clarity))+
   geom_point()+
-  guides(colour=guide_legend(reverse = T))
+  guides(colour=guide_legend(reverse = T))+
+  labs(title = "'Carat' vs 'price', coloured by 'clarity'")
 ```
 
 Figure \@ref(fig:carat1to11clarity) shows a the scatterplot of 'price' vs 'carat' vs 'clarity', but just for values of 'carat' between 1 and 1.1, which helps us see the pattern more clearly. Firstly, note the vertical spread of the data points; most of the values begin at around 2500 USD and generally have extreme upper values larger than 15,000 USD, so a spread of approximately 10,000 USD. There are clear colour bands running horizontally, with the lowest quality 'clarity' diamonds near the bottom of the price range, while the highest values are near the top.
@@ -903,18 +906,13 @@ So, using 'carat' alone to predict these prices clearly is not enough; given the
 ## Discriminant analysis using the reduced dataset (price, carat and clarity)
 
 ```{r}
-dim(diamonds_car19_21)
-str(diamonds_car19_21)
-```
-
-```{r}
 # split dataset into 'train' and 'test'
 set.seed(1234567890, kind = "Mersenne-Twister")
 ind <- sample(c("Tr","Te"),
               nrow(diamonds_car19_21),replace = TRUE,prob = c(0.6,0.4))
 
 # display first few elements to check
-ind[1:20]
+ind[1:15]
 ```
 
 ```{r}
@@ -924,21 +922,13 @@ table(ind)
 prop.table(table(ind))
 ```
 
+The output above confirms that the random allocation of values to either the training or testing datasets produced the desired result of approximately 60% in the training set and 40% in the testing set. 
+
 ### Create training and test subsets
 
 ```{r}
 Train <- diamonds_car19_21[ind=="Tr",]
 Test <- diamonds_car19_21[ind=="Te",]
-
-Train[1:10,]
-Test[1:10,]
-
-dim(Train)
-dim(Test)
-
-dim(Train)[1]+dim(Test)[1]
-
-dim(diamonds_car19_21)
 
 ```
 
@@ -953,9 +943,14 @@ LDA.diam <- lda(clarity~carat+price,
 
 ### Boxplots of the LDA means
 
-```{r}
-boxplot(t(LDA.diam$means))
+```{r ldameans, fig.cap="Distribution of LDA means"}
+boxplot(t(LDA.diam$means), main=
+          "Distribution of LDA means for each level of 'clarity'",
+        xlab="Levels of 'clarity' (lowest on the left, highest on the right)",
+        ylab="Count")
 ```
+
+Figure \@ref(fig:ldameans) shows the distribution of the LDA means. It is obvious that there is an increasing number of diamonds of higher 'clarity' levels.
 
 ### Create Prediction object
 
@@ -1010,6 +1005,8 @@ The relatively poor performance of LDA in this instance is perhaps not surprisin
 
 As LDA did not yield useful results in terms of classifying the diamonds data we also decided to conduct Cluster Analysis to see if the diamonds data set could be divided into groups. We used a K-means algorithm to achieve this. As we were initially unsure of how many clusters we should attempt to divide the data into we will first examine the sum of the squares of the intra-class disatances for different numbers of clusters. 
 
+### Optimal cluster number
+
 ```{r optclust, fig.cap="Optimal number of clusters"}
 fviz_nbclust((scale(smallersample[,-c((2:4),11)])), kmeans, method = "wss") +
     geom_vline(xintercept = 4, linetype = 2)+
@@ -1018,6 +1015,7 @@ fviz_nbclust((scale(smallersample[,-c((2:4),11)])), kmeans, method = "wss") +
 
 Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that 4 clusters is the optimum number.
 
+### kmeans function
 
 ```{r}
 clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), 
@@ -1035,6 +1033,8 @@ clusters$cluster[1:20]
 
 We create four clusters with sizes of 127, 455, 137 and 281 respectively. We see clear differences in the mean of each numeric variable across the four clusters. The within cluster sum of squares indicates that the clusters are not very compact. We shall now visualize the clusters with a scatterplot using the first two principal components of our dataset as the two dimensions. The first two principal components account for over 86% of the variance so this should be an appropriate visualization.
 
+### Cluster plot
+
 ```{r clustplot, fig.cap="Cluster plot"}
 fviz_cluster(clusters, data = (scale(smallersample[,-c((2:4),11)])),
              geom = "point",
@@ -1044,6 +1044,8 @@ fviz_cluster(clusters, data = (scale(smallersample[,-c((2:4),11)])),
 ```
 
 In the cluster plot (figure \@ref(fig:clustplot)) we see significant overlap between the four clusters as well as many observations that do not seem to fit well in any of the clusters. It seems that the diamond dataset does not easily split into distinct clusters.
+
+### Silhouette plot
 
 ```{r silh, fig.cap="Clusters silhouette plot"}
 library(cluster)
