@@ -36,6 +36,7 @@ library(factoextra)
 library(devtools)
 library(ggord)
 library(klaR)
+library(cluster)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 ```
@@ -818,9 +819,12 @@ ind <- sample(c("Train", "Test"),
               prob = c(.6, .4))
 diamonds.Train <- smallersample[ind == "Train",]
 diamonds.Test <- smallersample[ind == "Test",]
-LDAcut <- lda(cut ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
-LDAcolor <- lda(color ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
-LDAclarity <- lda(clarity ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
+LDAcut <- lda(cut ~ carat + depth + table + price
+              + x + y + z, data = diamonds.Train)
+LDAcolor <- lda(color ~ carat + depth + table + price
+                + x + y + z, data = diamonds.Train)
+LDAclarity <- lda(clarity ~ carat + depth + table + price
+                  + x + y + z, data = diamonds.Train)
 ```
 
 
@@ -836,11 +840,11 @@ ggarrange(g1, g2, g3, ncol = 2, nrow =2)
 All three plots show a lot of overlap between different levels of the categorical variables. It seems unlikely that a linear discriminant function would have much success in partition the data according to these classes. We shall compute the confusion matrix for each LDA and assess the overall accuracy of each model.
 
 ```{r}
-RPcut <- predict(LDA, diamonds.Test)$class
+RPcut <- predict(LDAcut, diamonds.Test)$class
 RCMcut <- table(RPcut, actual = diamonds.Test$cut)
-RPcolor <- predict(LDA, diamonds.Test)$class
+RPcolor <- predict(LDAcolor, diamonds.Test)$class
 RCMcolor <- table(RPcut, actual = diamonds.Test$color)
-RPclarity <- predict(LDA, diamonds.Test)$class
+RPclarity <- predict(LDAclarity, diamonds.Test)$class
 RCMclarity <- table(RPcut, actual = diamonds.Test$clarity)
 ```
 
@@ -1006,22 +1010,32 @@ The relatively poor performance of LDA in this instance is perhaps not surprisin
 
 As LDA did not yield useful results in terms of classifying the diamonds data we also decided to conduct Cluster Analysis to see if the diamonds data set could be divided into groups. We used a K-means algorithm to achieve this. As we were initially unsure of how many clusters we should attempt to divide the data into we will first examine the sum of the squares of the intra-class disatances for different numbers of clusters. 
 
-```{r}
+```{r optclust, fig.cap="Optimal number of clusters"}
 fviz_nbclust((scale(smallersample[,-c((2:4),11)])), kmeans, method = "wss") +
     geom_vline(xintercept = 4, linetype = 2)+
   labs(subtitle = "Elbow method")
 ```
 
-From using the elbow method we see that 4 clusters is the optimum number.
+Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that 4 clusters is the optimum number.
+
 
 ```{r}
-clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), algorithm = "MacQueen", centers = 4, iter.max = 100, nstart = 50)
-print(clusters)
+clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), 
+                   algorithm = "MacQueen", centers = 4, 
+                   iter.max = 100, nstart = 50)
+
+# print clusters means
+clusters$centers
+
+# print first 20 values
+clusters$cluster[1:20]
+
+
 ```
 
 We create four clusters with sizes of 127, 455, 137 and 281 respectively. We see clear differences in the mean of each numeric variable across the four clusters. The within cluster sum of squares indicates that the clusters are not very compact. We shall now visualize the clusters with a scatterplot using the first two principal components of our dataset as the two dimensions. The first two principal components account for over 86% of the variance so this should be an appropriate visualization.
 
-```{r}
+```{r clustplot, fig.cap="Cluster plot"}
 fviz_cluster(clusters, data = (scale(smallersample[,-c((2:4),11)])),
              geom = "point",
              ellipse.type = "norm", 
@@ -1029,14 +1043,15 @@ fviz_cluster(clusters, data = (scale(smallersample[,-c((2:4),11)])),
              )
 ```
 
-In the cluster plot we see significant overlap between the four clusters as well as many observations that do not seem to fit well in any of the clusters. It seems that the diamond dataset does not easily split into distinct clusters.
+In the cluster plot (figure \@ref(fig:clustplot)) we see significant overlap between the four clusters as well as many observations that do not seem to fit well in any of the clusters. It seems that the diamond dataset does not easily split into distinct clusters.
 
-```{r}
+```{r silh, fig.cap="Clusters silhouette plot"}
+library(cluster)
 sil <- silhouette(clusters$cluster, dist((scale(smallersample[,-c((2:4),11)]))))
 fviz_silhouette(sil)
 ```
 
-The silhouette plot helps us to visualize how similar points each observation is to the cluster that it is assigned too. We see very few negative values indicating that very few observations have been assigned to the wrong cluster. However we do have a large proportion of values with low positive values indicating that these observations were close to the borderline between two clusters. We see that the average silhouette width is 0.38. 
+The silhouette plot (figure \@ref(fig:silh)) helps us to visualize how similar points each observation is to the cluster that it is assigned too. We see very few negative values indicating that very few observations have been assigned to the wrong cluster. However we do have a large proportion of values with low positive values indicating that these observations were close to the borderline between two clusters. We see that the average silhouette width is 0.38. 
 
 # Conclusions
 
