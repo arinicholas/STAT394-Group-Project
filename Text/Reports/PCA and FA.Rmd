@@ -147,13 +147,15 @@ In our investigation of the principal components of the dataset we observed that
 factanal(diamonds_num, factors =2)
 ```
 
-While we see evidence of our hypothesis that price and the dimension variables would be strongest loading in factor 1 and depth and table in factor two we find that these two factors alone are not sufficient to capture all the variation in the observations.  
+As we hypothesized Carat, price, x, y and z are well explained by factor 1. Depth is very well explained by factor 2 but table is to a lesser degree. We see some evidence of the factor structure in our hypothesis with the "price + dimension" variables strongly implicated in Factor 1 and "Light conductance" variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. We also see high uniqueness ratings for table indicating that the two factors do not well account for it's variance. 
+
+Overall the hypothesis test gives a highly significant result meaning that two factors is not sufficient to capture the full dimensionality of the data set.
 
 
 # Cluster Analysis
 
 ```{r}
-clusters <- kmeans(scale(smallersample[,-c(2:4)]), algorithm = "MacQueen", centers = 4, iter.max = 100, nstart = 50)
+clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), algorithm = "MacQueen", centers = 4, iter.max = 100, nstart = 50)
 print(clusters)
 ```
 
@@ -172,3 +174,32 @@ fviz_nbclust((scale(smallersample[,-c(2:4)])), kmeans, method = "wss") +
     geom_vline(xintercept = 4, linetype = 2)+
   labs(subtitle = "Elbow method")
 ```
+
+# LDA 
+
+```{r}
+set.seed(300525287, kind = "Mersenne-Twister")
+ind <- sample(c("Train", "Test"),
+              nrow(smallersample),
+              replace = TRUE, 
+              prob = c(.6, .4))
+Train <- smallersample[ind == "Train",]
+Test <- smallersample[ind == "Test",]
+(LDA <- lda(cut ~ carat + depth + table + price + x + y + z, data = Train))
+```
+
+```{r}
+Pred <- predict(LDA)
+ldahist(data = Pred$x[,1], g=Train$cut)
+ggord(LDA, Train$cut)
+partimat(cut ~ carat + depth + table + price + x + y + z, data = Train, method = "lda")
+```
+
+```{r}
+RealisticPredicted <- predict(LDA, Test)$class
+(RCM <- table(RealisticPredicted, Actual = Test$cut))
+sum(diag(RCM))/sum(RCM)
+confusionMatrix(RCM)
+```
+
+

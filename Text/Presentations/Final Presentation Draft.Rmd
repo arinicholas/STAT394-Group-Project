@@ -182,13 +182,9 @@ Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
 set.seed(300525287, kind = "Mersenne-Twister")
 smallersample <- diamonds_num[sample(nrow(diamonds_num), "500"), ]
 PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
+plot(PCA)
 ```
 
-```{r, echo = FALSE}
-par(mfrow=c(1,2))
-plot(PCA)
-screeplot(PCA, type = "line", main = "Screeplot")
-```
 
 # Principal Components Analysis 
 
@@ -204,7 +200,7 @@ PCA$rotation[,1:2]
 
 - We conducted a Principal Components Regression with diamond price as the response variable\linebreak
 - We found that all six principal components were significant in the model for predicting price\linebreak
-- However when we only used the first two principal components we were still able to explain over 80% of the variation in price\linebreak
+- However when we only used the first two principal components we were still able to explain over 80% of the variation in price\linebreak 
 
 
 # Factor Analysis 
