@@ -44,7 +44,7 @@ options(xtable.timestamp = "")
 
 # Introduction  
 
-Our multivariate statistical investigation uses the Diamonds data set (reference). This data set is a base data set in R and is also freely available on Kaggle (reference). It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while 7 are numerical. 
+Our multivariate statistical investigation uses the 'Diamonds' data set. This data set is a base data set in R (available in the ggplot2 package) and is also freely available on Kaggle [@diamondskaggle]. It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while 7 are numerical. 
 
 ## Variables
 
@@ -76,7 +76,7 @@ We also seek to explore the techniques of Principal Component Analysis (PCA), Li
 
 # Methodology
 
-The diamonds data set was accessed via the kaggle.com website while all statistical analysis and reporting was completed in R/R Markdown. Github was used a repository for storing all relevant documents and code during this investigation.
+The diamonds data set was accessed via the kaggle.com website while all statistical analysis and reporting was completed in R/R Markdown [@R-base]. Github [@github] was used a repository for storing all relevant documents and code during this project.
 
 Upon loading the data set into R we first used the following code to delete unnecessary columns, ensure categorical variables were treated as factors with set levels and created a subset data set containing only the numeric variables.
 
@@ -96,10 +96,9 @@ diamonds$clarity <- factor(diamonds$clarity,
 diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
 ```
 
-When scaling numerical values in our data set we used the scale function 
-When taking smaller samples from our data set to improve the interpretability of visual plots we used a seed of 123456789 and the pseudo random number generator Mersenne Twister.
+When scaling numerical values in our data set we used the `scale()` function.  
 
-
+When taking smaller samples from our data set to improve the interpretability of visual plots we used a seed consisting of either the student identification number of the team member who wrote the code or 1234567890, and the pseudo random number generator Mersenne Twister.
 
 To begin our investigation we undertook an in-depth Exploratory Data Analysis (EDA) of the data. The key results from the EDA can be found in the results section below. We used this to develop our leading questions that we attempt to answer using the multivariate statistical techniques of Principal Components Analysis, Factor Analysis, Linear Discriminant Analysis and Cluster Analysis. 
 
