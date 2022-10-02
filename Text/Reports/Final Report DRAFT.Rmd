@@ -33,6 +33,9 @@ library(cowplot)
 library(devtools)
 library(ggbiplot)
 library(factoextra)
+library(devtools)
+library(ggord)
+library(klaR)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 ```
@@ -805,6 +808,66 @@ Conversely, we can also see some heavier diamonds which are of lower quality and
 
 # LDA
 
+As discussed previously the diamonds dataset has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. We will attempt too use Linear Discriminant Analysis to classify observations more simply using one of the categorical variables at a time.
+
+```{r}
+set.seed(300525287, kind = "Mersenne-Twister")
+ind <- sample(c("Train", "Test"),
+              nrow(smallersample),
+              replace = TRUE, 
+              prob = c(.6, .4))
+diamonds.Train <- smallersample[ind == "Train",]
+diamonds.Test <- smallersample[ind == "Test",]
+LDAcut <- lda(cut ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
+LDAcolor <- lda(color ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
+LDAclarity <- lda(clarity ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
+```
+
+
+We see that mean carat and mean price seem to differ the most across levels of "cut". In LD1 x and y weight significantly more than the other variables.  
+
+```{r}
+g1 <- ggord(LDAcut, diamonds.Train$cut, alpha = 0.5, )
+g2 <- ggord(LDAcolor, diamonds.Train$color, alpha = 0.5 )
+g3 <- ggord(LDAclarity, diamonds.Train$clarity, alpha = 0.5)
+ggarrange(g1, g2, g3, ncol = 2, nrow =2)
+```
+
+All three plots show a lot of overlap between different levels of the categorical variables. It seems unlikely that a linear discriminant function would have much success in partition the data according to these classes. We shall compute the confusion matrix for each LDA and assess the overall accuracy of each model.
+
+```{r}
+RPcut <- predict(LDA, diamonds.Test)$class
+RCMcut <- table(RPcut, actual = diamonds.Test$cut)
+RPcolor <- predict(LDA, diamonds.Test)$class
+RCMcolor <- table(RPcut, actual = diamonds.Test$color)
+RPclarity <- predict(LDA, diamonds.Test)$class
+RCMclarity <- table(RPcut, actual = diamonds.Test$clarity)
+```
+
+```{r}
+Cutacc <- sum(diag(RCMcut))/sum(RCMcut)
+Coloracc <- sum(diag(RCMcolor))/sum(RCMcolor)
+Clarityacc <- sum(diag(RCMclarity))/sum(RCMclarity)
+```
+
+**Table: Classification Accuracy for Different LDA's
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rr}
+  \hline
+ Class & Accuracy \\ 
+  \hline
+Cut & 0.6382\\
+Color & 0.196  \\
+Clarity & 0.1457\\
+   \hline
+\end{tabular}
+\end{table}
+
+In the table above we see the only categorical variables the LDA has any sucess of classifying is "cut". For color and clarity the LDA performs very poorly indeed. We conclude that it is likely that the classes (particularly for clarity and color) are not linearly seperable. 
+
+
 ## Why prediction without the categorical variables is not working well
 
 ### Create modified version of dataset only containing carat values between 1 and 1.1
@@ -816,6 +879,8 @@ diamonds_car2[1:4,]
 diamonds_car19_21 <- filter(diamonds_car2, between(carat, 1, 1.1))
 diamonds_car19_21[1:4,]
 ```
+
+
 
 
 ```{r carat1to11clarity, fig.cap="Carat (limited values) vs Price coloured by Clarity"}
