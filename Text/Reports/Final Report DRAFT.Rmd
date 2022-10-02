@@ -68,16 +68,15 @@ Our multivariate statistical investigation uses the Diamonds data set (reference
 
 - Price: price of the diamond in United States dollars (USD). In this data set there are diamonds with a price ranging from $326 - $18823
 
+We selected the diamonds dataset because it was easy to understand what the variables were measuring. This was in contrast to some of the other ones we looked at which required domain specific familiarity, such as knowledge about biology or chemistry (or even worse, bio-chemistry!). This data set also allows us to undertake an investigation from which we glean insights about diamonds that have real-world application and use. 
 
-We chose this data set as the variables were simple to understand conceptually and we hoped this would increase the ease to which we could make inferences about it compared to a data set on a subject we had little knowledge of. This data set also allows us to undertake an investigation from which we glean insights about diamonds that have real-world application and use. 
+Our primary aim was to identify which variables best predictor the price of any given diamond. We hypothesise that increased diamond size (x, y and z) and weight will be positively correlated with diamond price. We also expect to see increased prices for diamonds with higher levels of the categorical variables. We are unsure how diamond depth and table percentage while relate to diamond price. 
 
-Our study seeks to investigate which variables are most closely related to, and best predictors of, diamond price. We hypothesise that increased diamond size (x, y and z) and weight will be positively associated with diamond price. We also expect to see diamond price to be higher at the higher levels of the categorical variables compared to the lower levels. We are unsure how diamond depth and table percentage while relate to diamond price. 
-
-We also seek to explore the techniques of Linear Discriminant Analysis and Cluster Analysis on the diamonds dataset. The diamonds dataset has 280 unique possible interactions between different levels of the categorical variables. We will attempt to use the techniques of LDA and CA to more simply classify the diamonds data.
+We also seek to explore the techniques of Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) on the diamonds dataset. The diamonds dataset has 280 unique possible interactions between different levels of the categorical variables. We will attempt to use the techniques of LDA and CA to more simply classify the diamonds data.
 
 # Methodology
 
-The diamonds data set was accessed through Kaggle while all statistical analysis and reporting was completed in R/R Markdown. Github was used a repository for storing all relevant documents and code during this investigation.
+The diamonds data set was accessed via the kaggle.com website while all statistical analysis and reporting was completed in R/R Markdown. Github was used a repository for storing all relevant documents and code during this investigation.
 
 Upon loading the data set into R we first used the following code to delete unnecessary columns, ensure categorical variables were treated as factors with set levels and created a subset data set containing only the numeric variables.
 
@@ -100,13 +99,15 @@ diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
 When scaling numerical values in our data set we used the scale function 
 When taking smaller samples from our data set to improve the interpretability of visual plots we used a seed of 123456789 and the pseudo random number generator Mersenne Twister.
 
-To begin our investigation we first completed an in-depth Exploratory Data Analysis of the data set the consolidated results of which you can find in the results section. We used this to develop our leading questions that we attempt to answer using the multivariate statistical techniques of Principal Components Analysis, Factor Analysis, Linear Discriminant Analysis and Cluster Analysis. 
+
+
+To begin our investigation we undertook an in-depth Exploratory Data Analysis (EDA) of the data. The key results from the EDA can be found in the results section below. We used this to develop our leading questions that we attempt to answer using the multivariate statistical techniques of Principal Components Analysis, Factor Analysis, Linear Discriminant Analysis and Cluster Analysis. 
 
 # Results
 
-## Consolidated EDA
+## Consolidated Exploratory Data Analysis (EDA)
 
-We will begin by presenting results from our consolidated Exploratory Data Analysis that our relevant to our investigation. 
+In this section we present key findings from the consolidated Exploratory Data Analysis. 
 
 ### Summaries of Data
 
@@ -529,6 +530,53 @@ sort(diamonds.df$price, decreasing = TRUE)[1:10]
 
 The output above shows that neither 'depth' nor 'price' have any extreme values. We can probably safely conclude that these are all genuine upper values.
 
+## Colour-coded scatterplots
+
+### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Cut'
+
+```{r caratcut, fig.cap="Carat vs Price, coloured by Cut"}
+
+# scatterplot of carat vs price, but also colouring the observations
+# by 'cut'
+ggplot(data=diamonds, aes(x=carat, y=price, color=cut))+
+  geom_point()+
+  guides(colour=guide_legend(reverse = T))
+```
+
+Figure \@ref(fig:caratcut) shows the scatterplot of 'carat' versus 'price' and coloured by 'cut'.
+
+### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Clarity'
+
+```{r caratclarity, fig.cap="Carat vs Price coloured by Clarity"}
+
+# scatterplot of carat vs price, but also colouring the observations
+# by 'cut'
+ggplot(data=diamonds, aes(x=carat, y=price, color=clarity))+
+  geom_point()+
+  guides(colour=guide_legend(reverse = T))
+```
+
+
+Figure \@ref(fig:caratclarity) shows the scatterplot of 'carat' versus 'price' and coloured by 'clarity'. 
+
+
+### Scatterplot of 'Carat' vs 'Price', colour coded by 'Color'
+
+```{r caratcolor, fig.cap="Carat vs Price coloured by Color"}
+
+# scatterplot of carat vs price, but also colouring the observations
+# by 'cut'
+ggplot(data=diamonds, aes(x=carat, y=price, color=color))+
+  geom_point()+
+  guides(colour=guide_legend(reverse = T))
+```
+
+
+Figure \@ref(fig:caratcolor) shows the scatterplot of 'carat' versus 'price' and coloured by 'color'. 
+
+In the three scatterplots figures \@ref(fig:caratcut), \@ref(fig:caratclarity) and \@ref(fig:caratcolor) we see a clear trend of lighter diamonds (lower 'carat' values) that are most expensive (so, in the upper left of the plot) having the highest quality of 'cut', 'clarity' and 'color'. This is no surprise, as we would expect the most expensive lighter diamonds to be of the best quality. 
+
+Conversely, we can also see some heavier diamonds which are of lower quality and lower price. Note in figure \@ref(fig:caratcut) that some of the lowest quality diamonds in terms of 'cut' (orange dots in the centre of the plot, on the vertical value of 2) are relatively cheap, despite being heavier than some of the lighter more expensive diamonds. But eventually the weight of the diamonds drives the price up regardless of the quality of 'cut', as we can see from the three orange dots in the top right of the plot. These are of the lowest quality cut, but are the three heaviest diamonds in the dataset, and so end up being expensive.
 
 ### Interactions 
 
@@ -756,56 +804,6 @@ factanal(diamonds[,-c(2:4,11)], factors =2)
 As we hypothesized Carat, price, x, y and z are well explained by factor 1. Depth is very well explained by factor 2 but table is to a lesser degree. We see some evidence of the factor structure in our hypothesis with the "price + dimension" variables strongly implicated in Factor 1 and "Light conductance" variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. We also see high uniqueness ratings for table indicating that the two factors do not well account for it's variance. 
 
 Overall the hypothesis test gives a highly significant result meaning that two factors is not sufficient to capture the full dimensionality of the data set.
-
-# Ken's Scatterplots (wasn't sure where would be best to place these- thought you'd have a better idea Ken)
-
-## Colour-coded scatterplots
-
-### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Cut'
-
-```{r caratcut, fig.cap="Carat vs Price, coloured by Cut"}
-
-# scatterplot of carat vs price, but also colouring the observations
-# by 'cut'
-ggplot(data=diamonds, aes(x=carat, y=price, color=cut))+
-  geom_point()+
-  guides(colour=guide_legend(reverse = T))
-```
-
-Figure \@ref(fig:caratcut) shows the scatterplot of 'carat' versus 'price' and coloured by 'cut'.
-
-### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Clarity'
-
-```{r caratclarity, fig.cap="Carat vs Price coloured by Clarity"}
-
-# scatterplot of carat vs price, but also colouring the observations
-# by 'cut'
-ggplot(data=diamonds, aes(x=carat, y=price, color=clarity))+
-  geom_point()+
-  guides(colour=guide_legend(reverse = T))
-```
-
-
-Figure \@ref(fig:caratclarity) shows the scatterplot of 'carat' versus 'price' and coloured by 'clarity'. 
-
-
-### Scatterplot of 'Carat' vs 'Price', colour coded by 'Color'
-
-```{r caratcolor, fig.cap="Carat vs Price coloured by Color"}
-
-# scatterplot of carat vs price, but also colouring the observations
-# by 'cut'
-ggplot(data=diamonds, aes(x=carat, y=price, color=color))+
-  geom_point()+
-  guides(colour=guide_legend(reverse = T))
-```
-
-
-Figure \@ref(fig:caratcolor) shows the scatterplot of 'carat' versus 'price' and coloured by 'color'. 
-
-In the three scatterplots figures \@ref(fig:caratcut), \@ref(fig:caratclarity) and \@ref(fig:caratcolor) we see a clear trend of lighter diamonds (lower 'carat' values) that are most expensive (so, in the upper left of the plot) having the highest quality of 'cut', 'clarity' and 'color'. This is no surprise, as we would expect the most expensive lighter diamonds to be of the best quality. 
-
-Conversely, we can also see some heavier diamonds which are of lower quality and lower price. Note in figure \@ref(fig:caratcut) that some of the lowest quality diamonds in terms of 'cut' (orange dots in the centre of the plot, on the vertical value of 2) are relatively cheap, despite being heavier than some of the lighter more expensive diamonds. But eventually the weight of the diamonds drives the price up regardless of the quality of 'cut', as we can see from the three orange dots in the top right of the plot. These are of the lowest quality cut, but are the three heaviest diamonds in the dataset, and so end up being expensive.
 
 # Linear Discriminant Analysis (LDA)
 
