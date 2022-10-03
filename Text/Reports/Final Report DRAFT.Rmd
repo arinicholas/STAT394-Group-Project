@@ -247,6 +247,8 @@ As our leading question is investigating which variables are most predictive or 
 
 #### Cut  
 
+Here we get the mean price of diamonds of different levels of the 'cut' variable. 
+
 
 ```{r cutmean, echo = FALSE}
 var_means <- tapply(diamonds$price, diamonds$cut, mean)
@@ -257,6 +259,7 @@ knitr::kable(var_means,
              caption = "Mean prices for the five levels of 'cut'")
 ```
 
+
 We see that the mean price of diamonds does differ for different levels of 'cut' (table \@ref(tab:cutmean)). However, we see that improved cut does not necessarily lead to increased price.
 
 ```{r dencut, echo = FALSE}
@@ -266,30 +269,33 @@ ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "
 
 Figure \@ref(fig:dencut) shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. We conducted a Analysis of Variance to see if these differences in mean price across levels of cut were significant. we also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If significant we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The results are summarised on the table below and the code for theses tests may be found in the appendices. 
 
-**Table: ANOVA of Price by Cut**
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrr}
-  \hline
- Test & Test Statistic & p-value \\ 
-  \hline
-ANOVA & 175.7 & < 2.2e-16 \\
-Levene's Test & 123.6 & < 2.2e-16  \\
-Kruskal Wallis & 978.62 & < 2.2e-16\\
-   \hline
-\end{tabular}
-\end{table}
-
-The ANOVA results above return a p-value of < 2.2e-16, meaning that there is strong evidence to suggest that mean price differs across levels of "cut". The Tukey Test indicated that at the 5% significance level, the only pairs between which we do not see a significant difference in mean price are "very Good" and "Good" as well as "Premium" and "Fair". Both the Levene's test and Kruskal Wallis Test return significant results  indicating that: a) the assumption of equal variance is violated and; b) that we have evidence of a significant difference in median prices for different levels of cut.  
-
-#### Clarity
-
-```{r, echo = FALSE}
-tapply(diamonds$price, diamonds$clarity, mean)
+```{r cutanotab, echo=FALSE}
+cutanovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
+                      Test_Statistic=c(175.7, 123.6, 978.62),
+                      p_value=c(rep("<2.2e-16",3)))
+knitr::kable(cutanovatab,
+             caption = "ANOVA of Price by Cut")
 ```
 
-Again, we see an indication the the mean price of diamonds does vary across different levels of clarity. Interestingly the diamonds with the two highest clarities show the lowest mean price. 
+Table \@ref(tab:cutanotab) shows the results of the ANOVA, Levene's and Kruskal Wallis tests for the 'cut' variable. The tests are to check whether there are differences in price between the different levels of 'cut'. The ANOVA test returned a p-value of < 2.2e-16 (machine precision zero), meaning that there is strong evidence to suggest that mean price differs across levels of "cut". 
+
+The Tukey Test indicated that at the 5% significance level, the only pairs between which we do not see a significant difference in mean price are 'Very Good' and 'Good' as well as 'Premium' and 'Fair'. Both the Levene's test and Kruskal Wallis Test return significant results  indicating that: a) the assumption of equal variance is violated and; b) that we have evidence of a significant difference in median prices for different levels of cut.  
+
+#### Clarity  
+
+Here we get the mean price of diamonds of different levels of the 'clarity' variable.  
+
+
+```{r clarmean, echo = FALSE}
+var_means_clarity <- tapply(diamonds$price, diamonds$clarity, mean)
+
+knitr::kable(var_means_clarity, 
+             digits = 0,
+             col.names = "Mean Price",
+             caption = "Mean prices for the 8 levels of 'clarity'")
+```
+
+Table \@ref(tab:clarmean) shows that the mean price of diamonds varies across different levels of 'clarity'. Interestingly the diamonds with the two highest clarities show the lowest mean price. 
 
 ```{r densityplots, fig.cap="Density plots for cut, color and clarity by price", echo=FALSE}
 cutplot <- ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "Very Good"| cut == "Fair"), aes(x = price, col = cut, group = cut, fill = cut)) +
@@ -314,30 +320,33 @@ ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity
 
 Figure \@ref(fig:denclar) shows the densities of the different levels of 'clarity' for price. A prominent peak is visible near the left for the better quality levels (IF, best, pink; WS1 second best, purple; WS2, third best, blue). We conducted a Analysis of Variance to see if these differences in mean price across levels of clarity were significant. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough.  We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
 
-**Table: ANOVA of Price by Clarity**
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrr}
-  \hline
- Test & Test Statistic & p-value \\ 
-  \hline
-ANOVA & 215 & < 2.2e-16 \\
-Levene's Test & 77.809 & < 2.2e-16  \\
-Kruskal Wallis & 2718.2 & < 2.2e-16\\
-   \hline
-\end{tabular}
-\end{table}
-
-The output frpm the ANOVA returns a p-value of < 2.2e-16, meaning there is strong evidence to suggest that mean price differs across levels of "clarity". The output of the Levene's test and Kruskal Wallis test above show that there is not equal variances between the levels, and that there is a significant difference between different levels of clarity. A tukey test showed that most pairwise combinations show a significant difference. There are only six that do not show a difference and they are: SI1-I1; VS2-I1; VS1-I1; VS2-SI1; VS1-VS2; and IF-VVS1.
-
-#### Color
-
-```{r, echo = FALSE}
-tapply(diamonds$price, diamonds$color, mean)
+```{r claranotab, echo=FALSE}
+claranovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
+                      Test_Statistic=c(215, 77.809, 2718.2),
+                      p_value=c(rep("<2.2e-16",3)))
+knitr::kable(claranovatab,
+             caption = "ANOVA of Price by Clarity")
 ```
 
-Again, we see an indication the the mean price of diamonds does vary across different levels of color. Interestingly the diamonds with the two highest color quality show the lowest mean price. 
+Table \@ref(tab:claranotab) shows the table of results from the three tests on the variable 'clarity'. The output frpm the ANOVA returns a p-value of < 2.2e-16, meaning there is strong evidence to suggest that mean price differs across levels of "clarity". The output of the Levene's test and Kruskal Wallis tests show that there is not equal variances between the levels, and that there is a significant difference between different levels of clarity. A Tukey test showed that most pairwise combinations show a significant difference. There are only six that do not show a difference and they are: SI1-I1; VS2-I1; VS1-I1; VS2-SI1; VS1-VS2; and IF-VVS1.
+
+
+#### Color  
+
+Here we get the mean price of diamonds of different levels of the 'color' variable.  
+
+
+```{r colmean, echo = FALSE}
+var_means_color <- tapply(diamonds$price, diamonds$color, mean)
+
+knitr::kable(var_means_color, 
+             digits = 0,
+             col.names = "Mean Price",
+             caption = "Mean prices for the 8 levels of 'color'")
+```
+
+Table \@ref(tab:colmean) shows the mean prices for the different levels of the 'color' variable and it is clear that they vary. Interestingly the diamonds with the two highest color quality show the lowest mean price.
+
 
 ```{r densitycol, echo = FALSE, fig.cap="Densities of 'price' for the different levels of 'color'", echo = FALSE}
 ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| color == "F"| color == "E"| color == "D"), aes(x = price, col = color, group = color, fill = color)) +
@@ -346,29 +355,24 @@ ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| c
 
 Figure \@ref(fig:densitycol) shows the density plots of 'price' for the different levels of the 'color' variable. There is a prominent peak on the left for the better quality levels of color (D in pink, E in purple, and F in blue), but otherwise the densities appear to be fairly similar. We will now test whether there are significant differences in mean price for different diamond colours. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough. We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
 
-**Table: ANOVA of Price by Clarity**
+```{r colanotab, echo=FALSE}
+colanovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
+                      Test_Statistic=c(175.7, 219.12, 1335.6),
+                      p_value=c(rep("<2.2e-16",3)))
+knitr::kable(colanovatab,
+             caption = "ANOVA of Price by Color")
+```
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrr}
-  \hline
- Test & Test Statistic & p-value \\ 
-  \hline
-ANOVA & 175.7 & < 2.2e-16 \\
-Levene's Test & 219.12 & < 2.2e-16  \\
-Kruskal Wallis & 1335.6 & < 2.2e-16\\
-   \hline
-\end{tabular}
-\end{table}
-
-We have strong evidence to suggest that mean price differs across levels of "color". The output of the Levene's test and Kruskal Wallis test above show that there is not equal variances between the levels, and that there is a significant difference in median price across different levels of clarity. The output from the Tukey Test showed significant differences in mean price for nearly all pairwise comparisons of diamond colors.
-
+Table \@ref(tab:colanotab) shows the results of the tests for the 'color' variable. We have strong evidence to suggest that mean price differs across levels of 'color'. The output of the Levene's test and Kruskal Wallis test above show that the variances are not equal between the levels, and that there is a significant difference in median price across different levels of 'color'. The output from the Tukey Test showed significant differences in mean price for nearly all pairwise comparisons of diamond colors.
 
 ### Outliers and Unusual Points 
 
-#### Mahalanobis Distance
+#### Mahalanobis Distance  
 
-We decided too investigate outliers and unusual points in our dataset. These points may have increased leverage or influence when we come to using variables to predict price. We began by using the Mahalanobis Distance to identify surprising and very surprising points.
+We decided to investigate outliers and unusual points in our dataset. These points may have increased leverage or influence when we come to using variables to predict price.  
+
+We began by using the Mahalanobis Distance to identify surprising and very surprising points. A 'somewhat surprising' point is one that is equal or greater than the 90th percentile, a 'surprising' point is one that is equal or greater than the 95th percentile, while a 'very surprising' point is one that is equal or greater than the 99th percentile. A 'typical' point is one that lies within the 90th percentile. 
+
 
 ```{r, echo = FALSE}
 diamonds_num$price <- as.numeric(diamonds_num$price)
@@ -379,26 +383,63 @@ upper.quantiles <- qchisq(c(.9,.95,.99), df = 7)
 density.at.quantiles <- dchisq(x = upper.quantiles, df = 7)
 cut.points <- data.frame(upper.quantiles, density.at.quantiles)
 diamonds_num$dM <- dM
-diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "very"))
-table(diamonds_num$surprise)
+diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat Surprising", "Surprising", "Very Surprising"))
+mahal_table <- table(diamonds_num$surprise)
 ```
 
-We see from the output above that while the vast majority of diamonds are typical there are a reasonable amount of "Surprising" and "Very Surprising" points in this dataset. We can see how many very surprising points (as identified with the Mahalanobis Distance) are members of each level of our categorical variables. This might help to indicate if any classes contain more surprising points than others.
+```{r Maltab, echo=FALSE}
+knitr::kable(mahal_table, 
+             col.names = c("Mahal Dist","Count"),
+             caption = "Mahalanobis distances surprising values")
+```
+
+We see from table \@ref(tab:Maltab) while the vast majority of diamonds are typical in terms of their Mahalanobis distances, there are a reasonable amount of "Surprising" and "Very Surprising" points in this dataset. We can see how many very surprising points (as identified with the Mahalanobis Distance) are members of each level of our categorical variables. This might help to indicate if any classes contain more surprising points than others.
 
 ```{r, echo = FALSE}
-diamonds$surprise <- diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "very"))
+diamonds$surprise <- diamonds_num$surprise <- cut(diamonds_num$dM, breaks = c(0, upper.quantiles, Inf), labels = c("Typical", "Somewhat", "Surprising", "Very"))
 
-VSdiamonds <- subset(diamonds, surprise =="very")
-table(interaction(VSdiamonds$cut))
-table(interaction(VSdiamonds$clarity))
-table(interaction(VSdiamonds$color))
+VSdiamonds <- subset(diamonds, surprise =="Very")
+
 ```
+
+```{r mahalcut, echo=FALSE}
+mahalcut <- table(interaction(VSdiamonds$cut))
+
+knitr::kable(mahalcut, 
+             col.names = c("Mahal Dist","Count"),
+             caption = "Mahalanobis distances for 'cut'")
+```
+
+Table \@ref(tab:mahalcut) shows the 'very surprising' Mahalanobis distances for the different levels of the variable 'cut'. 
+
+
+```{r mahalclar, echo=FALSE}
+mahalclar <- table(interaction(VSdiamonds$clarity))
+
+knitr::kable(mahalclar, 
+             col.names = c("Mahal Dist","Count"),
+             caption = "Mahalanobis distances for 'clarity'")
+```
+
+Table \@ref(tab:mahalclar) shows the 'very surprising' Mahalanobis distances for the different levels of the variable 'cut'. 
+
+
+```{r mahalcol, echo=FALSE}
+mahalcol <- table(interaction(VSdiamonds$color))
+
+knitr::kable(mahalcol, 
+             col.names = c("Mahal Dist","Count"),
+             caption = "Mahalanobis distances for 'color'")
+```
+
+Table \@ref(tab:mahalcol) shows the 'very surprising' Mahalanobis distances for the different levels of the variable 'color'. 
+
 
 #### Zero Values 
 
-In this section we identify any zero values and determine whether or not they are errors.
+In this section we identify any zero values and determine whether or not they are errors. The code below shows the lowest values for each of the seven numerical variables. The number of elements to display was tweaked until the output showed all the zero values (if any). 
 
-```{r, echo = FALSE}
+```{r}
 sort(decreasing=F, diamonds$carat)[1:10]
 sort(decreasing=F, diamonds$x)[1:10]
 sort(decreasing=F, diamonds$y)[1:10]
@@ -410,15 +451,16 @@ sort(decreasing=F, diamonds$price)[1:10]
 
 The output above shows that x, y and z all have a number of zero values, which presumably are errors.
 
-### Idendifying whether the zero observations are errors
+## Idendifying whether the zero observations are errors
 
-## Make a data.frame version of dataset
+We firstly make a dataframe version of the dataset to allow easy subsetting. Note that this version includes the 'surprising' Mahalanobis distance values (column name 'surprise'). This is useful as it allows us to see which erroneous values have generated very large Mahalanobis distances. 
 
 ```{r}
 diamonds.df <- data.frame(diamonds)
-diamonds.df[1:4,]
 
 ```
+
+We now display the zero values for each of the variable, noting whether the other variables are consistent with zero readings, or whether they indicate that this is impossible. For example, a diamond with zero mm width, but 6 mm height.
 
 ```{r}
 # display the zero values for 'x'
@@ -436,7 +478,7 @@ diamonds.df[diamonds$y==0,]
 diamonds.df[diamonds$z==0,]
 ```
 
-The outputs above show that the zero values for 'x', 'y' and 'z' are all errors. We can tell this because these diamonds have carat, depth and price values, meaning that they cannot have zero length (x), width (y) and depth (z). Note that for a lot of the observations with zero values in one of these variables also have zero values in the others. The variable 'y' is a good example; the output shows that every observation with a zero value for 'y' also has zero values for 'x' and 'z'.  
+The outputs above show that the zero values for 'x', 'y' and 'z' are all errors. We can tell this because these diamonds have carat, depth and price values, meaning that they cannot have zero length (x), width (y) and depth (z). Note that for a lot of the observations with zero values in one of these variables also have zero values in the others. The variable 'y' is a good example; the output shows that every observation with a zero value for 'y' also has zero values for 'x' and 'z'.  Note also that all of the zero values have 'very surprising' Mahalanobis distance results. This suggests that they are exerting undue influence or leverage on our results. However, this might be counterbalanced to a degree by the very large number of observations in the dataset. 
 
 ### Upper-value outliers
 
@@ -503,6 +545,8 @@ diamonds.df[diamonds.df$table>=73,]
 
 The output above for the highest values of 'table' show that the diamond with the largest value (95) was also considerably larger in other ways and was much more expensive. This suggests that this is a genuine value, rather than an error.  
 
+Note that all the upper outliers above, whether genuine or erroneous, have generated 'very surprising' values for their Mahalanobis distances.
+
 ### 'depth' and 'price': probably no upper value errors
 
 ```{r}
@@ -513,6 +557,8 @@ sort(diamonds.df$price, decreasing = TRUE)[1:10]
 The output above shows that neither 'depth' nor 'price' have any extreme values. We can probably safely conclude that these are all genuine upper values.
 
 ## Colour-coded scatterplots
+
+In these scatterplots we see the three categorical variables of 'cut', 'color' and 'clarity' all versus 'price', but further colour-coded so we can see the price of diamonds at the different levels of these variables. This exercise is useful to see why our subsequent linear regression model using the single predictor of 'carat' did not work as well as hoped. This is expanded upon in the commentary below under the heading "Why prediction without the categorical variables is not working well". 
 
 ### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Cut'
 
@@ -564,13 +610,13 @@ Conversely, we can also see some heavier diamonds which are of lower quality and
 
 As we have 3 categorical variables: color, clarity and cut with 7, 8 and 5 levels respectively we have 280 separate interactions in our data set. This makes it likely that there will be unknown classes in our data. 
 
-### Simple and Multiple Regression 
+# Simple and Multiple Regression 
 
 As we are interested in predicting price we thought it would be appropriate to do an initial multiple regression including all variables to see which are thought to be significant in predicting price when all other variables are included in the model. We have done this firstly with the raw variables and then with scaled versions of the variables.
 
-# Simple linear regression using 'carat'
+## Simple linear regression using 'carat'
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, results='hide'}
 carpricecor <- signif(cor(diamonds$carat, diamonds$price),4)
 
 ```
