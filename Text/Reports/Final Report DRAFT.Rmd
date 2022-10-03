@@ -147,121 +147,90 @@ knitr::kable(summ_diamonds,
              caption = "Summary statistics for 'diamonds' (2 d.p.)")
 ```
 
-A brief look at the summary statistics of the numerical variables (table \@ref(tab:summtab)) shows that they all exist on very different scales. We also see high skewness values for carat, price, y and z and high kurtosis values for all variables particularly y and z. Both of these indicate non-normality of our numeric variables. It is also interesting to note that at least one diamond has a zero value for x, y and z as that is the minimum value for those variables. This will be further investigated in the outliers and unusual points section. 
+A brief look at the summary statistics of the numerical variables (table \@ref(tab:summtab)) shows that there are a range of different scales. We also see high skewness values for carat, price, y and z and high kurtosis values for all variables, particularly y and z. Both of these indicate non-normality of our numeric variables. It is also interesting to note that at least one diamond has a zero value for x, y and z. These values are further investigated in the "Outliers and Unusual Points" section below. 
 
 
 ## Categorical Summaries
 
-**Table: cut count**
+### Tables of counts for the categorical variables
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr}
-  \hline
- Cut & Count \\ 
-  \hline
-Fair & 1610\\
-Good & 4960\\
-Ideal & 21551\\
-Premium & 13791\\
-Very Good & 12082\\
-   \hline
-\end{tabular}
-\end{table}
+```{r colortab, echo=FALSE}
+colortab <- table(diamonds$color)
 
-The table above gives a breakdown of the how many diamonds are in each level of the 'cut' variable. We can see that most are in the 'Ideal', with a substantial number also in the 'Premium' and 'Very Good'. 
+knitr::kable(colortab, 
+             caption = "Count of 'color'",
+             col.names = c("Level","Count"))
+```
 
-### Table of 'color' count
+Table \@ref(tab:colortab) shows the number of diamonds in each level of the 'color' variable. As a reminder, 'J' is the lowest level and 'D' is the highest.
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr}
-  \hline
- Color & Count \\ 
-  \hline
-D & 6775\\
-E & 9797\\
-F & 9542\\
-G & 11292\\
-H & 8304\\
-I & 5422\\
-J & 2808\\
-   \hline
-\end{tabular}
-\end{table}
+```{r cuttab, echo=FALSE}
+cuttab <- table(diamonds$cut)
 
-The table above shows the number of diamonds in each level of the 'color' variable.
+knitr::kable(cuttab, 
+             caption = "Count of 'cut'",
+             col.names = c("Level","Count"))
+```
 
-**Table: clarity count**
+Table \@ref(tab:cuttab) gives a breakdown of the how many diamonds are in each level of the 'cut' variable. As a reminder, 'Fair' is the lowest level and 'Ideal' is the highest. We can see that most are in the 'Ideal', with a substantial number also in the 'Premium' and 'Very Good'. 
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr}
-  \hline
- Clarity & Count \\ 
-  \hline
-I1	&741\\
-IF	&1790\\
-SI1&	13065\\
-SI2	&9194\\
-VS1	&8171\\
-VS2	&12258\\
-VVS1&	3655\\
-VVS2&	5066\\
-   \hline
-\end{tabular}
-\end{table}
+```{r clartab, echo=FALSE}
+clartab <- table(diamonds$clarity)
 
-The table above shows the counts for the different levels of the 'clarity' variable.
+knitr::kable(clartab, 
+             caption = "Count of 'clarity'",
+             col.names = c("Level","Count"))
+```
 
+Table \@ref(tab:clartab) shows the number of diamonds in each level of the 'clarity' variable. As a reminder, 'I1' is the lowest level and 'IF' is the highest. 
 ### Distribution of Numeric Variables 
 
-While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables in our EDA we had reason to believe that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness of fit tests. 
+While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables, we observed evidence that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness-of-fit tests. 
 
-```{r normal QQ plots, fig.cap= "Normal QQ Plots of Numeric Variables", fig.pos= "center", fig.pos= "H"}
+```{r normalQQplots, fig.cap= "Normal QQ Plots of Numeric Variables", fig.pos= "center", fig.pos= "H"}
 par(mfrow=c(3,3))  
-qqnorm(diamonds$carat, xlab = "Observations", ylab = "Normal Quantiles", main = "Carat", col = "red")
+qqnorm(diamonds$carat, xlab = "Observations", 
+       ylab = "Normal Quantiles", main = "Carat", col = "red")
 qqline(diamonds$carat, col = "blue", lwd =2)
-qqnorm(diamonds$depth, xlab = "Observations", ylab = "Normal Quantiles", main = "Depth", col = "red")
+qqnorm(diamonds$depth, xlab = "Observations", 
+       ylab = "Normal Quantiles", main = "Depth", col = "red")
 qqline(diamonds$depth, col = "blue", lwd =2)
-qqnorm(diamonds$table, xlab = "Observations", ylab = "Normal Quantiles", main = "Table", col = "red")
+qqnorm(diamonds$table, xlab = "Observations", 
+       ylab = "Normal Quantiles", main = "Table", col = "red")
 qqline(diamonds$table, col = "blue", lwd =2)
-qqnorm(diamonds$price, xlab = "Observations", ylab = "Normal Quantiles", main = "Price", col = "red")
+qqnorm(diamonds$price, xlab = "Observations", 
+       ylab = "Normal Quantiles", main = "Price", col = "red")
 qqline(diamonds$price, col = "blue", lwd =2)
-qqnorm(diamonds$x, xlab = "Observations", ylab = "Normal Quantiles", main = "x", col = "red")
+qqnorm(diamonds$x, xlab = "Observations", 
+       ylab = "Normal Quantiles", main = "x", col = "red")
 qqline(diamonds$x, col = "blue", lwd =2)
-qqnorm(diamonds$y, xlab = "Observations", ylab = "Normal Quantiles", main = "y", col = "red")
+qqnorm(diamonds$y, xlab = "Observations", 
+       ylab = "Normal Quantiles", main = "y", col = "red")
 qqline(diamonds$y, col = "blue", lwd =2)
-qqnorm(diamonds$depth, xlab = "Observations", ylab = "Normal Quantiles", main = "z", col = "red")
+qqnorm(diamonds$depth, xlab = "Observations", 
+       ylab = "Normal Quantiles", main = "z", col = "red")
 qqline(diamonds$depth, col = "blue", lwd =2)
 ```
 
-Despite the small size of the Normal QQ plots shown above it is clear they indicate that each numeric variable deviates significantly from a normal distribution. We tested this using Kolmogorov-Smirnov goodness of fit test. The results from these tests are shown in the table below. 
+Despite the small size of the Normal QQ plots in figure \@ref(fig:normalQQplots), it is clear that each numeric variable deviates significantly from a normal distribution. We tested this using Kolmogorov-Smirnov goodness-of-fit test. The results from these tests are shown in the table below. 
 
-**Table: Kolmogorov-Smirnov GOF Results**
+```{r KSGOF, echo=FALSE}
+KS_GOF <- data.frame(Variable=c("Carat","Depth","Table","Price","x","y","z"),
+                     Test_Statistic=c(0.12274, 0.075871, 0.13225, 0.18467,
+                                         0.093545, 0.088528, 0.089273),
+                     p_value=c(rep("<2.2e-16",7)))
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrr}
-  \hline
- Variable & Test Statistic (D) & p-value \\ 
-  \hline
-Carat & 0.12274 & < 2.2e-16 \\
-Depth & 0.075871 & < 2.2e-16  \\
-Table & 0.13225 & < 2.2e-16\\
-Price & 0.18467 &  < 2.2e-16 \\
-x & 0.093545 & < 2.2e-16 \\
-y & 0.088528 & < 2.2e-16 \\
-z & 0.089273 & < 2.2e-16 \\
-   \hline
-\end{tabular}
-\end{table}
+knitr::kable(KS_GOF, 
+             caption = "Kolmogorov-Smirnov GOF results")
+                     
+```
 
-The table above shows that for each numeric variable the KS goodness of fit test gave evidence that it did not follow a normal distribution 
+Table \@ref(tab:KSGOF) shows that for all seven of the numeric variables, the Kolmogorov-Smirnov goodness-of-fit tests provided strong evidence for non-normality, as evidenced by the p-values which are all machine precision zero.
+
 
 ### Correlation Matrix
 
-```{r corrplot, fig.cap="A Visualization of the Correlation Matrix", echo=FALSE}
+```{r corrplot, fig.cap="A Visualization of the Correlation Matrix", echo=FALSE, warning=FALSE}
 ggcorrplot(cor(diamonds_num),
            method = "circle",
            hc.order = TRUE,
@@ -289,7 +258,7 @@ ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-Figure \@ref(fig:densityclar)shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. We conducted a Analysis of Variance to see if these differences in mean price across levels of cut were significant. we also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If significant we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The results are summarised on the table below and the code for theses tests may be found in the appendices. 
+Figure \@ref(fig:densitycut)shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. We conducted a Analysis of Variance to see if these differences in mean price across levels of cut were significant. we also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If significant we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The results are summarised on the table below and the code for theses tests may be found in the appendices. 
 
 **Table: ANOVA of Price by Cut**
 
