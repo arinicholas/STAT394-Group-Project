@@ -182,7 +182,8 @@ knitr::kable(clartab,
              col.names = c("Level","Count"))
 ```
 
-Table \@ref(tab:clartab) shows the number of diamonds in each level of the 'clarity' variable. As a reminder, 'I1' is the lowest level and 'IF' is the highest. 
+Table \@ref(tab:clartab) shows the number of diamonds in each level of the 'clarity' variable. As a reminder, 'I1' is the lowest level and 'IF' is the highest.  
+
 ### Distribution of Numeric Variables 
 
 While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables, we observed evidence that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness-of-fit tests. 
@@ -246,7 +247,7 @@ Figure \@ref(fig:corrplot) shows the correlation plot for the numerical variable
 As our leading question is investigating which variables are most predictive or price we decided to investigate if there are significant differences in price across levels of each categorical variable. 
 
 #### Cut  
-
+\hfill\break  
 Here we get the mean price of diamonds of different levels of the 'cut' variable. 
 
 
@@ -260,7 +261,7 @@ knitr::kable(var_means,
 ```
 
 
-We see that the mean price of diamonds does differ for different levels of 'cut' (table \@ref(tab:cutmean)). However, we see that improved cut does not necessarily lead to increased price.
+The mean price of diamonds differs for different levels of 'cut' (table \@ref(tab:cutmean)). However, the higher levels of cut do not necessarily lead to higher prices.
 
 ```{r dencut, echo = FALSE}
 ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "Very Good"| cut == "Fair"), aes(x = price, col = cut, group = cut, fill = cut)) +
@@ -281,8 +282,8 @@ Table \@ref(tab:cutanotab) shows the results of the ANOVA, Levene's and Kruskal 
 
 The Tukey Test indicated that at the 5% significance level, the only pairs between which we do not see a significant difference in mean price are 'Very Good' and 'Good' as well as 'Premium' and 'Fair'. Both the Levene's test and Kruskal Wallis Test return significant results  indicating that: a) the assumption of equal variance is violated and; b) that we have evidence of a significant difference in median prices for different levels of cut.  
 
-#### Clarity  
-
+#### Clarity   
+\hfill\break    
 Here we get the mean price of diamonds of different levels of the 'clarity' variable.  
 
 
@@ -332,9 +333,8 @@ Table \@ref(tab:claranotab) shows the table of results from the three tests on t
 
 
 #### Color  
-
+\hfill\break
 Here we get the mean price of diamonds of different levels of the 'color' variable.  
-
 
 ```{r colmean, echo = FALSE}
 var_means_color <- tapply(diamonds$price, diamonds$color, mean)
@@ -345,7 +345,7 @@ knitr::kable(var_means_color,
              caption = "Mean prices for the 8 levels of 'color'")
 ```
 
-Table \@ref(tab:colmean) shows the mean prices for the different levels of the 'color' variable and it is clear that they vary. Interestingly the diamonds with the two highest color quality show the lowest mean price.
+Table \@ref(tab:colmean) shows the mean prices for the different levels of the 'color' variable and it is clear that they vary. The diamonds with the two highest color quality show the lowest mean price.
 
 
 ```{r densitycol, echo = FALSE, fig.cap="Densities of 'price' for the different levels of 'color'", echo = FALSE}
@@ -368,7 +368,7 @@ Table \@ref(tab:colanotab) shows the results of the tests for the 'color' variab
 ### Outliers and Unusual Points 
 
 #### Mahalanobis Distance  
-
+\hfill\break
 We decided to investigate outliers and unusual points in our dataset. These points may have increased leverage or influence when we come to using variables to predict price.  
 
 We began by using the Mahalanobis Distance to identify surprising and very surprising points. A 'somewhat surprising' point is one that is equal or greater than the 90th percentile, a 'surprising' point is one that is equal or greater than the 95th percentile, while a 'very surprising' point is one that is equal or greater than the 99th percentile. A 'typical' point is one that lies within the 90th percentile. 
@@ -436,7 +436,7 @@ Table \@ref(tab:mahalcol) shows the 'very surprising' Mahalanobis distances for 
 
 
 #### Zero Values 
-
+\hfill\break
 In this section we identify any zero values and determine whether or not they are errors. The code below shows the lowest values for each of the seven numerical variables. The number of elements to display was tweaked until the output showed all the zero values (if any). 
 
 ```{r}
@@ -571,7 +571,7 @@ ggplot(data=diamonds, aes(x=carat, y=price, color=cut))+
   guides(colour=guide_legend(reverse = T))
 ```
 
-Figure \@ref(fig:caratcut) shows the scatterplot of 'carat' versus 'price' and coloured by 'cut'.
+Figure \@ref(fig:caratcut) shows the scatterplot of 'carat' versus 'price' and coloured by 'cut'. Notice the amount of overlap between diamonds from different levels of 'cut'. There is no clear separation, meaning that a discriminant analysis or cluster analysis will struggle to distinguish between the levels.
 
 ### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Clarity'
 
@@ -585,7 +585,7 @@ ggplot(data=diamonds, aes(x=carat, y=price, color=clarity))+
 ```
 
 
-Figure \@ref(fig:caratclarity) shows the scatterplot of 'carat' versus 'price' and coloured by 'clarity'. 
+Figure \@ref(fig:caratclarity) shows the scatterplot of 'carat' versus 'price' and coloured by 'clarity'. In terms of separation of the different levels, this appears more promising. Note the clear colour bands running from the bottom left to the upper right. While not perfectly separated, we can see a clear orange band at the bottom, then a clearish yellow/brown band above that, and then a clear green band etc. However, these bands still run diagonally through a large range of 'price' values (for example, the band of crimson dots at the very left runs upward from a few hundred dollars all the way up past the 17,000 dollar mark), meaning that predicting price based solely on these levels will be problematic.
 
 
 ### Scatterplot of 'Carat' vs 'Price', colour coded by 'Color'
@@ -697,6 +697,8 @@ summary(best.lm)
 The summary output for the 'best' model above shows how the categorical variables, all of which measure diamond quality, add a lot to the accuracy of the model. For example, 'Clarity', which has 8 levels, adds from 2702.077 (lowest quality clarity) to 5344.338 (highest quality clarity) to price depending on which level the diamond is categorised at. This is a wide range and cannot be obtained with these categorical variables dropped from the model.
 
 ## Check Regression Assumptions
+\hfill\break
+Here we check the regression assumptions by examining the diagnostic plots.
 
 
 ```{r}
@@ -711,15 +713,16 @@ By examining the residual plots we see that it is likely that the assumptions un
 
 ## Scaled multiple regression model
 
-In this version we scale the variables. 
+In this version we scale the numerical variables and include the three categorical variables in the model. 
 
 ```{r}
-diamondslm <- lm(price ~ scale(carat) + scale(x) + scale(y) + scale(z) + scale(depth) + scale(table) + cut + clarity + color, data = diamonds)
+diamondslm <- lm(price ~ scale(carat) + scale(x) + scale(y) + 
+                   scale(z) + scale(depth) + scale(table) + 
+                   cut + clarity + color, data = diamonds)
 summary(diamondslm)
 ```
 
-An initial multiple regression indicates that all variables but y and z are significant in the model (once the effect of the other predictors has been accounted for). This model accounts of 91.98% of the variation in the data.  
-
+This multiple regression indicates that all variables but y and z are significant in the model (once the effect of the other predictors has been accounted for). This model accounts of 91.98% of the variation in the data.  
 
 
 # Principal Component Analysis
@@ -730,7 +733,8 @@ We will perform a PCA with the aim of being able to explain the variation in the
 ```{r}
 pca.diamonds <- prcomp(subset(diamonds.df, select = c(1,5:10)),
                        center=TRUE, scale. = TRUE, retx=TRUE)
-plot(pca.diamonds)
+plot(pca.diamonds, main="Proportion of variance contained in each PC",
+     xlab="Principal Component")
 summary(pca.diamonds)
 ```
 
@@ -829,13 +833,13 @@ In our investigation of the principal components of the dataset we observed that
 factanal(diamonds[,-c(2:4,11)], factors =2)
 ```
 
-As we hypothesized Carat, price, x, y and z are well explained by factor 1. Depth is very well explained by factor 2 but table is to a lesser degree. We see some evidence of the factor structure in our hypothesis with the "price + dimension" variables strongly implicated in Factor 1 and "Light conductance" variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. We also see high uniqueness ratings for table indicating that the two factors do not well account for it's variance. 
+As we hypothesized Carat, price, x, y and z are well explained by factor 1. Depth is very well explained by factor 2, but table is explained only to a lesser degree. We see some evidence of the factor structure in our hypothesis with the "price + dimension" variables strongly implicated in Factor 1 and "Light conductance" variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. We also see high uniqueness ratings for table indicating that the two factors do not well account for it's variance. 
 
 Overall the hypothesis test gives a highly significant result meaning that two factors is not sufficient to capture the full dimensionality of the data set.
 
 # Linear Discriminant Analysis (LDA)
 
-As discussed previously the diamonds dataset has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. We will attempt too use Linear Discriminant Analysis to classify observations more simply using one of the categorical variables at a time.
+As discussed previously the diamonds dataset has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. We will attempt to use Linear Discriminant Analysis to classify observations more simply using one of the categorical variables at a time.
 
 ```{r}
 set.seed(300525287, kind = "Mersenne-Twister")
@@ -856,7 +860,7 @@ LDAclarity <- lda(clarity ~ carat + depth + table + price
 
 We see that mean carat and mean price seem to differ the most across levels of "cut". In LD1 x and y weight significantly more than the other variables.  
 
-```{r ordplot, fig.cap="Ordination plot"}
+```{r ordplot, fig.cap="Ordination plots"}
 library(ggord)
 
 g1 <- ggord(LDAcut, diamonds.Train$cut, alpha = 0.5, )
@@ -882,23 +886,14 @@ Coloracc <- sum(diag(RCMcolor))/sum(RCMcolor)
 Clarityacc <- sum(diag(RCMclarity))/sum(RCMclarity)
 ```
 
-**Table: Classification Accuracy for Different LDA's**
+```{r LDAacc, echo = FALSE}
+LDAacc <- data.frame(Class=c("Cut","Color","Clarity"),
+                      Accuracy=c(0.6382, 0.196, 0.1457))
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{rr}
-  \hline
- Class & Accuracy \\ 
-  \hline
-Cut & 0.6382\\
-Color & 0.196  \\
-Clarity & 0.1457\\
-   \hline
-\end{tabular}
-\end{table}
+knitr::kable(LDAacc,caption = "Classification Accuracy for Different LDAs")
+```
 
-In the table above we see the only categorical variables the LDA has any sucess of classifying is "cut". For color and clarity the LDA performs very poorly indeed. We conclude that it is likely that the classes (particularly for clarity and color) are not linearly seperable. 
-
+Table \@ref(tab:LDAacc) displays the accuracy of the classification achieved by the LDA for the different categorical variables. The only variable that was successfully classified is 'cut'. For 'color' and 'clarity' the LDA performs poorly. We conclude that it is likely that the classes (particularly for clarity and color) are not linearly separable. 
 
 ## Why prediction without the categorical variables is not working well
 
