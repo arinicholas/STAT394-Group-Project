@@ -829,11 +829,23 @@ We will now perform a principal regression analysis with price as the response v
 
 ```{r}
 PCAprice <- prcomp(smallersample[,-c(2:4,7,11)], center = TRUE, scale = TRUE)
-plot(PCAprice)
-summary(PCAprice)
 ```
 
-The plot above shows the proportion of variation explained by each of the principal components. The first three principal components explain nearly all (99%) the variation in the data.
+```{r}
+pca.varpri <- PCAprice$sdev^2
+pca.varpri.per <- round(pca.varpri/sum(pca.varpri)*100,1)
+
+```
+
+```{r pcascreereg, fig.cap="Scree plot of the regression Principal Components"}
+barplot(pca.varpri.per, names.arg = pca.varpri.per,
+        xlab = "Principal Components 1 to 7",
+        ylab = "% information retained by each PC",
+        main="Screeplot of the regression Principal Components")
+
+```
+
+Figure \@ref(fig:pcascreereg) shows the scree plot of the proportion of variance explained by each of the Principal Components of the PC regression. The first three principal components explain nearly all (99%) the variation in the data.
 
 ```{r}
 PCAprice$rotation
@@ -864,7 +876,7 @@ summary(diamondpricePCA2)
 It is likely that the remaining, unexplained variation could be explained by the categorical variables in the dataset. As Principal Components Analysis/Regression can only be used for numerical variables we had to leave out the variables of cut, clarity and color.
 
 
-## Factor Analysis
+# Factor Analysis
 
 In our investigation of the principal components of the dataset we observed that the first two principal components explained the the vast majority of the variation in the data.  The first was dominated by the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative correlation between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors (1. "Price + Dimension" 2. "Light Performance") may explain the observations in the diamonds dataset. To investigate this we will conduct an exploratory factor analysis with two factors.  
 
