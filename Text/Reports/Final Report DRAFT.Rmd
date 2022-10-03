@@ -33,10 +33,11 @@ library(cowplot)
 library(devtools)
 library(ggbiplot)
 library(factoextra)
-library(devtools)
+library(devtools) # general package
 library(ggord)
 library(klaR)
-library(cluster)
+library(cluster) # for silhouette plot
+
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 ```
@@ -46,37 +47,41 @@ options(xtable.timestamp = "")
 
 Our multivariate statistical investigation uses the 'Diamonds' data set. This data set is a base data set in R (available in the ggplot2 package) and is also freely available on Kaggle [@diamondskaggle]. It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while 7 are numerical. 
 
-## Variables
+## The variables
 
-- Carat: a measure of the diamond's weight. One carat equals 1/5 gram. In this data set we have diamonds with a carat ranging from 0.2 - 5.01.  
+- Carat: a measure of the diamond's weight. One carat equals 1/5 gram. In this data set there are diamonds with carat values ranging from 0.2 - 5.01.  
 
 - Cut: A diamond's cut defines its proportions and its ability to reflect light. This variable has five levels: Fair (lowest quality), Good, Very Good, Premium and Ideal (highest quality).  
 
-- Color: A diamond's color refers to how clear/colorless it is. This variable has seven levels: J (lowest quality), I, H, G, F, E, D (highest quality)
+- Color: A diamond's color refers to how clear/colorless it is. This variable has seven levels: J (lowest quality), I, H, G, F, E, D (highest quality).
 
-- Clarity: measures small imperfections on the surface and within the stone. This variable has eight levels:  I1 (lowest clarity), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (highest clarity)  
+- Clarity: measures small imperfections on the surface and within the stone. This variable has eight levels:  I1 (lowest clarity), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (highest clarity).  
 
-- x: length in mm. In this data set there are diamonds with a length ranging from 0 - 10.74 
+- x: length in mm. In this data set there are diamonds with a length ranging from 0 - 10.74. 
 
-- y: width in mm. In this data set there are diamonds with a width ranging from 0 - 58.9  
+- y: width in mm. In this data set there are diamonds with a width ranging from 0 - 58.9.  
 
-- z: depth in mm. In this data set there are diamonds with a depth ranging from 0 - 31.8 
+- z: depth in mm. In this data set there are diamonds with a depth ranging from 0 - 31.8. 
 
-- Depth: total depth percentage. This is calculated by dividing the total width by the total depth $depth=\frac{2\times z}{(x+y)}$. Depth percentage impacts how light reflects of the diamond. In this data set we have diamonds with a depth percentage ranging from 43% - 79%
+- Depth: total depth percentage. This is calculated by dividing the total width by the total depth ($depth=\frac{2\times z}{(x+y)}$). Depth percentage impacts how light reflects of the diamond. In this data set we have diamonds with a depth percentage ranging from 43% - 79%.
 
-- Table: The flat facet on the top of a diamond is called its table. Table is calculated by dividing table width by the total width. Table percentage impacts how light reflects of the diamond. In this data set there are diamonds with a table percentage ranging from 43% - 95%
+- Table: The flat facet on the top of a diamond is called its table. Table is calculated by dividing table width by the total width. Table percentage impacts how light reflects of the diamond. In this data set there are diamonds with a table percentage ranging from 43% - 95%.
 
-- Price: price of the diamond in United States dollars (USD). In this data set there are diamonds with a price ranging from $326 - $18823
+- Price: price of the diamond in United States dollars (USD). In this data set there are diamonds with a price ranging from $326 - $18823.
+
+### Why 'diamonds'?
 
 We selected the diamonds dataset because it was easy to understand what the variables were measuring. This was in contrast to some of the other ones we looked at which required domain specific familiarity, such as knowledge about biology or chemistry (or even worse, bio-chemistry!). This data set also allows us to undertake an investigation from which we glean insights about diamonds that have real-world application and use. 
 
-Our primary aim was to identify which variables best predictor the price of any given diamond. We hypothesise that increased diamond size (x, y and z) and weight will be positively correlated with diamond price. We also expect to see increased prices for diamonds with higher levels of the categorical variables. We are unsure how diamond depth and table percentage while relate to diamond price. 
+### Aims
 
-We also seek to explore the techniques of Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) on the diamonds dataset. The diamonds dataset has 280 unique possible interactions between different levels of the categorical variables. We will attempt to use the techniques of LDA and CA to more simply classify the diamonds data.
+Our primary aim was to identify which variables best predictor the price of any given diamond. We hypothesised that increased diamond size (x, y and z) and weight will be positively correlated with diamond price. We also expected to see increased prices for diamonds with higher levels of the categorical variables. We were unsure how diamond depth and table percentage will relate to diamond price. 
+
+We also sought to explore the techniques of Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) that we have learned in STAT394. The diamonds dataset has 280 unique possible interactions (5 x 7 x 8) between different levels of the categorical variables. Our secondary aim was to discover whether one of these techinques (PCA, LDA or CA) could classify the data in a simpler manner.
 
 # Methodology
 
-The diamonds data set was accessed via the kaggle.com website while all statistical analysis and reporting was completed in R/R Markdown [@R-base]. Github [@github] was used a repository for storing all relevant documents and code during this project.
+The diamonds data set was accessed via the kaggle.com website [@diamondskaggle] while all statistical analysis and reporting was completed using the computer software package R [@R-base], in RStudio [@RStudio] and using RMarkdown [@RMarkdown]. Github [@github] was used a repository for storing all relevant documents and code during this project.
 
 Upon loading the data set into R we first used the following code to delete unnecessary columns, ensure categorical variables were treated as factors with set levels and created a subset data set containing only the numeric variables.
 
@@ -91,7 +96,7 @@ diamonds$cut <- factor(diamonds$cut,
 diamonds$color <- factor(diamonds$color, 
                          levels = c("J","I","H","G","F","E","D"))
 diamonds$clarity <- factor(diamonds$clarity,
-                           levels = c("I1","SI2","SI1","VS2","VS1","VVS2","VVS1","IF"))
+                  levels = c("I1","SI2","SI1","VS2","VS1","VVS2","VVS1","IF"))
 # Make data frame of just the numerical variables
 diamonds_num <- subset(diamonds, select = c(carat,depth,table,price,x,y,z))
 ```
@@ -100,7 +105,7 @@ When scaling numerical values in our data set we used the `scale()` function.
 
 When taking smaller samples from our data set to improve the interpretability of visual plots we used a seed consisting of either the student identification number of the team member who wrote the code or 1234567890, and the pseudo random number generator Mersenne Twister.
 
-To begin our investigation we undertook an in-depth Exploratory Data Analysis (EDA) of the data. The key results from the EDA can be found in the results section below. We used this to develop our leading questions that we attempt to answer using the multivariate statistical techniques of Principal Components Analysis, Factor Analysis, Linear Discriminant Analysis and Cluster Analysis. 
+To begin with, we undertook an in-depth Exploratory Data Analysis (EDA) of the data. The key results from the EDA can be found in the results section below. 
 
 # Results
 
@@ -110,7 +115,8 @@ In this section we present key findings from the consolidated Exploratory Data A
 
 ### Summaries of Data
 
-```{r, echo=FALSE}
+
+```{r summtab, echo=FALSE}
 # use the summary function to create the summary data for the numerical variables
 MySummary <- function(x){
   return(c(
@@ -137,13 +143,14 @@ rownames(summ_diamonds) <- c("sample size","minimum",
                             "skewness","kurtosis")
 
 knitr::kable(summ_diamonds,
-             digits = 3,
-             caption = "Summary statistics for 'diamonds' (3 s.f.)")
+             digits = 2,
+             caption = "Summary statistics for 'diamonds' (2 d.p.)")
 ```
 
-A brief look at the summary statistics of the numerical variables shows that they all exist on very different scales. We also see high skewness values for carat, price, y and z and high kurtosis values for all variables particularly y and z. Both of these indicate non-normality of our numeric variables. It is also interesting to note that at least one diamond has a zero value for x, y and z as that is the minimum value for those variables. This will be further investigated in the outliers and unusual points section. 
+A brief look at the summary statistics of the numerical variables (table \@ref(tab:summtab)) shows that they all exist on very different scales. We also see high skewness values for carat, price, y and z and high kurtosis values for all variables particularly y and z. Both of these indicate non-normality of our numeric variables. It is also interesting to note that at least one diamond has a zero value for x, y and z as that is the minimum value for those variables. This will be further investigated in the outliers and unusual points section. 
 
-Categorical Summaries
+
+## Categorical Summaries
 
 **Table: cut count**
 
