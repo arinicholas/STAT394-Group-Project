@@ -228,7 +228,6 @@ knitr::kable(KS_GOF,
 
 Table \@ref(tab:KSGOF) shows that for all seven of the numeric variables, the Kolmogorov-Smirnov goodness-of-fit tests provided strong evidence for non-normality, as evidenced by the p-values which are all machine precision zero.
 
-
 ### Correlation Matrix
 
 ```{r corrplot, fig.cap="A Visualization of the Correlation Matrix", echo=FALSE, warning=FALSE}
