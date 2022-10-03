@@ -648,18 +648,29 @@ caranova[[5]][1]
 
 ```
 
-
 The output from the linear regression model above shows that 'carat' is a good predictor of 'price'. The t-test statistic is `r F_stat`, which is an enormous number, and the p-value is `r caranova[[5]][1]`. So, with a p-value of zero, we have very strong evidence to say that 'carat' is a good predictor of 'price'. 
 
 ## Testing to find the best regression model
 
 ### The Akaike Information Criterion (AIC) test
-We now use the Akaike Information Criterion (AIC) stepwise regression test in R to find the best regression model that has 'price' as the response variable. We are particularly interested in whether any other models outperform the simple 'carat' model.
+We now use the Akaike Information Criterion (AIC) stepwise regression test in R to find the best regression model that has 'price' as the response variable. We are particularly interested in whether any other models outperform the simple 'carat' model. The output for these tests is pages long, so for brevity the `results='hide'` command has been used in the code chunk to allow viewing of the code while not displaying the output.  
 
 ```{r}
-# fit the linear regression model with all predictors
-full.lm <- lm(price ~ .,data = diamonds)
+# create version with the 'surprising' variable (Mahalanobis distance) removed
+diamonds_reg <- diamonds[,-11]
 
+```
+
+
+
+```{r, results='hide'}
+# show code, but don't display results as they run to pages long
+# fit the linear regression model with all predictors
+full.lm <- lm(price ~ .,data = diamonds_reg)
+```
+
+```{r, results='hide'}
+# show code, but don't display results as they run to pages long
 # display the model summary
 summary(full.lm)
 
@@ -667,11 +678,14 @@ summary(full.lm)
 step(full.lm, direction = "both")
 ```
 
-Based on the output from the stepwise AIC regression comparison above, the best model which balances accuracy against parsimony is the one with predictors carat + cut + color + clarity + depth + table + x. In other words, the predictors that were dropped are y and z. The AIC value for this model is 758425 compared with 758426 for the next best. The difference between the two is only 1, but the principle of parsimony dictates that we select the simplest model, which means selecting the one that drops the variable 'y'. 
+Based on the output from the stepwise AIC regression comparison above, the best model which balances accuracy against parsimony is the one with predictors carat + cut + color + clarity + depth + table + x + z. In other words, the only predictor that was dropped is 'y'. The AIC value for this model is 758425, which is the same for the model that additionally drops 'z'. Therefore, following the principle of parsimony, we select the simplest model, which means selecting the one that drops the variables 'y' and 'z'. This model is: price = carat + cut + color + clarity + depth + table + x.
 
 ### Bayes Information Criterion (BIC) model comparison
 
-```{r}
+As a check, we also perform a model comparison using the BIC criteria. 
+
+```{r, results='hide'}
+# show code, but don't display results as they run to pages long
 # store the sample size in a variable 
 n <- length(diamonds$price)
 
@@ -679,7 +693,7 @@ n <- length(diamonds$price)
 step(full.lm, direction = "both", k=log(n))
 ```
 
-The model comparison using the Bayes Information Criterion (BIC) confirms that the best model is the one with variables carat + cut + color + clarity + depth + table + x (output above). The BIC value for this model is 758621, compared with 758629 for the next best. 
+The model comparison using the Bayes Information Criterion (BIC) confirms that the best model is the one with variables carat + cut + color + clarity + depth + table + x. The BIC value for this model is 758621, compared with 758629 for the next best (which includes 'z'). 
 
 ## Fitting the best model
 
@@ -700,7 +714,7 @@ The summary output for the 'best' model above shows how the categorical variable
 Here we check the regression assumptions by examining the diagnostic plots.
 
 
-```{r}
+```{r diagplots, fig.cap="Diagnostic plots to check regression assumptions"}
 par(mfrow=c(2,2))
 plot(best.lm, 1)
 plot(best.lm, 2)
@@ -708,7 +722,7 @@ plot(best.lm, 3)
 plot(best.lm, 4)
 ```
 
-By examining the residual plots we see that it is likely that the assumptions underlying a multiple linear regression such as linearity, homogeneity of the variance and normality of the residuals are violated. There also appears to be a number of points with high leverage and influence. We should therefore be cautious in concluding much from this regression model. 
+By examining the residual plots (figure \@ref(fig:diagplots)) we see that it is likely that the assumptions underlying a multiple linear regression such as linearity, homogeneity of the variance and normality of the residuals are violated. There also appears to be a number of points with high leverage and influence. We should therefore be cautious in concluding much from this regression model. 
 
 ## Scaled multiple regression model
 
@@ -732,12 +746,23 @@ We will perform a PCA with the aim of being able to explain the variation in the
 ```{r}
 pca.diamonds <- prcomp(subset(diamonds.df, select = c(1,5:10)),
                        center=TRUE, scale. = TRUE, retx=TRUE)
-plot(pca.diamonds, main="Proportion of variance contained in each PC",
-     xlab="Principal Component")
-summary(pca.diamonds)
 ```
 
-We see that the first principal component explains the majority of the variance (68%) in the dataset with second (18%) and third (10%) principal components explaining a noticeable amount. Components beyond the third principal component explain minimal variance (less than 4%). This indicates we can describe the data using only the first two or three principal components without losing much information. We will now examine which variables contribute most strongly to each Principal Component. 
+```{r}
+pca.var <- pca.diamonds$sdev^2
+pca.var.per <- round(pca.var/sum(pca.var)*100,1)
+
+```
+
+```{r pcascree, fig.cap="Scree plot of the Principal Components"}
+barplot(pca.var.per, names.arg = pca.var.per,
+        xlab = "Principal Components 1 to 7",
+        ylab = "% information retained by each PC",
+        main="Screeplot of the Principal Components")
+
+```
+
+Figure \@ref(fig:pcascree) shows the scree plot for the Principal Components of the diamonds dataset. PC1 contains `r pca.var.per[1]`% of the variance, PC2 contains `r pca.var.per[2]`%, while PC3 contains `r pca.var.per[3]`%. Between them they contain `r sum(pca.var.per[1:3])`%, which is clearly very good. Components beyond the third principal component explain minimal variance (less than 4%). This suggests we can describe the data using only the first two or three principal components without losing much information. We will now examine which variables contribute most strongly to each Principal Component. 
 
 
 ```{r}
@@ -747,11 +772,11 @@ pca.diamonds$rotation
 Looking at the eigenvectors we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth and table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation.  A visualization of the PCA is shown in the Biplot below. 
 
 
-```{r}
+```{r biplotpc, fig.cap="Biplot of Principal Components"}
 ggbiplot(pca.diamonds, obs.scale =1, var.scale = 1)
 ```
 
-Due to the vast number of data entries it is hard to interpret what is going on from the visual display. We will not take a smaller sample of 1000 from the diamonds data and redo the PCA after first checking that the smaller sample has similar properties to the full sample. Also of note in this biplot are two significant outliers to the far right, which are extreme values of PC1. We shall idetify those before creating the smaller sample.
+The large number of observations in the biplot of PC1 versus PC2 in figure \@ref(fig:biplotpc) and consequent overlapping of the dots makes interpretation difficult. We will take a smaller sample of 1000 from the diamonds data and redo the PCA after first checking that the smaller sample has similar properties to the full sample. Also of note in this biplot are two significant outliers to the far right, which are extreme values of PC1. We shall identify those before creating the smaller sample.
 
 ## Identify the extreme PC1 values
 
@@ -768,18 +793,33 @@ reducedpca <- prcomp(smallersample[,-c(2:4,11)], center = TRUE, scale = TRUE)
 ```
 
 ```{r}
-plot(reducedpca)
+pca.var_red <- reducedpca$sdev^2
+pca.var.per_red <- round(pca.var_red/sum(pca.var_red)*100,1)
+
+```
+
+```{r pcascreered, fig.cap="Scree plot of the Principal Components (reduced dataset)"}
+barplot(pca.var.per_red, names.arg = pca.var.per_red,
+        xlab = "Principal Components 1 to 7",
+        ylab = "% information retained by each PC",
+        main="Screeplot of the Principal Components (reduced dataset)")
+
+```
+
+Figure \@ref(fig:pcascreered) shows the scree plot of the Principal Components for the reduced dataset. PC1 contains `r pca.var.per_red[1]`% of the variance, PC2 contains `r pca.var.per_red[2]`%, while PC3 contains `r pca.var.per_red[3]`%. Between them they contain `r sum(pca.var.per_red[1:3])`%.
+
+
+```{r}
 summary(reducedpca)
 ```
 
-We see that the PCA with a sample size of 1000 has almost identical properties to the PCA of the whole dataset.
+We see from the summary output above that the PCA with a sample size of 1000 has almost identical properties to the PCA of the whole dataset, which allows us to proceed.
 
-```{r}
+```{r biplotpcared, fig.cap="Biplot of the reduced dataset PC1 vs PC2"}
 ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5)
 ```
 
-
-We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price.  The percentage of variation retained by each Principal Component is included in the axis labels.
+Producing a biplot using the reduced dataset allows us to interpret the biplot much better (figure \@ref(fig:biplotpcared)). We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price.  The percentage of variation retained by each Principal Component is included in the axis labels.
 
 In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other numerical variables as explanatory variables. 
 
