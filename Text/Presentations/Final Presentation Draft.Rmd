@@ -187,10 +187,21 @@ PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 ![PCA Screeplot](./PCA screeplot.jpg)
 
 
-# Principal Components Analysis: Values 
+# Principal Components Analysis: Values v1
+
+## Can decide which of these two to keep
 
 ```{r}
 PCA$rotation[,1:2]
+```
+
+# Principal Components Analysis: Values v2
+
+## Can decide which of these two to keep
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(pander)
+pander(PCA$rotation[,1:2], caption = "Principal Components 1 and 2")
 ```
 
 # Biplot
