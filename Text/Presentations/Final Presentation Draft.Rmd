@@ -184,19 +184,8 @@ smallersample <- diamonds_num[sample(nrow(diamonds_num), "500"), ]
 PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 ```
 
+![PCA Screeplot](./PCA screeplot.jpg)
 
-```{r}
-pca.var <- PCA$sdev^2
-pca.var.per <- round(pca.var/sum(pca.var)*100,1)
-```
-
-
-```{r}
-barplot(pca.var.per, names.arg = pca.var.per,
-        xlab = "Principal Components 1 to 7",
-        ylab = "% information retained by each PC",
-        main="Screeplot of the Principal Components")
-```
 
 # Principal Components Analysis: Values 
 
@@ -206,7 +195,7 @@ PCA$rotation[,1:2]
 
 # Biplot
 
-![PCA Biplot](./Biplot PCA.jpeg)
+![PCA Biplot](./Biplot PCA.jpeg){height=85%}
 
 # Principal Components Regression
 
