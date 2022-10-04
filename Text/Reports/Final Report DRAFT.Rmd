@@ -51,11 +51,11 @@ The primary aim was to find the best predictor variables for 'price'. A secondar
 
 # Introduction  
 
-One of the key skills required of statisticians is the ability to explore a new and unfamiliar dataset and allow that exploration to guide their next analytical steps. The subsequent selection and execution of further analysis on the dataset is another key skill. As students undertaking the Victoria University of Wellington Multivariate Statistics paper, we were tasked with a group project designed to give us practice in developing these skills.
+One of the key skills required of statisticians is the ability to explore a new and unfamiliar dataset and allow that exploration to guide their next steps. A second key skill is knowing which analytical methods to subsequently apply to the dataset. As students enrolled in the Victoria University of Wellington year three Multivariate Statistics paper (STAT394), we were tasked with undertaking a group project designed to give us practice in developing these skills.
 
-We selected the 'diamonds' dataset, which was unfamiliar to us all. 'Diamonds' is available in the ggplot2 package in RStudio and is also freely available on Kaggle [@diamondskaggle]. It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while 7 are numerical. A full breakdown of the variables is given below. 
+We selected the 'diamonds' dataset, which was unfamiliar to us all. 'Diamonds' is available in the ggplot2 package in RStudio and is also freely available on Kaggle [@diamondskaggle]. It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while seven are numerical. A full breakdown of the variables is given below. 
 
-This project will allow us to face the challenges of working with a new and unfamiliar dataset and to gain experience in trouble-shooting the many issues that we are likely to encounter.
+This project provided the opportunity to face the challenges of working with a new and unfamiliar dataset and to gain experience in trouble-shooting the many issues that were encountered.
 
 ## The variables
 
@@ -121,7 +121,17 @@ To begin with, we undertook an in-depth Exploratory Data Analysis (EDA) of the d
 
 ## Consolidated Exploratory Data Analysis (EDA)
 
-In this section we present key findings from the consolidated Exploratory Data Analysis. 
+The initial EDA was submitted previously as part of intermediary Milestones 3 and 4 for STAT34 and is not reproduced in full here. Key findings included:
+
+- most numerical variables did not follow a Normal distribution. Some followed the beta distribution and some were undefined (according to the Cullen-Frey plots).
+
+- strong positive correlations between a number of the numeric variables ('price', 'carat', 'x', 'y' and 'z'), and a strong negative correlation between 'depth' and 'table'.
+
+- some of the density plots of the numerical variables showing multiple modes (peaks) suggesting that the effects of one or more of the levels of the categorical variables were having a strong influence on the distribution. These multiple modes were even more apparent in the density plots of the log-transformed variables.
+
+- there were more extreme values for the Mahalanobis distances than would be expected for Normally distributed data. 
+
+In this section we present again some of the key findings from the consolidated Exploratory Data Analysis as well as findings discovered by team members subsequent to the previous submission of the EDA in Milestones 3 and 4. 
 
 ### Summaries of Data
 
@@ -162,6 +172,8 @@ A brief look at the summary statistics of the numerical variables (table \@ref(t
 
 ## Categorical Summaries
 
+These summaries are included to emphasise the fact that the categorical variables do not have an even distribution across their different levels. In some cases, this unevenness is quite pronounced. 
+
 ### Tables of counts for the categorical variables
 
 ```{r colortab, echo=FALSE}
@@ -172,7 +184,7 @@ knitr::kable(colortab,
              col.names = c("Level","Count"))
 ```
 
-Table \@ref(tab:colortab) shows the number of diamonds in each level of the 'color' variable. As a reminder, 'J' is the lowest level and 'D' is the highest.
+Table \@ref(tab:colortab) shows the number of diamonds in each level of the 'color' variable. As a reminder, 'J' is the lowest level and 'D' is the highest. Note that the highest values are in the middle of the range of levels.
 
 ```{r cuttab, echo=FALSE}
 cuttab <- table(diamonds$cut)
@@ -182,7 +194,7 @@ knitr::kable(cuttab,
              col.names = c("Level","Count"))
 ```
 
-Table \@ref(tab:cuttab) gives a breakdown of the how many diamonds are in each level of the 'cut' variable. As a reminder, 'Fair' is the lowest level and 'Ideal' is the highest. We can see that most are in the 'Ideal', with a substantial number also in the 'Premium' and 'Very Good'. 
+Table \@ref(tab:cuttab) gives a breakdown of the how many diamonds are in each level of the 'cut' variable. As a reminder, 'Fair' is the lowest level and 'Ideal' is the highest. We can see that most are in the 'Ideal', with a substantial number also in the 'Premium' and 'Very Good'. The distribution increases markedly as the quality of 'cut' increases. 
 
 ```{r clartab, echo=FALSE}
 clartab <- table(diamonds$clarity)
@@ -192,7 +204,7 @@ knitr::kable(clartab,
              col.names = c("Level","Count"))
 ```
 
-Table \@ref(tab:clartab) shows the number of diamonds in each level of the 'clarity' variable. As a reminder, 'I1' is the lowest level and 'IF' is the highest.  
+Table \@ref(tab:clartab) shows the number of diamonds in each level of the 'clarity' variable. As a reminder, 'I1' is the lowest level and 'IF' is the highest. Note that most of the diamonds are toward the middle of the range of levels.  
 
 ### Distribution of Numeric Variables 
 
@@ -277,7 +289,9 @@ ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-Figure \@ref(fig:dencut2) shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. We conducted a Analysis of Variance to see if these differences in mean price across levels of cut were significant. we also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If significant we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of cut we can see that not all of them have a shape consistent with being normally distributed. A one Way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The results are summarised on the table below and the code for theses tests may be found in the appendices. 
+Figure \@ref(fig:dencut2) shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. 
+
+We conducted a Analysis of Variance (ANOVA) to see if these differences in mean price across levels of 'cut' were significant. We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If these tests showed violations of the ANOVA assumptions, we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of 'cut' we can see that not all of them have a shape consistent with being normally distributed. A one-way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The code for these tests may be found in the appendices. 
 
 ```{r cutanotab, echo=FALSE}
 cutanovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
@@ -446,7 +460,7 @@ Table \@ref(tab:mahalcol) shows the 'very surprising' Mahalanobis distances for 
 
 #### Zero Values 
 \hfill\break
-In this section we identify any zero values and determine whether or not they are errors. The code below shows the lowest values for each of the seven numerical variables. The number of elements to display was tweaked until the output showed all the zero values (if any). 
+In this section we identify any zero values and determine whether or not they are errors. The code below shows the lowest values for each of the seven numerical variables. The number of elements to display was tweaked until the output showed all the zero values (if any). This was partially to discover whether the extreme values in the dataset were having undue influence on results. 
 
 ```{r}
 sort(decreasing=F, diamonds$carat)[1:10]
@@ -469,7 +483,7 @@ diamonds.df <- data.frame(diamonds)
 
 ```
 
-We now display the zero values for each of the variable, noting whether the other variables are consistent with zero readings, or whether they indicate that this is impossible. For example, a diamond with zero mm width, but 6 mm height.
+We now display the zero values for each of the variable, noting whether the other variables are consistent with zero readings, or whether they indicate that this is impossible. For example, the diamond in row 1 below with zero mm length ('x'), but 6.62 mm width ('y').
 
 ```{r}
 # display the zero values for 'x'
@@ -721,8 +735,8 @@ The summary output for the 'best' model above shows how the categorical variable
 
 ## Check Regression Assumptions
 \hfill\break
-Here we check the regression assumptions by examining the diagnostic plots.
 
+Here we check the regression assumptions by examining the diagnostic plots.
 
 ```{r diagplots, fig.cap="Diagnostic plots to check regression assumptions"}
 par(mfrow=c(2,2))
@@ -1132,7 +1146,9 @@ fviz_cluster(clusters, data = (scale(smallersample[,-c((2:4),11)])),
              )
 ```
 
-In the cluster plot (figure \@ref(fig:clustplot)) we see significant overlap between the four clusters as well as many observations that do not seem to fit well in any of the clusters. It seems that the diamond dataset does not easily split into distinct clusters.
+In the cluster plot (figure \@ref(fig:clustplot)) we see significant overlap between the four clusters as well as many observations that do not seem to fit well in any of the clusters. It seems that the diamond dataset does not easily split into distinct clusters. 
+
+It is worth mentioning that 'diamonds' already has categories and levels within those categories, and that the clustering above does not take the pre-existing categories into account, but attempts to find naturally occurring classes within the data. 
 
 ### Silhouette plot
 
@@ -1144,9 +1160,9 @@ fviz_silhouette(sil)
 
 The silhouette plot (figure \@ref(fig:silh)) helps us to visualize how similar points each observation is to the cluster that it is assigned too. We see very few negative values indicating that very few observations have been assigned to the wrong cluster. However we do have a large proportion of values with low positive values indicating that these observations were close to the borderline between two clusters. We see that the average silhouette width is 0.38. 
 
-# Conclusions
+# Conclusion
 
-
+The aims of the project were to find the best predictor variable or variables for 'price'. This was achieved using the multiple regression model with all variables except for 'y' and 'z', in other words the model; price = carat + cut + color + clarity + depth + table + x. The diagnostics for the multiple regression model showed that all the assumptions were violated, meaning the model might not produce accurate predictions.   
 
 
 # Appendices
