@@ -42,10 +42,20 @@ options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 ```
 
+# Abstract
+
+An exploratory data analysis (EDA) of the 'diamonds' dataset was undertaken. Based on the results of the EDA, the techniques of Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA), Factor Analysis (FA) and Cluster Analysis (CA) were carried out. As these techniques were new to the project team and everyone was keen to learn, it was decided to experiment with each of them (with varying degrees of success). 
+
+The primary aim was to find the best predictor variables for 'price'. A secondary aim was to use the new techniques to see if classifications could be made. Other techniques used were single and multiple linear regression and testing to find the best regression model using the Akaike Information Criterion (AIC) and Bayes Information Criterion (BIC) tests.
+
 
 # Introduction  
 
-Our multivariate statistical investigation uses the 'Diamonds' data set. This data set is a base data set in R (available in the ggplot2 package) and is also freely available on Kaggle [@diamondskaggle]. It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while 7 are numerical. 
+One of the key skills required of statisticians is the ability to explore a new and unfamiliar dataset and allow that exploration to guide their next analytical steps. The subsequent selection and execution of further analysis on the dataset is another key skill. As students undertaking the Victoria University of Wellington Multivariate Statistics paper, we were tasked with a group project designed to give us practice in developing these skills.
+
+We selected the 'diamonds' dataset, which was unfamiliar to us all. 'Diamonds' is available in the ggplot2 package in RStudio and is also freely available on Kaggle [@diamondskaggle]. It contains information on ten different variables for 53940 diamonds. Of these ten variables three are categorical while 7 are numerical. A full breakdown of the variables is given below. 
+
+This project will allow us to face the challenges of working with a new and unfamiliar dataset and to gain experience in trouble-shooting the many issues that we are likely to encounter.
 
 ## The variables
 
@@ -860,8 +870,11 @@ ggbiplot(PCAprice, obs.scale =1, var.scale = 1, varname.size = 5)
 Even with price not included we still see the same general structure as the PCA with price.
 
 ```{r}
-PCApricevars <- prcomp(smallersample[,-c(2:4,7,11)], center = TRUE, scale = TRUE)$x
-diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2] + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] + PCApricevars[,6])
+PCApricevars <- prcomp(smallersample[,-c(2:4,7,11)],
+                       center = TRUE, scale = TRUE)$x
+diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2]
+                      + PCApricevars[,3] + PCApricevars[,4] + PCApricevars[,5] +
+                        PCApricevars[,6])
 summary(diamondpricePCA)
 ```
 
@@ -884,9 +897,9 @@ In our investigation of the principal components of the dataset we observed that
 factanal(diamonds[,-c(2:4,11)], factors =2)
 ```
 
-As we hypothesized Carat, price, x, y and z are well explained by factor 1. Depth is very well explained by factor 2, but table is explained only to a lesser degree. We see some evidence of the factor structure in our hypothesis with the "price + dimension" variables strongly implicated in Factor 1 and "Light conductance" variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. We also see high uniqueness ratings for table indicating that the two factors do not well account for it's variance. 
+As we hypothesized, 'carat', 'price', 'x', 'y' and 'z' are well explained by factor 1. 'Depth' is very well explained by factor 2, but 'table' is explained only to a lesser degree. We see some evidence of the factor structure in our hypothesis with the 'price + dimension' variables strongly explained in Factor 1 and 'Light conductance' variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. We also see high uniqueness ratings for 'table' indicating that the two factors do not well account for it's variance. 
 
-Overall the hypothesis test gives a highly significant result meaning that two factors is not sufficient to capture the full dimensionality of the data set.
+Overall the hypothesis test gives a highly significant result meaning that two factors are not sufficient to capture the full dimensionality of the data set.
 
 # Linear Discriminant Analysis (LDA)
 
@@ -909,7 +922,7 @@ LDAclarity <- lda(clarity ~ carat + depth + table + price
 ```
 
 
-We see that mean carat and mean price seem to differ the most across levels of "cut". In LD1 x and y weight significantly more than the other variables.  
+We see that mean 'carat' and mean 'price' seem to differ the most across levels of 'cut'. In LD1 'x' and 'y' weight significantly more than the other variables.  
 
 ```{r ordplot, fig.cap="Ordination plots"}
 library(ggord)
@@ -977,6 +990,10 @@ So, using 'carat' alone to predict these prices clearly is not enough; given the
 
 ## Discriminant analysis using the reduced dataset (price, carat and clarity)
 
+To address the issue above, we attempted another discriminant analysis using the reduced dataset above, that is, for 'carat' values between 1.0 and 1.1. The hope was that the relatively clear bands seen in figure \@ref(fig:carat1to11clarity) would enable the LDA to this time, as there is less overlap between levels in the reduced dataset than there is in the original.
+
+So, we repeat the Linear Discriminant Analysis process using the reduced dataset.
+
 ```{r}
 # split dataset into 'train' and 'test'
 set.seed(1234567890, kind = "Mersenne-Twister")
@@ -1040,7 +1057,7 @@ library(devtools)
 ggord(LDA.diam,Train$clarity)
 ```
 
-Figure \@ref(fig:biplot2) shows the biplot for 'carat' versus 'price' against the different levels of 'clarity'.  
+Figure \@ref(fig:biplot2) shows the biplot for 'carat' versus 'price' against the different levels of 'clarity'.  There is still a large amount of overlap visible near the top of the plot (the different coloured dots), meaning that separation of the levels is not going to be easy.
 
 ### Partition plot
 
@@ -1048,7 +1065,7 @@ Figure \@ref(fig:biplot2) shows the biplot for 'carat' versus 'price' against th
 partimat(clarity~carat+price, data = Train, method="lda")
 ```
 
-Figure \@ref(fig:partplot2) shows the partition plot for the discriminant analysis (DA) of the different levels of the 'clarity' variable as predicted by 'carat' and 'price'. As a reminder, the levels are (from lowest to highest): Fair, Good, Very Good, Premium and Ideal.  
+Figure \@ref(fig:partplot2) shows the partition plot for the discriminant analysis (DA) of the different levels of the 'clarity' variable as predicted by 'carat' and 'price'. As a reminder, the levels are: I1 (lowest clarity), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (highest clarity).  We can see from the number of red font values that there are many mis-categorised observations, suggesting that the LDA has not worked particularly well.
 
 
 ```{r}
@@ -1128,6 +1145,7 @@ fviz_silhouette(sil)
 The silhouette plot (figure \@ref(fig:silh)) helps us to visualize how similar points each observation is to the cluster that it is assigned too. We see very few negative values indicating that very few observations have been assigned to the wrong cluster. However we do have a large proportion of values with low positive values indicating that these observations were close to the borderline between two clusters. We see that the average silhouette width is 0.38. 
 
 # Conclusions
+
 
 
 
