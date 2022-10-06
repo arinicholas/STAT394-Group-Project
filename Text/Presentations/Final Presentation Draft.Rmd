@@ -148,11 +148,11 @@ Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
 
 # Normal QQ Plots
 
-![Normal QQ Plots](./Normal QQ Plots.jpeg)
+![Normal QQ Plots](./Normal QQ Plots.jpeg){height=85%}
 
 # Correlation Plot
 
-![Correlation Plot](./Corrplot_diamonds.jpg)
+![Correlation Plot](./Corrplot_diamonds.jpg){height=85%}
 
 # Price by Cateogrical 
 
@@ -190,7 +190,7 @@ PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 # Principal Components Analysis: Eigenvectors
 
 
-![Plot of EigenVectors](./Eigenvector Plot.jpeg)
+![Plot of EigenVectors](./Eigenvector Plot.jpeg){height=85%}
 
 # Biplot
 
