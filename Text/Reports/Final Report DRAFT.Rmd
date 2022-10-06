@@ -726,7 +726,6 @@ The 'best' model (as found by the AIC test above) is fitted below.
 ```{r}
 best.lm <- lm(price ~ carat + cut + color + clarity +
                 depth + table + x, data = diamonds)
-
 summary(best.lm)
 
 ```
@@ -859,11 +858,18 @@ ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5)
 
 Producing a biplot using the reduced dataset allows us to interpret the biplot much better (figure \@ref(fig:biplotpcared)). We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price.  The percentage of variation retained by each Principal Component is included in the axis labels.
 
-In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other numerical variables as explanatory variables. 
+In the above analysis we have shown we are able to us principal components analysis to reduce the number of dimensions in the dataset while still retaining a large proportion of its variation. In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other numerical variables as explanatory variables. 
 
 ## Principal Components Regression
 
-We will now perform a principal regression analysis with price as the response variable and and all other numerical variables as the explanatory variables. We Will again use the smaller sample to increase the ease of interpretation of the visual plots. 
+We will now perform a principal regression analysis with price as the response variable and and all other numerical variables as the explanatory variables. We Will again use the smaller sample to increase the ease of interpretation of the visual plots. Below we see an initial multiple regression using only the numeric variables
+
+```{r}
+numericlm <- lm(scale(price) ~ scale(carat) + scale(table) + scale(depth) + scale(x) + scale(y) + scale(z), data = diamonds_num)
+summary(numericlm)
+```
+
+In this model all but one (z) of the seven numeric predictors are found to be significant in the model. This model explains 86% of variation in price. We will now attempt to create a more parsimonious model using the principal components. 
 
 ```{r}
 PCAprice <- prcomp(smallersample[,-c(2:4,7,11)], center = TRUE, scale = TRUE)
@@ -889,7 +895,7 @@ Figure \@ref(fig:pcascreereg) shows the scree plot of the proportion of variance
 PCAprice$rotation
 ```
 
-We see that in the first PC carat, x, y and z all have approximately equal weighting. Again this reflects the strong positive correlation between these two varaibles. In the second PC depth and table have the strongest weighting. We see that removing price from the PCA does not change much in terms of how much variation the first few components explain as well as which variables contribute most strongly to each component. This is because of how strongly price is correalted with the dimension variables
+We see that in the first PC carat, x, y and z all have approximately equal weighting. Again this reflects the strong positive correlation between these two variables. In the second PC depth and table have the strongest weighting. We see that removing price from the PCA does not change much in terms of how much variation the first few components explain as well as which variables contribute most strongly to each component. This is because of how strongly price is correlated with the dimension variables. 
 
 ```{r}
 ggbiplot(PCAprice, obs.scale =1, var.scale = 1, varname.size = 5)
@@ -906,7 +912,7 @@ diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2]
 summary(diamondpricePCA)
 ```
 
-We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore initially it seems we have failed to create a more parsimonious model for predicting price through using regression with principal components. However if we refit the model with just the first two principal components (see below) we still create a model that is able to explain over 81% of the variance in price with only two components. While this is not as good as the model with all the principal components (which explains 85%) it is still reasonably good and is much more simple. The original multiple regression model explained 91% of the variation in price with 9 explanatory variables while our PCR model explains 81% with just the first two principal components.
+We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore initially it seems we have failed to create a more parsimonious model for predicting price through using regression with principal components. However if we refit the model with just the first two principal components (see below) we still create a model that is able to explain over 81% of the variance in price with only two components. While this is not as good as the model with all the principal components (which explains 85%) it is still reasonably good and is much more simple. The original numeric multiple regression model explained 86% of the variation in price with 6 explanatory variables while our PCR model explains 81% with just the first two principal components. Principal components regression has allowed us to explain nearly the same amount of variation in price in a much more parsimonius way.  
 
 ```{r}
 diamondpricePCA2 <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2])
@@ -919,13 +925,15 @@ It is likely that the remaining, unexplained variation could be explained by the
 
 # Factor Analysis
 
-In our investigation of the principal components of the dataset we observed that the first two principal components explained the the vast majority of the variation in the data.  The first was dominated by the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative correlation between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors (1. "Price + Dimension" 2. "Light Performance") may explain the observations in the diamonds dataset. To investigate this we will conduct an exploratory factor analysis with two factors.  
+In our investigation of the principal components of the dataset we observed that the first two principal components explained the the vast majority of the variation in the data.  The first was dominated by the strong positive correlation between price and the dimension variables (x, y, z, carat) which we may call price + dimension. The second was the negative correlation between depth and table which we might combine into light performance as both variables are crucial in giving a diamond its "sparkle". We hypothesise that these two factors (1. "Price + Dimension" 2. "Light Performance") may explain the unobserved variable of "overall diamond quality". To investigate this we will conduct an factor analysis with two factors.  
 
 ```{r}
 factanal(diamonds[,-c(2:4,11)], factors =2)
 ```
 
-As we hypothesized, 'carat', 'price', 'x', 'y' and 'z' are well explained by factor 1. 'Depth' is very well explained by factor 2, but 'table' is explained only to a lesser degree. We see some evidence of the factor structure in our hypothesis with the 'price + dimension' variables strongly explained in Factor 1 and 'Light conductance' variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. We also see high uniqueness ratings for 'table' indicating that the two factors do not well account for it's variance. 
+As we hypothesized, 'carat', 'price', 'x', 'y' and 'z' are well explained by factor 1. 'Depth' is very well explained by factor 2, but 'table' is explained only to a lesser degree. We see some evidence of the factor structure in our hypothesis with the 'price + dimension' variables strongly explained in Factor 1 and 'Light Performance' variables most strongly explained by factor 2. However, we also see other original variables we did not expect in each of our factors. If our hypothesis was correct we would see a negligible loading of depth and table in factor 1 and a negligible loading for the price + dimension variables in factor 2.
+
+Factor 1 explains 66% of the variance in the data and Factor 2 explains an additional 16%. Together are two factors manage to explain 83% of the variation in the data. We also see high uniqueness ratings for 'table' indicating that the two factors do not well account for it's variance. 
 
 Overall the hypothesis test gives a highly significant result meaning that two factors are not sufficient to capture the full dimensionality of the data set.
 
