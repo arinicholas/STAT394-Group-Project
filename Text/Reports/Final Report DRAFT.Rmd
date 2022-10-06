@@ -85,9 +85,9 @@ We selected the diamonds dataset because it was easy to understand what the vari
 
 ### Aims
 
-Our primary aim was to identify which variables best predictor the price of any given diamond. We hypothesised that increased diamond size (x, y and z) and weight will be positively correlated with diamond price. We also expected to see increased prices for diamonds with higher levels of the categorical variables. We were unsure how diamond depth and table percentage will relate to diamond price. 
+Our primary aim was to identify which variables best predictor the *price* of a given diamond. We hypothesised that increased diamond size ('x', 'y' and 'z') and weight ('carat') will be positively correlated with diamond price. We also expected to see increased prices for diamonds with higher levels of the categorical variables, all of which reflect the quality of the diamond. We were unsure how diamond depth and table percentage will relate to diamond price. 
 
-We also sought to explore the techniques of Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) that we have learned in STAT394. The diamonds dataset has 280 unique possible interactions (5 x 7 x 8) between different levels of the categorical variables. Our secondary aim was to discover whether one of these techinques (PCA, LDA or CA) could classify the data in a simpler manner.
+We also sought to explore the techniques of Principal Component Analysis (PCA), Factor Analysis (FA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) that we have learned in STAT394. The diamonds dataset has 280 unique possible interactions (5 x 7 x 8) between different levels of the categorical variables. Our secondary aim was to discover whether one of these techinques (PCA, FA, LDA or CA) could classify the data in a simpler manner, or predict into which level of a category a new observation would fall. Encouraged by our lecturer, we adopted an approach of 'playing' with the techniques with the aim of learning as much as possible, even if a more experienced statistician could see that they were not the correct tools to achieve our aims. We wanted to learn by doing, regardless of whether the results of these methods were successful for our project or not. 
 
 # Methodology
 
@@ -133,7 +133,7 @@ The initial EDA was submitted previously as part of intermediary Milestones 3 an
 
 In this section we present again some of the key findings from the consolidated Exploratory Data Analysis as well as findings discovered by team members subsequent to the previous submission of the EDA in Milestones 3 and 4. 
 
-### Summaries of Data
+## Summaries of Data
 
 
 ```{r summtab, echo=FALSE}
@@ -170,7 +170,7 @@ knitr::kable(summ_diamonds,
 A brief look at the summary statistics of the numerical variables (table \@ref(tab:summtab)) shows that there are a range of different scales. We also see high skewness values for carat, price, y and z and high kurtosis values for all variables, particularly y and z. Both of these indicate non-normality of our numeric variables. It is also interesting to note that at least one diamond has a zero value for x, y and z. These values are further investigated in the "Outliers and Unusual Points" section below. 
 
 
-## Categorical Summaries
+### Summaries of the Categorical Variables
 
 These summaries are included to emphasise the fact that the categorical variables do not have an even distribution across their different levels. In some cases, this unevenness is quite pronounced. 
 
@@ -184,7 +184,7 @@ knitr::kable(colortab,
              col.names = c("Level","Count"))
 ```
 
-Table \@ref(tab:colortab) shows the number of diamonds in each level of the 'color' variable. As a reminder, 'J' is the lowest level and 'D' is the highest. Note that the highest values are in the middle of the range of levels.
+Table \@ref(tab:colortab) shows the number of diamonds in each level of the 'color' variable. As a reminder, 'J' is the lowest level and 'D' is the highest. Note that the most of the diamonds are in the middle of the range of levels.
 
 ```{r cuttab, echo=FALSE}
 cuttab <- table(diamonds$cut)
@@ -208,7 +208,7 @@ Table \@ref(tab:clartab) shows the number of diamonds in each level of the 'clar
 
 ### Distribution of Numeric Variables 
 
-While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables, we observed evidence that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness-of-fit tests. 
+While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables, we observed evidence that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness-of-fit tests. The code for these tests is included below.
 
 ```{r normalQQplots, fig.cap= "Normal QQ Plots of Numeric Variables", fig.pos= "center", fig.pos= "H"}
 par(mfrow=c(3,3))  
@@ -248,9 +248,11 @@ knitr::kable(KS_GOF,
                      
 ```
 
-Table \@ref(tab:KSGOF) shows that for all seven of the numeric variables, the Kolmogorov-Smirnov goodness-of-fit tests provided strong evidence for non-normality, as evidenced by the p-values which are all machine precision zero.
+Table \@ref(tab:KSGOF) shows that for all seven of the numeric variables, the Kolmogorov-Smirnov goodness-of-fit tests provided strong evidence for non-normality, as evidenced by the p-values which are all machine precision zero.  
 
-### Correlation Matrix
+These tests supported our earlier observation that the data does not follow a normal distribution. We note this and proceed with our investigation anyway. 
+
+### Correlation Plot
 
 ```{r corrplot, fig.cap="A Visualization of the Correlation Matrix", echo=FALSE, warning=FALSE}
 ggcorrplot(cor(diamonds_num),
@@ -259,8 +261,20 @@ ggcorrplot(cor(diamonds_num),
            type = "lower")
 ```
 
-
 Figure \@ref(fig:corrplot) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. As "x", "y" and "z" are all measures of size we should expect this and there may be some redundancy in these predictors.  The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. The strongest predictor of price is carat with length, width, depth also strongly correlated with price. Table is only very weakly correlated with price while depth is negatively correlated with price.
+
+### Correlation Matrix
+
+```{r cormat, echo=FALSE}
+cordiam <- cor(diamonds_num)
+
+knitr::kable(cordiam,
+             digits = 3,
+             caption = "Correlation matrix for the numerical variables")
+```
+
+
+Table \@ref(tab:cormat) shows the correlation matrix. The strong positive correlations between price and 'carat' (0.922), price and 'x' (0.884), price and 'y' (0.865) and price and 'z' (0.861) supported one of our starting hypotheses, namely that these dimension variables would be positively correlated with 'price'. We noticed that they were also highly correlated with each other (all values greater than 0.9), a fact we used subsequently to combine them into one of the factors for the Factor Analysis.
 
 
 ### Price differences across Categorical Variables
@@ -1181,7 +1195,13 @@ The silhouette plot (figure \@ref(fig:silh)) helps us to visualize how similar p
 
 # Conclusion
 
-The aims of the project were to find the best predictor variable or variables for 'price'. This was achieved using the multiple regression model with all variables except for 'y' and 'z', in other words the model; price = carat + cut + color + clarity + depth + table + x. The diagnostics for the multiple regression model showed that all the assumptions were violated, meaning the model might not produce accurate predictions.   
+The aims of the project were to find the best predictor variable or variables for 'price'. This was achieved using the multiple regression model with all variables except for 'y' and 'z', in other words the model; price = carat + cut + color + clarity + depth + table + x. The best model was obtained using stepwise AIC and BIC tests. The diagnostics for the multiple regression model showed that all the assumptions were violated, meaning the model might not produce accurate predictions. 
+
+A number of erroneous values were uncovered in the dataset, including impossible zero values for various diamond dimensions (height, length, width etc.), and a number of extreme upper outliers that could not reasonably be valid values.
+
+We applied a number of the new analytical methods that we learned in STAT394. As this project was principally a learning task we attempted them all, even though an experienced statistician may have concluded beforehand that they were inappropriate or of dubious value. We mostly performed these techniques on a subset of the data that only included the numerical variables. Having experimented with all of the techniques (listed below), and realising that they were not working as we had hoped, we investigated why. The reason appeared to be the exclusion of the categorical variables, the different levels of which explain so much of the variation in price.  
+
+A principal components analysis was conducted, but this did not perform better than the best multiple linear regression model, mainly because the categorical variables could not be directly included. Factor analysis was performed using one combination of 'dimension' variables and a second combination of 'light performance' variables. This was not successful and the reason was very likely the exclusion of the categorical variables. Linear discriminant analysis was undertaken, but this failed to separate the different levels of the categorical variables due to the amount of overlap between them all. A cluster analysis was conducted; this also resulted in limited success due to the amount of overlap between the different levels of the categorical variables.  
 
 
 # Appendices
