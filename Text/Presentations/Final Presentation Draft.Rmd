@@ -180,29 +180,17 @@ Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
 
 ```{r, echo = FALSE}
 set.seed(300525287, kind = "Mersenne-Twister")
-smallersample <- diamonds_num[sample(nrow(diamonds_num), "500"), ]
+smallersample <- diamonds_num[sample(nrow(diamonds_num), "1000"), ]
 PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 ```
 
 ![PCA Screeplot](./PCA screeplot.jpg)
 
 
-# Principal Components Analysis: Values v1
+# Principal Components Analysis: Eigenvectors
 
-## Can decide which of these two to keep
 
-```{r}
-PCA$rotation[,1:2]
-```
-
-# Principal Components Analysis: Values v2
-
-## Can decide which of these two to keep
-
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
-library(pander)
-pander(PCA$rotation[,1:2], caption = "Principal Components 1 and 2")
-```
+![Plot of EigenVectors](./Eigenvector Plot.jpeg)
 
 # Biplot
 
