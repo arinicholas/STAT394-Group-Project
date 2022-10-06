@@ -786,14 +786,28 @@ barplot(pca.var.per, names.arg = pca.var.per,
 
 ```
 
-Figure \@ref(fig:pcascree) shows the scree plot for the Principal Components of the diamonds dataset. PC1 contains `r pca.var.per[1]`% of the variance, PC2 contains `r pca.var.per[2]`%, while PC3 contains `r pca.var.per[3]`%. Between them they contain `r sum(pca.var.per[1:3])`%, which is clearly very good. Components beyond the third principal component explain minimal variance (less than 4%). This suggests we can describe the data using only the first two or three principal components without losing much information. We will now examine which variables contribute most strongly to each Principal Component. 
+Figure \@ref(fig:pcascree) shows the scree plot for the Principal Components of the diamonds dataset. PC1 contains `r pca.var.per[1]`% of the variance, PC2 contains `r pca.var.per[2]`%, while PC3 contains `r pca.var.per[3]`%. Between them they contain `r sum(pca.var.per[1:3])`%, which is clearly very good. Components beyond the third principal component explain minimal variance (less than 4%). This suggests we can describe the data using only the first two principal components without losing much information. We will now examine which variables contribute most strongly to each Principal Component with a particular focus on the first two. 
 
 
 ```{r}
 pca.diamonds$rotation
 ```
 
-Looking at the eigenvectors we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth and table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation.  A visualization of the PCA is shown in the Biplot below. 
+Looking at the eigenvectors we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth and table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation. A visualization of the eigenvectors of the first two principal components is shown in figure \@ref(fig:eigenvectorplotpc)
+
+```{r, eigenvectorplotpc}
+Rotation.df <- data.frame(t(reducedpca$rotation))
+Rotation.df$PC <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7")
+Rotation.melt <- melt(Rotation.df, id.vars = "PC")
+PC1eigen <- ggplot(Rotation.melt[c(1,8, 15,22,29,36,43),]) +
+  geom_line(aes(x = variable, y = value, group = PC, col = PC), size = 3)
+PC2eigen <- ggplot(Rotation.melt[c(2,9, 16,23,30,37,44),]) +
+  geom_line(aes(x = variable, y = value, group = PC, col = PC), size = 3)
+ggarrange(PC1eigen, PC2eigen, ncol =1, nrow =2)
+```
+
+
+A biplot of the data projected over the first two principal components is shown below.
 
 
 ```{r biplotpc, fig.cap="Biplot of Principal Components"}
