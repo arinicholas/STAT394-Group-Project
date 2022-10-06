@@ -958,10 +958,7 @@ LDAclarity <- lda(clarity ~ carat + depth + table + price
 ```
 
 
-We see that mean 'carat' and mean 'price' seem to differ the most across levels of 'cut'. In LD1 'x' and 'y' weight significantly more than the other variables.  
-
 ```{r ordplot, fig.cap="Ordination plots"}
-library(ggord)
 
 g1 <- ggord(LDAcut, diamonds.Train$cut, alpha = 0.5, )
 g2 <- ggord(LDAcolor, diamonds.Train$color, alpha = 0.5 )
