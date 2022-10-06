@@ -1127,7 +1127,7 @@ The relatively poor performance of LDA in this instance is perhaps not surprisin
 
 As LDA did not yield useful results in terms of classifying the diamonds data we also decided to conduct Cluster Analysis to see if the diamonds data set could be divided into groups. We used a K-means algorithm to achieve this. As we were initially unsure of how many clusters we should attempt to divide the data into we will first examine the sum of the squares of the intra-class disatances for different numbers of clusters. 
 
-### Optimal cluster number
+## Optimal cluster number
 
 ```{r optclust, fig.cap="Optimal number of clusters"}
 fviz_nbclust((scale(smallersample[,-c((2:4),11)])), kmeans, method = "wss") +
@@ -1137,7 +1137,7 @@ fviz_nbclust((scale(smallersample[,-c((2:4),11)])), kmeans, method = "wss") +
 
 Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that 4 clusters is the optimum number.
 
-### kmeans function
+## kmeans function
 
 ```{r}
 clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), 
@@ -1155,7 +1155,7 @@ clusters$cluster[1:20]
 
 We create four clusters with sizes of 127, 455, 137 and 281 respectively. We see clear differences in the mean of each numeric variable across the four clusters. The within cluster sum of squares indicates that the clusters are not very compact. We shall now visualize the clusters with a scatterplot using the first two principal components of our dataset as the two dimensions. The first two principal components account for over 86% of the variance so this should be an appropriate visualization.
 
-### Cluster plot
+## Cluster plot
 
 ```{r clustplot, fig.cap="Cluster plot"}
 fviz_cluster(clusters, data = (scale(smallersample[,-c((2:4),11)])),
@@ -1169,7 +1169,7 @@ In the cluster plot (figure \@ref(fig:clustplot)) we see significant overlap bet
 
 It is worth mentioning that 'diamonds' already has categories and levels within those categories, and that the clustering above does not take the pre-existing categories into account, but attempts to find naturally occurring classes within the data. 
 
-### Silhouette plot
+## Silhouette plot
 
 ```{r silh, fig.cap="Clusters silhouette plot"}
 library(cluster)
