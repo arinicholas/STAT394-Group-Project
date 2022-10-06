@@ -305,7 +305,7 @@ ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "
 
 Figure \@ref(fig:dencut2) shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. 
 
-We conducted a Analysis of Variance (ANOVA) to see if these differences in mean price across levels of 'cut' were significant. We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If these tests showed violations of the ANOVA assumptions, we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of 'cut' we can see that not all of them have a shape consistent with being normally distributed. A one-way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The code for these tests may be found in the appendices. 
+We conducted a Analysis of Variance (ANOVA) for all three of the categorical variables to see if the observed differences in mean price across the various levels were significant. We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If these tests showed violations of the ANOVA assumptions, we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of 'cut' we can see that not all of them have a shape consistent with being normally distributed. A one-way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The code for these tests may be found in the appendices. 
 
 ```{r cutanotab, echo=FALSE}
 cutanovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
@@ -335,28 +335,13 @@ knitr::kable(var_means_clarity,
 
 Table \@ref(tab:clarmean) shows that the mean price of diamonds varies across different levels of 'clarity'. Interestingly the diamonds with the two highest clarities show the lowest mean price. 
 
-```{r densityplots, fig.cap="Density plots for cut, color and clarity by price", echo=FALSE}
-cutplot <- ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "Very Good"| cut == "Fair"), aes(x = price, col = cut, group = cut, fill = cut)) +
-  geom_density(aes(y = ..density..), alpha = .7)
-
-clarityplot <- ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity =="VS2"| clarity =="VS1"| clarity =="VVS2"| clarity =="VVS1"| clarity =="IF"), aes(x = price, col = clarity, group = clarity, fill = clarity)) +
-  geom_density(aes(y = ..density..), alpha = .7)
-
-colorplot <- ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| color == "F"| color == "E"| color == "D"), aes(x = price, col = color, group = color, fill = color)) +
-  geom_density(aes(y = ..density..), alpha = .7)
-
-ggarrange(cutplot, clarityplot, colorplot, ncol =2, nrow =2)
-  
-```
-
-Figure \@ref(fig:densityplots) shows the density plots for the three categorical variables versus 'price'. 
 
 ```{r denclar2, echo = FALSE, fig.cap="Densities of 'price' for different levels of 'clarity'"}
 ggplot(subset(diamonds, clarity == "I1"| clarity =="SI2"|clarity =="SI1"|clarity =="VS2"| clarity =="VS1"| clarity =="VVS2"| clarity =="VVS1"| clarity =="IF"), aes(x = price, col = clarity, group = clarity, fill = clarity)) +
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-Figure \@ref(fig:denclar2) shows the densities of the different levels of 'clarity' for price. A prominent peak is visible near the left for the better quality levels (IF, best, pink; WS1 second best, purple; WS2, third best, blue). We conducted a Analysis of Variance to see if these differences in mean price across levels of clarity were significant. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough.  We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
+Figure \@ref(fig:denclar2) shows the densities of the different levels of 'clarity' for price. A prominent peak is visible near the left for the better quality levels (IF, best, pink; WS1 second best, purple; WS2, third best, blue). 
 
 ```{r claranotab, echo=FALSE}
 claranovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
@@ -366,7 +351,7 @@ knitr::kable(claranovatab,
              caption = "ANOVA of Price by Clarity")
 ```
 
-Table \@ref(tab:claranotab) shows the table of results from the three tests on the variable 'clarity'. The output frpm the ANOVA returns a p-value of < 2.2e-16, meaning there is strong evidence to suggest that mean price differs across levels of "clarity". The output of the Levene's test and Kruskal Wallis tests show that there is not equal variances between the levels, and that there is a significant difference between different levels of clarity. A Tukey test showed that most pairwise combinations show a significant difference. There are only six that do not show a difference and they are: SI1-I1; VS2-I1; VS1-I1; VS2-SI1; VS1-VS2; and IF-VVS1.
+Table \@ref(tab:claranotab) shows the table of results from the three tests on the variable 'clarity'. The output from the ANOVA returns a p-value of < 2.2e-16, meaning there is strong evidence to suggest that mean price differs across levels of 'clarity'. The output of the Levene's test and Kruskal Wallis tests show that there is not equal variances between the levels, and that there is a significant difference between different levels of clarity. A Tukey test showed that most pairwise combinations show a significant difference. There are only six that do not show a difference and they are: SI1-I1; VS2-I1; VS1-I1; VS2-SI1; VS1-VS2; and IF-VVS1.
 
 
 #### Color  
@@ -390,7 +375,7 @@ ggplot(subset(diamonds, color == "J"| color == "H"| color =="I"| color == "G"| c
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-Figure \@ref(fig:densitycol) shows the density plots of 'price' for the different levels of the 'color' variable. There is a prominent peak on the left for the better quality levels of color (D in pink, E in purple, and F in blue), but otherwise the densities appear to be fairly similar. We will now test whether there are significant differences in mean price for different diamond colours. While we see potential evidence that the ANOVA assumptions of normality and equal variance may be violated, ANOVA is reasonably robust to these violations if the sample size is big enough. We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated. If significant we then implemented a non-parametric Kruskal Wallis Test. The results are summarised on the table below and the code for theses tests may be found in the appendices.
+Figure \@ref(fig:densitycol) shows the density plots of 'price' for the different levels of the 'color' variable. There is a prominent peak on the left for the better quality levels of color (D in pink, E in purple, and F in blue), but otherwise the densities appear to be fairly similar. 
 
 ```{r colanotab, echo=FALSE}
 colanovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
@@ -446,6 +431,11 @@ knitr::kable(mahalcut,
              col.names = c("Mahal Dist","Count"),
              caption = "Mahalanobis distances for 'cut'")
 ```
+
+```{r}
+
+```
+
 
 Table \@ref(tab:mahalcut) shows the 'very surprising' Mahalanobis distances for the different levels of the variable 'cut'. 
 
@@ -535,6 +525,8 @@ sort(decreasing=T, diamonds$price)[1:10]
 The output above shows the ten largest values for each of the seven numerical variables. At a glance (informal inference) it appears that 'carat', 'y', 'z' and 'table' all have one or more values that are considerably higher than the rest, with y and z having maximums that are so extreme it is worth considering whether they are erroneous.   
 
 ## Determining whether the outliers are errors
+
+In this section we go through the variables one at a time to determine whether the upper values are likely to be erroneous or genuine. 
 
 ### The 'x' variable: probably no upper value errors
 
