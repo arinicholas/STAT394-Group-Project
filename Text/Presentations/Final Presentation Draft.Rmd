@@ -112,9 +112,9 @@ Mei Huang
 \centering
 \begin{tabular}{rrrrrr}
   \hline
- Cut\vline & Fair & Good & Very Good & Ideal & Premium \\ 
+ Cut\vline & Fair & Good & Very Good & Premium & Ideal \\ 
   \hline
-Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
+Count\vline & 1610 & 4960 & 12082 & 13791 & 21551\\
    \hline
 \end{tabular}
 \end{table}
@@ -123,9 +123,9 @@ Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
 \centering
 \begin{tabular}{rrrrrrrr}
   \hline
- Color\vline & D & E & F & G & H & I & J \\ 
+ Color\vline & J & I & H & G & F & E & D \\ 
   \hline
- Count\vline & 6775 & 9797 & 9542 & 11292 & 8304 & 5422 & 2808\\
+ Count\vline & 2808 & 5422 & 8304 & 11292 & 9542 & 9797 & 6775\\
    \hline
 \end{tabular}
 \end{table}
@@ -134,9 +134,9 @@ Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
 \centering
 \begin{tabular}{rrrrrrrrr}
   \hline
- Clarity\vline & I1 & IF & SI1 & SI2 & VS1 & VS2 & VVS1 & VVS2 \\ 
+ Clarity\vline & I1 & SI2 & SI1 & VS2 & VS1 & VVS2 & VVS1 & IF \\ 
   \hline
-  Count\vline & 741 & 1790 & 13065 & 9194 & 8171 & 12258 & 3655 & 5066\\
+  Count\vline & 741 & 9194 & 13065 & 12258 & 8171 & 5066 & 3655 & 1790\\
    \hline
 \end{tabular}
 \end{table}
@@ -162,7 +162,7 @@ Count\vline & 1610 & 4960 & 12082 & 21551 & 13791\\
 
 - How can we best predict diamond price?\linebreak 
 - We intend to use the following techniques to investigate this question:\linebreak
-- Stepwise Regression, Principal Components Analysis, Principal Components Regression and an Exploratory Factor Analysis\linebreak
+- Stepwise Regression, Principal Components Analysis, Principal Components Regression\linebreak
 
 # Multiple Regression
 
@@ -199,12 +199,43 @@ PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 # Principal Components Regression
 
 - We conducted a Principal Components Regression with diamond price as the response variable\linebreak
-- We found that all six principal components were significant in the model for predicting price\linebreak
-- However when we only used the first two principal components we were still able to explain over 80% of the variation in price\linebreak 
+- The PCA excluding price was almost identical to the original PCA\linebreak
+- We were able to explain over 80% of the variation in price using just the first two principal components as predictors\linebreak 
+- A more parsimonious model!\linebreak
+
+# Summary of Models Predicting Diamond Price 
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrr}
+  \hline
+ Model\vline & No. of Predictors & Adjusted $R^2$ \\ 
+  \hline
+Full Model \vline & 9 & 0.9198\\
+   \hline
+Best Model\vline & 7 & 0.9198\\
+\hline
+Numeric Model\vline & 7 & 0.8592\\
+Two PC\vline & 2 & 0.8092\\
+All PC\vline & 6 & 0.8695\\
+\end{tabular}
+\end{table}
 
 
 # Factor Analysis 
 
-- We hypothesized that the variation in the data might be able to be explained by two factors\linebreak
-- These were: "Dimension x Price" and "Light Conductance"\linebreak
-- We tested this hypothesis with a Factor Analysis\linebreak
+- The first two principal components captured most of the variation in the data\linebreak
+- These two components were dominated by two underlying relationships\linebreak
+- We hypothesized that "Overall Diamond Quality" might be able to be explained by these two factors\linebreak
+- "Price + Dimension" + "Light Conductance" -> "Overall Diamond Quality"\linebreak
+- We tested this hypothesis with a factor analysis\linebreak 
+
+# Factor Analysis
+
+```{r, echo = FALSE}
+options(width = 300, length = 200)
+a <- factanal(diamonds[,-c(2:4,11)], factors =2)
+a$loadings
+```
+
+
