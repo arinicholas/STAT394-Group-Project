@@ -946,7 +946,7 @@ Overall the hypothesis test gives a highly significant result meaning that two f
 
 # Linear Discriminant Analysis (LDA)
 
-As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. We thought it would be too complex to use all these as classes in an Linear Discriminant Analysis. We will instead attempt to use Linear Discriminant Analysis to classify observations more simply using one of the categorical variables at a time. We will review how these categorical variables perform as classifiers.  
+As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. This many factors is unlikely to be that useful as a classification tool. Nevertheless we will begin by attempting a Linear Discriminant Analysis using the factors.
 
 ```{r}
 set.seed(123456789, kind = "Mersenne-Twister")
@@ -954,9 +954,24 @@ ind <- sample(c("Train", "Test"),
               nrow(diamonds),
               replace = TRUE, 
               prob = c(.8, .2))
-smallersample$interaction <- interaction(smallersample$cut, smallersample$color, smallersample$clarity)
 diamonds.Train <- diamonds[ind == "Train",]
 diamonds.Test <- diamonds[ind == "Test",]
+diamonds$Interaction <- interaction(diamonds$cut, diamonds$color, diamonds$clarity)
+LDAinteraction <- lda(Interaction ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
+```
+
+We will not include the output from the LDA using the interactions as it is very long given there are 280 classes. Instead we will report the key finding; the overall accuracy of using the interactions as a classifier. 
+
+```{r}
+RPinteraction <- predict(LDAinteraction, diamonds.Test)$class
+RCMinteraction <- table(RPinteraction, actual = diamonds.Test$Interaction)
+sum(diag(RCMinteraction))/sum(RCMinteraction)
+```
+
+An overall accuracy of 0.065 is very low and therefore we can conclude that using the factors as classes was not effective. It's likely the data is not linearly separable into 280 classes. We will now instead attempt to use Linear Discriminant Analysis to classify observations more simply using levels of each of the categorical variables. We will review how each of these categorical variables perform as classifiers.
+
+
+```{r}
 LDAcut <- lda(cut ~ carat + depth + table + price
               + x + y + z, data = diamonds.Train)
 LDAcolor <- lda(color ~ carat + depth + table + price
@@ -964,6 +979,7 @@ LDAcolor <- lda(color ~ carat + depth + table + price
 LDAclarity <- lda(clarity ~ carat + depth + table + price
                   + x + y + z, data = diamonds.Train)
 ```
+  
 
 
 ```{r ordplot, fig.cap="Ordination plots"}
@@ -1148,7 +1164,7 @@ The relatively poor performance of LDA in this instance is perhaps not surprisin
 
 # Cluster Analysis
 
-As LDA did not yield useful results in terms of classifying the diamonds data we also decided to conduct Cluster Analysis to see if the diamonds data set could be divided into groups. We used a K-means algorithm to achieve this. As we were initially unsure of how many clusters we should attempt to divide the data into we will first examine the sum of the squares of the intra-class disatances for different numbers of clusters. 
+As LDA did not yield useful results in terms of classifying the diamonds data we also decided to conduct Cluster Analysis to investigate if the diamonds data set could be divided into clusters. We used a K-means algorithm to achieve this. As we were initially unsure of how many clusters we should attempt to divide the data into we will first examine the sum of the squares of the intra-class disatances for different numbers of clusters. We will again use the smaller sample to aid in the interpretation of visual displays. 
 
 ## Optimal cluster number
 
