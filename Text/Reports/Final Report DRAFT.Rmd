@@ -36,7 +36,8 @@ library(factoextra)
 library(devtools) # general package
 library(ggord)
 library(klaR)
-library(cluster) # for silhouette plot
+library(cluster)
+library(caret) 
 
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
@@ -945,16 +946,17 @@ Overall the hypothesis test gives a highly significant result meaning that two f
 
 # Linear Discriminant Analysis (LDA)
 
-As discussed previously the diamonds dataset has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. We will attempt to use Linear Discriminant Analysis to classify observations more simply using one of the categorical variables at a time.
+As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. We thought it would be too complex to use all these as classes in an Linear Discriminant Analysis. We will instead attempt to use Linear Discriminant Analysis to classify observations more simply using one of the categorical variables at a time. We will review how these categorical variables perform as classifiers.  
 
 ```{r}
-set.seed(300525287, kind = "Mersenne-Twister")
+set.seed(123456789, kind = "Mersenne-Twister")
 ind <- sample(c("Train", "Test"),
-              nrow(smallersample),
+              nrow(diamonds),
               replace = TRUE, 
-              prob = c(.6, .4))
-diamonds.Train <- smallersample[ind == "Train",]
-diamonds.Test <- smallersample[ind == "Test",]
+              prob = c(.8, .2))
+smallersample$interaction <- interaction(smallersample$cut, smallersample$color, smallersample$clarity)
+diamonds.Train <- diamonds[ind == "Train",]
+diamonds.Test <- diamonds[ind == "Test",]
 LDAcut <- lda(cut ~ carat + depth + table + price
               + x + y + z, data = diamonds.Train)
 LDAcolor <- lda(color ~ carat + depth + table + price
@@ -991,12 +993,27 @@ Clarityacc <- sum(diag(RCMclarity))/sum(RCMclarity)
 
 ```{r LDAacc, echo = FALSE}
 LDAacc <- data.frame(Class=c("Cut","Color","Clarity"),
-                      Accuracy=c(0.6382, 0.196, 0.1457))
+                      Accuracy=c(0.6258, 0.1738, 0.2039))
 
 knitr::kable(LDAacc,caption = "Classification Accuracy for Different LDAs")
 ```
 
-Table \@ref(tab:LDAacc) displays the accuracy of the classification achieved by the LDA for the different categorical variables. The only variable that was successfully classified is 'cut'. For 'color' and 'clarity' the LDA performs poorly. We conclude that it is likely that the classes (particularly for clarity and color) are not linearly separable. 
+Table \@ref(tab:LDAacc) displays the accuracy of the classification achieved by the LDA for the different categorical variables. The only variable that was classified with any success was 'cut'. For 'color' and 'clarity' the LDA performs poorly. As "cut" was the only class to perform moderately well as classifier we will investigate its performance further. 
+
+```{r}
+LDAcut
+```
+
+The first thing we notice is that the prior probabilities for each class are very different. We see small amounts of variation in group means for different variables across different classes but there is nothing to striking. As the data are on different scales it is harder to interpret the group mean differences. The variables with strongest weight in LD1 are carat, x, y and table while the variables with the most weight in LD2 are x, y, carat and depth. LD1 retains almost 80% of the variation in the data while LD2 retains only 17%.
+
+```{r}
+confusionMatrix(RCMcut)
+```
+
+The confusion matrix clearly shows a large amount of errors for each individual class. We again get the overall accuracy measurement of 0.6258 with a 95% confidence interval of (0.6166,0.6349). In terms of the accuracy of classification for individual classes Ideal, Fair and Premium had higher accuracy ratings than Good or Very Good. It was important to check individual class accuracy as the prior probabilities of an observation belonging to each class were very different. 
+
+We conclude that the data is not linearly separable by using the levels of categorical variables as classes. It's possible performance may be better by using the 280 interactions as known classes but we couldn't see much real world use for such a complex classifier. 
+
 
 ## Why prediction without the categorical variables is not working well
 
