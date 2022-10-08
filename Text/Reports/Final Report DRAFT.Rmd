@@ -948,7 +948,8 @@ Overall the hypothesis test gives a highly significant result meaning that two f
 
 As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. This many factors is unlikely to be that useful as a classification tool. Nevertheless we will begin by attempting a Linear Discriminant Analysis using the factors.
 
-```{r}
+```{r, warning= FALSE}
+diamonds$Interaction <- interaction(diamonds$cut, diamonds$color, diamonds$clarity)
 set.seed(123456789, kind = "Mersenne-Twister")
 ind <- sample(c("Train", "Test"),
               nrow(diamonds),
@@ -956,7 +957,6 @@ ind <- sample(c("Train", "Test"),
               prob = c(.8, .2))
 diamonds.Train <- diamonds[ind == "Train",]
 diamonds.Test <- diamonds[ind == "Test",]
-diamonds$Interaction <- interaction(diamonds$cut, diamonds$color, diamonds$clarity)
 LDAinteraction <- lda(Interaction ~ carat + depth + table + price + x + y + z, data = diamonds.Train)
 ```
 
