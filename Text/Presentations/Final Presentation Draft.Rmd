@@ -68,9 +68,8 @@ Mei Huang
 
 - This large dataset has 53940 rows (diamonds) of ten variables (approx 540,000 values)\linebreak 
 - Slow to process!\linebreak
-- Nine of the variables are various measures of diamond size and quality, while the tenth is the price\linebreak
-- We selected diamonds because it was simple to understand what each variable was measuring, and to have the opportunity to work with a large dataset\linebreak
-- Particularly interested in which variables are most predictive of diamond price
+- There are seven numeric variables and three categorical variables\linebreak
+- We selected diamonds because it was conceptually simple to understand what each variable was measuring, and to have the opportunity to use the analytical techniques taught in STAT394 with a large dataset\linebreak
 
 
 # The Variables
@@ -160,7 +159,7 @@ Count\vline & 1610 & 4960 & 12082 & 13791 & 21551\\
 
 # Leading Question 1
 
-- How can we best predict diamond price?\linebreak 
+- How can we best predict diamond price using the other variables?\linebreak 
 - We intend to use the following techniques to investigate this question:\linebreak
 - Stepwise Regression, Principal Components Analysis, Principal Components Regression\linebreak
 
@@ -221,21 +220,9 @@ All PC\vline & 6 & 0.8695\\
 \end{tabular}
 \end{table}
 
+# Leading Question 2 ... and the issues we encountered...
 
-# Factor Analysis 
-
-- The first two principal components captured most of the variation in the data\linebreak
-- These two components were dominated by two underlying relationships\linebreak
-- We hypothesized that "Overall Diamond Quality" might be able to be explained by these two factors\linebreak
-- "Price + Dimension" + "Light Conductance" -> "Overall Diamond Quality"\linebreak
-- We tested this hypothesis with a factor analysis\linebreak 
-
-# Factor Analysis
-
-```{r, echo = FALSE}
-options(width = 300, length = 200)
-a <- factanal(diamonds[,-c(2:4,11)], factors =2)
-a$loadings
-```
+- The diamonds dataset includes 280 interactions between different levels of the categorical variables\linebreak
+- Our second leading question was to investigate if we could classify the diamonds data more simply using analytical techniques such as LDA and CA\linebreak 
 
 
