@@ -1242,7 +1242,7 @@ We attempted to address our second aim through the techniques of LDA and CA. A L
 
 ## Code for Producing KS Tests
 
-```{r, include = FALSE }
+```{r}
 ks.test(diamonds$carat, "pnorm", mean=mean(diamonds$carat), sd=sd(diamonds$carat))
 ks.test(diamonds$depth, "pnorm", mean=mean(diamonds$depth), sd=sd(diamonds$depth))
 ks.test(diamonds$table, "pnorm", mean=mean(diamonds$table), sd=sd(diamonds$table))
@@ -1255,7 +1255,7 @@ ks.test(diamonds$z, "pnorm", mean=mean(diamonds$z), sd=sd(diamonds$z))
 
 ## Code for producing ANOVA/Levene's Test/Kruskal Wallis/Tukey of Price by Cut
 
-```{r, include = FALSE}
+```{r}
 cutanova <- aov(price ~ cut, data = diamonds)
 summary(cutanova)
 leveneTest(price ~ cut, data= diamonds)
@@ -1265,7 +1265,7 @@ TukeyHSD(cutanova, conf.level = 0.95)
 
 ## Code for producing ANOVA/Levene's Test/Kruskal Wallis/Tukey of Price by Clarity
 
-```{r, include = FALSE}
+```{r}
 clarityanova <- aov(price ~ clarity, data = diamonds)
 summary(clarityanova)
 leveneTest(price ~ clarity, data= diamonds)
@@ -1275,7 +1275,7 @@ TukeyHSD(clarityanova, conf.level = 0.95)
 
 ##  Code for producing ANOVA/Levene's Test/Kruskal Wallis/Tukey of Price by Color
 
-```{r, include = FALSE}
+```{r}
 coloranova <- aov(price ~ color, data = diamonds)
 summary(coloranova)
 leveneTest(price ~ color, data= diamonds)
