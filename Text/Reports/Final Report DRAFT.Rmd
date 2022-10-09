@@ -211,7 +211,7 @@ Table \@ref(tab:clartab) shows the number of diamonds in each level of the 'clar
 
 While examining histograms, Cullen and Frey Plots, skewness and kurtosis of the numerical variables, we observed evidence that the numerical variables were not normally distributed. The assumption of normality underlies many statistical procedures so we investigated this in more depth using Normal Quantile plots and goodness-of-fit tests. The code for these tests is included below.
 
-```{r normalQQplots, fig.cap= "Normal QQ Plots of Numeric Variables", fig.pos= "center", fig.pos= "H"}
+```{r normalQQplots, fig.cap= "Normal QQ Plots of Numeric Variables", fig.pos= "center", fig.pos= "H", echo=FALSE}
 par(mfrow=c(3,3))  
 qqnorm(diamonds$carat, xlab = "Observations", 
        ylab = "Normal Quantiles", main = "Carat", col = "red")
@@ -592,7 +592,7 @@ In these scatterplots we see the three categorical variables of 'cut', 'color' a
 
 ### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Cut'
 
-```{r caratcut, fig.cap="Carat vs Price, coloured by Cut"}
+```{r caratcut, fig.cap="Carat vs Price, coloured by Cut",  echo= FALSE}
 
 # scatterplot of carat vs price, but also colouring the observations
 # by 'cut'
@@ -605,7 +605,7 @@ Figure \@ref(fig:caratcut) shows the scatterplot of 'carat' versus 'price' and c
 
 ### Scatterplot of 'Carat' vs 'Price', colour-coded by 'Clarity'
 
-```{r caratclarity, fig.cap="Carat vs Price coloured by Clarity"}
+```{r caratclarity, fig.cap="Carat vs Price coloured by Clarity", echo = FALSE}
 
 # scatterplot of carat vs price, but also colouring the observations
 # by 'cut'
@@ -620,7 +620,7 @@ Figure \@ref(fig:caratclarity) shows the scatterplot of 'carat' versus 'price' a
 
 ### Scatterplot of 'Carat' vs 'Price', colour coded by 'Color'
 
-```{r caratcolor, fig.cap="Carat vs Price coloured by Color"}
+```{r caratcolor, fig.cap="Carat vs Price coloured by Color", echo=FALSE}
 
 # scatterplot of carat vs price, but also colouring the observations
 # by 'cut'
@@ -744,7 +744,7 @@ The summary output for the 'best' model above shows how the categorical variable
 
 Here we check the regression assumptions by examining the diagnostic plots.
 
-```{r diagplots, fig.cap="Diagnostic plots to check regression assumptions"}
+```{r diagplots, fig.cap="Diagnostic plots to check regression assumptions", echo=FALSE}
 par(mfrow=c(2,2))
 plot(best.lm, 1)
 plot(best.lm, 2)
@@ -773,18 +773,18 @@ This multiple regression indicates that all variables but y and z are significan
 We will perform a PCA with the aim of being able to explain the variation in the data set with fewer dimensions. We also hope to then create a parsimonious model for predicting diamond price through principal components regression.
 
 
-```{r}
+```{r, echo=FALSE}
 pca.diamonds <- prcomp(subset(diamonds.df, select = c(1,5:10)),
                        center=TRUE, scale. = TRUE, retx=TRUE)
 ```
 
-```{r}
+```{r, echo=FALSE}
 pca.var <- pca.diamonds$sdev^2
 pca.var.per <- round(pca.var/sum(pca.var)*100,1)
 
 ```
 
-```{r pcascree, fig.cap="Scree plot of the Principal Components"}
+```{r pcascree, fig.cap="Scree plot of the Principal Components", echo=FALSE}
 barplot(pca.var.per, names.arg = pca.var.per,
         xlab = "Principal Components 1 to 7",
         ylab = "% information retained by each PC",
@@ -801,7 +801,7 @@ pca.diamonds$rotation
 
 Looking at the eigenvectors we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth and table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation. A visualization of the eigenvectors of the first two principal components is shown in figure \@ref(fig:eigenvectorplotpc)
 
-```{r, eigenvectorplotpc}
+```{r, eigenvectorplotpc, echo=FALSE}
 Rotation.df <- data.frame(t(pca.diamonds$rotation))
 Rotation.df$PC <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7")
 Rotation.melt <- melt(Rotation.df, id.vars = "PC")
@@ -816,7 +816,7 @@ ggarrange(PC1eigen, PC2eigen, ncol =1, nrow =2)
 A biplot of the data projected over the first two principal components is shown below.
 
 
-```{r biplotpc, fig.cap="Biplot of Principal Components"}
+```{r biplotpc, fig.cap="Biplot of Principal Components", echo=FALSE}
 ggbiplot(pca.diamonds, obs.scale =1, var.scale = 1)
 ```
 
@@ -830,19 +830,19 @@ sort(decreasing=T,(pca.diamonds$x[,1]))[1:10]
 
 ## PCA with Smaller Sample
 
-```{r}
+```{r, echo=FALSE}
 set.seed(300525287, kind = "Mersenne-Twister")
 smallersample <- diamonds[sample(nrow(diamonds), "1000"), ]
 reducedpca <- prcomp(smallersample[,-c(2:4,11)], center = TRUE, scale = TRUE)
 ```
 
-```{r}
+```{r, echo=FALSE}
 pca.var_red <- reducedpca$sdev^2
 pca.var.per_red <- round(pca.var_red/sum(pca.var_red)*100,1)
 
 ```
 
-```{r pcascreered, fig.cap="Scree plot of the Principal Components (reduced dataset)"}
+```{r pcascreered, fig.cap="Scree plot of the Principal Components (reduced dataset)", echo=FALSE}
 barplot(pca.var.per_red, names.arg = pca.var.per_red,
         xlab = "Principal Components 1 to 7",
         ylab = "% information retained by each PC",
@@ -859,7 +859,7 @@ summary(reducedpca)
 
 We see from the summary output above that the PCA with a sample size of 1000 has almost identical properties to the PCA of the whole dataset, which allows us to proceed.
 
-```{r biplotpcared, fig.cap="Biplot of the reduced dataset PC1 vs PC2"}
+```{r biplotpcared, fig.cap="Biplot of the reduced dataset PC1 vs PC2", echo=FALSE}
 ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5)
 ```
 
@@ -878,17 +878,17 @@ summary(numericlm)
 
 In this model all but one (z) of the seven numeric predictors are found to be significant in the model. This model explains 86% of variation in price. We will now attempt to create a more parsimonious model using the principal components. 
 
-```{r}
+```{r, echo=FALSE}
 PCAprice <- prcomp(smallersample[,-c(2:4,7,11)], center = TRUE, scale = TRUE)
 ```
 
-```{r}
+```{r, echo=FALSE}
 pca.varpri <- PCAprice$sdev^2
 pca.varpri.per <- round(pca.varpri/sum(pca.varpri)*100,1)
 
 ```
 
-```{r pcascreereg, fig.cap="Scree plot of the regression Principal Components"}
+```{r pcascreereg, fig.cap="Scree plot of the regression Principal Components", echo=FALSE}
 barplot(pca.varpri.per, names.arg = pca.varpri.per,
         xlab = "Principal Components 1 to 7",
         ylab = "% information retained by each PC",
@@ -904,7 +904,7 @@ PCAprice$rotation
 
 We see that in the first PC carat, x, y and z all have approximately equal weighting. Again this reflects the strong positive correlation between these two variables. In the second PC depth and table have the strongest weighting. We see that removing price from the PCA does not change much in terms of how much variation the first few components explain as well as which variables contribute most strongly to each component. This is because of how strongly price is correlated with the dimension variables. 
 
-```{r}
+```{r, echo=FALSE}
 ggbiplot(PCAprice, obs.scale =1, var.scale = 1, varname.size = 5)
 ```
 
@@ -948,7 +948,7 @@ Overall the hypothesis test gives a highly significant result meaning that two f
 
 As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. This many factors is unlikely to be that useful as a classification tool. Nevertheless we will begin by attempting a Linear Discriminant Analysis using the factors.
 
-```{r, warning= FALSE}
+```{r, warning= FALSE, echo=FALSE}
 diamonds$Interaction <- interaction(diamonds$cut, diamonds$color, diamonds$clarity)
 set.seed(123456789, kind = "Mersenne-Twister")
 ind <- sample(c("Train", "Test"),
@@ -962,7 +962,7 @@ LDAinteraction <- lda(Interaction ~ carat + depth + table + price + x + y + z, d
 
 We will not include the output from the LDA using the interactions as it is very long given there are 280 classes. Instead we will report the key finding; the overall accuracy of using the interactions as a classifier. 
 
-```{r}
+```{r, echo= FALSE}
 RPinteraction <- predict(LDAinteraction, diamonds.Test)$class
 RCMinteraction <- table(RPinteraction, actual = diamonds.Test$Interaction)
 sum(diag(RCMinteraction))/sum(RCMinteraction)
@@ -982,7 +982,7 @@ LDAclarity <- lda(clarity ~ carat + depth + table + price
   
 
 
-```{r ordplot, fig.cap="Ordination plots"}
+```{r ordplot, fig.cap="Ordination plots", echo=FALSE}
 
 g1 <- ggord(LDAcut, diamonds.Train$cut, alpha = 0.5, )
 g2 <- ggord(LDAcolor, diamonds.Train$color, alpha = 0.5 )
@@ -992,7 +992,7 @@ ggarrange(g1, g2, g3, ncol = 2, nrow =2)
 
 All three ordination plots (figure \@ref(fig:ordplot)) show a lot of overlap between different levels of the categorical variables. It seems unlikely that a linear discriminant function would have much success in partitioning the data according to these classes. We shall compute the confusion matrix for each LDA and assess the overall accuracy of each model.
 
-```{r}
+```{r, echo=FALSE}
 RPcut <- predict(LDAcut, diamonds.Test)$class
 RCMcut <- table(RPcut, actual = diamonds.Test$cut)
 RPcolor <- predict(LDAcolor, diamonds.Test)$class
@@ -1001,7 +1001,7 @@ RPclarity <- predict(LDAclarity, diamonds.Test)$class
 RCMclarity <- table(RPcut, actual = diamonds.Test$clarity)
 ```
 
-```{r}
+```{r, echo=FALSE}
 Cutacc <- sum(diag(RCMcut))/sum(RCMcut)
 Coloracc <- sum(diag(RCMcolor))/sum(RCMcolor)
 Clarityacc <- sum(diag(RCMclarity))/sum(RCMclarity)
@@ -1046,7 +1046,7 @@ diamonds_car19_21[1:4,]
 
 
 
-```{r carat1to11clarity, fig.cap="Carat (limited values) vs Price coloured by Clarity"}
+```{r carat1to11clarity, fig.cap="Carat (limited values) vs Price coloured by Clarity", echo=FALSE}
 
 # scatterplot of carat vs price, but also colouring the observations
 # by 'cut'
@@ -1066,7 +1066,7 @@ To address the issue above, we attempted another discriminant analysis using the
 
 So, we repeat the Linear Discriminant Analysis process using the reduced dataset.
 
-```{r}
+```{r,}
 # split dataset into 'train' and 'test'
 set.seed(1234567890, kind = "Mersenne-Twister")
 ind <- sample(c("Tr","Te"),
@@ -1104,7 +1104,7 @@ LDA.diam <- lda(clarity~carat+price,
 
 ### Boxplots of the LDA means
 
-```{r ldameans, fig.cap="Distribution of LDA means"}
+```{r ldameans, fig.cap="Distribution of LDA means", echo=FALSE}
 boxplot(t(LDA.diam$means), main=
           "Distribution of LDA means for each level of 'clarity'",
         xlab="Levels of 'clarity' (lowest on the left, highest on the right)",
@@ -1122,7 +1122,7 @@ Pred <- predict(LDA.diam)
 
 ### Biplot
 
-```{r biplot2, fig.cap="Biplot of 'carat', 'price' against 'clarity'"}
+```{r biplot2, fig.cap="Biplot of 'carat', 'price' against 'clarity'", echo=FALSE}
 library(klaR)
 library(ggord)
 library(devtools)
@@ -1133,14 +1133,14 @@ Figure \@ref(fig:biplot2) shows the biplot for 'carat' versus 'price' against th
 
 ### Partition plot
 
-```{r partplot2, fig.cap="Partition plot for levels of 'clairty' as predicted by 'carat' and 'price'"}
+```{r partplot2, fig.cap="Partition plot for levels of 'clairty' as predicted by 'carat' and 'price'", echo = FALSE}
 partimat(clarity~carat+price, data = Train, method="lda")
 ```
 
 Figure \@ref(fig:partplot2) shows the partition plot for the discriminant analysis (DA) of the different levels of the 'clarity' variable as predicted by 'carat' and 'price'. As a reminder, the levels are: I1 (lowest clarity), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (highest clarity).  We can see from the number of red font values that there are many mis-categorised observations, suggesting that the LDA has not worked particularly well.
 
 
-```{r}
+```{r, echo=FALSE}
 RealisticPredicted <- predict(LDA.diam,Test)$class
 RCM <- table(RealisticPredicted, Actual=Test$clarity)
 RCM
@@ -1168,7 +1168,7 @@ As LDA did not yield useful results in terms of classifying the diamonds data we
 
 ## Optimal cluster number
 
-```{r optclust, fig.cap="Optimal number of clusters"}
+```{r optclust, fig.cap="Optimal number of clusters", echo=FALSE}
 fviz_nbclust((scale(smallersample[,-c((2:4),11)])), kmeans, method = "wss") +
     geom_vline(xintercept = 4, linetype = 2)+
   labs(subtitle = "Elbow method")
@@ -1178,7 +1178,7 @@ Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that
 
 ## kmeans function
 
-```{r}
+```{r,}
 clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), 
                    algorithm = "MacQueen", centers = 4, 
                    iter.max = 100, nstart = 50)
@@ -1196,7 +1196,7 @@ We create four clusters with sizes of 127, 455, 137 and 281 respectively. We see
 
 ## Cluster plot
 
-```{r clustplot, fig.cap="Cluster plot"}
+```{r clustplot, fig.cap="Cluster plot", echo = FALSE}
 fviz_cluster(clusters, data = (scale(smallersample[,-c((2:4),11)])),
              geom = "point",
              ellipse.type = "norm", 
@@ -1210,7 +1210,7 @@ It is worth mentioning that 'diamonds' already has categories and levels within 
 
 ## Silhouette plot
 
-```{r silh, fig.cap="Clusters silhouette plot"}
+```{r silh, fig.cap="Clusters silhouette plot", echo = FALSE}
 library(cluster)
 sil <- silhouette(clusters$cluster, dist((scale(smallersample[,-c((2:4),11)]))))
 fviz_silhouette(sil)
