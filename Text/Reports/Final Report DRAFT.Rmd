@@ -1174,7 +1174,7 @@ fviz_nbclust((scale(smallersample[,-c((2:4),11)])), kmeans, method = "wss") +
   labs(subtitle = "Elbow method")
 ```
 
-Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that 4 clusters is the optimum number.
+Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that 4 clusters is the optimum number.It is worth noting that the total within sum of squares is large for any selected number of clusters. 
 
 ## kmeans function
 
@@ -1182,13 +1182,13 @@ Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that
 clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), 
                    algorithm = "MacQueen", centers = 4, 
                    iter.max = 100, nstart = 50)
+clusters$withinss
 
 # print clusters means
 clusters$centers
 
 # print first 20 values
 clusters$cluster[1:20]
-
 
 ```
 
