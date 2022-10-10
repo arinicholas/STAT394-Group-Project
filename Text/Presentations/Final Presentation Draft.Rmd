@@ -206,17 +206,17 @@ PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{rrr}
+\begin{tabular}{rcc}
   \hline
- Model\vline & No. of Predictors & Adjusted $R^2$ \\ 
+ Model \vline & No. of Predictors & Adjusted $R^2$ \\ 
   \hline
 Full Model \vline & 9 & 0.9198\\
    \hline
-Best Model\vline & 7 & 0.9198\\
+Best Model \vline & 7 & 0.9198\\
 \hline
-Numeric Model\vline & 7 & 0.8592\\
-Two PC\vline & 2 & 0.8092\\
-All PC\vline & 6 & 0.8695\\
+Numeric Model \vline & 7 & 0.8592\\
+Two PC \vline & 2 & 0.8092\\
+All PC \vline & 6 & 0.8695\\
 \end{tabular}
 \end{table}
 
