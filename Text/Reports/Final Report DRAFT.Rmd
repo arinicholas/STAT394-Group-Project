@@ -865,7 +865,7 @@ ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5)
 
 Producing a biplot using the reduced dataset allows us to interpret the biplot much better (figure \@ref(fig:biplotpcared)). We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price.  The percentage of variation retained by each Principal Component is included in the axis labels.
 
-In the above analysis we have shown we are able to us principal components analysis to reduce the number of dimensions in the dataset while still retaining a large proportion of its variation. In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other numerical variables as explanatory variables. 
+In the above analysis we have shown we are able to us principal components analysis to reduce the number of dimensions in the dataset while still retaining a large proportion of its variation. In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other principal components as explanatory variables. 
 
 ## Principal Components Regression
 
