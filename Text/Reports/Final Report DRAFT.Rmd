@@ -1173,7 +1173,7 @@ The relatively poor performance of LDA in this instance is perhaps not surprisin
 
 # Cluster Analysis
 
-As LDA did not yield useful results in terms of classifying the diamonds data we also decided to conduct Cluster Analysis to investigate if the diamonds data set could be divided into clusters. We used a K-means algorithm to achieve this. As we were initially unsure of how many clusters we should attempt to divide the data into we will first examine the sum of the squares of the intra-class disatances for different numbers of clusters. We will again use the smaller sample to aid in the interpretation of visual displays. 
+As LDA did not yield useful results in terms of classifying the diamonds data we also decided to conduct Cluster Analysis to investigate if the diamonds data set could be divided into clusters. We used a K-means algorithm to achieve this. Therefore centroids are computed as the mean of all observations belonging to each class. The Euclidean Distance was used for intra/inter class distances. As we were initially unsure of how many clusters we should attempt to divide the data into we will first examine the sum of the squares of the intra-class disatances for different numbers of clusters. We will again use the smaller sample to aid in the interpretation of visual displays. 
 
 ## Optimal cluster number
 
