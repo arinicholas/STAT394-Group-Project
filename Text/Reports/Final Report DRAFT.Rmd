@@ -955,7 +955,7 @@ Overall the hypothesis test gives a highly significant result meaning that two f
 
 # Linear Discriminant Analysis (LDA)
 
-As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables.This many factors is unlikely to be that useful as a classification tool. The secondary aim of our project was to investiage if we could classify the diamonds dataset more simply. We will begin by attempting a Linear Discriminant Analysis using the factors.
+The secondary aim of our project was to investigate methods of classifying the diamonds dataset more simply. As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. If we could easily classify a diamond into the correct factor level based on the numeric variables this would be ideal however it is likely to be difficult to classify diamonds using this many factors.  We will begin by verifying whether predicting the factor level (out of 280) that a diamond will belong too is as complex a task as we expect by using an LDA.  
 
 ```{r, warning= FALSE, echo=FALSE}
 diamonds$Interaction <- interaction(diamonds$cut, diamonds$color, diamonds$clarity)
@@ -977,8 +977,8 @@ RCMinteraction <- table(RPinteraction, actual = diamonds.Test$Interaction)
 sum(diag(RCMinteraction))/sum(RCMinteraction)
 ```
 
-An overall accuracy of 0.065 is very low and therefore we can conclude that using the factors as classes was not effective. It's likely the data is not linearly separable into 280 classes. We will now instead attempt to use Linear Discriminant Analysis to classify observations more simply using levels of each of the categorical variables. We will review how each of these categorical variables perform as classifiers.
-
+An overall accuracy of 0.065 is very low and therefore we can conclude that an LDA with all other variables does a poor job at predicting which factor level a diamond should be classified as. It's likely the data is not linearly separable into 280 classes. We will now see if a Linear Discriminant Analysis using the numerical variables can be used to accurately predict what level of a categorical variable a diamond belongs too. We will attempt this for each categorical variable. If successful we will have found a simple way to classify diamonds based on the numeric variables in the data set. This could be useful as the categorical variables are likely to be the most time consuming to assess, likely needing expert evaluation. If we can accurately predict what level of a categorical variable a diamond will belong to based on the other, more easily measured, variables this could have real-world, practical benefits. 
+ 
 
 ```{r}
 LDAcut <- lda(cut ~ carat + depth + table + price
@@ -1037,7 +1037,7 @@ confusionMatrix(RCMcut)
 
 The confusion matrix clearly shows a large amount of errors for each individual class. We again get the overall accuracy measurement of 0.6258 with a 95% confidence interval of (0.6166,0.6349). In terms of the accuracy of classification for individual classes Ideal, Fair and Premium had higher accuracy ratings than Good or Very Good. It was important to check individual class accuracy as the prior probabilities of an observation belonging to each class were very different. 
 
-We conclude that using the levels of the categorical variables as classes was more successful than using the interactions with the cut variable returning the highest accuracy. Even this was not particularly succesful. We therefore conclude the data is not linearly separable by using the levels of categorical variables as classes. 
+We conclude that LDA is not particularly effective at correctly classifying diamonds into different levels of the categorical variables. Using the levels of the categorical variables as classes was more successful than using the interactions with the cut variable returning the highest accuracy. Even this was not particularly successful. We therefore conclude the data is not linearly separable by using the levels of categorical variables as classes.  
 
 
 ## Why prediction without the categorical variables is not working well
