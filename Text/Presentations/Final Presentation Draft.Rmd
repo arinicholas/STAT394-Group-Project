@@ -174,17 +174,12 @@ All PC \vline & 6 & 0.8695\\
 - The diamonds dataset includes 280 interactions between different levels of the categorical variables\linebreak
 - Our second leading question was to investigate if we could classify the diamonds data more simply using analytical techniques such as LDA and CA\linebreak 
 
-# LDA
 
 # Problems encountered
 
 - Despite a correlation of 0.9216, 'carat' was not a great predictor of 'price'
 
-- LDA did not work with the full dataset
-
-# Linear Discriminatory Analysis
-
-![LDA ordination plots](./LDA ordination plots.jpg)
+- LDA not able to separate different levels of the categorical variables
 
 # Slicing the dataset 1
 
@@ -204,5 +199,9 @@ All PC \vline & 6 & 0.8695\\
 
 
 ![Carat vs Price vs Clarity: sliced 2](./carat vs price vs clarity sliced.jpg)
+
+# Linear Discriminatory Analysis
+
+![LDA ordination plots](./LDA ordination plots.jpg)
 
 # Conclusion 
