@@ -205,3 +205,15 @@ All PC \vline & 6 & 0.8695\\
 ![LDA ordination plots](./LDA ordination plots.jpg)
 
 # Conclusion 
+
+- Achieved the primary aim to find the best predictor for ‘price’  
+
+- Best model -> price ~ carat + cut + color + clarity + depth + table + x  
+
+- Regression using the PCs produced a reasonable result, even without the categorical variables  
+
+- LDA, FA and CA did not work well due to the amount of overlap between the different levels of the categorical variables
+
+- Lots of learning figuring out why things did not work!
+
+- Thanks for listening!! :):)
