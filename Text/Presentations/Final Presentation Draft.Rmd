@@ -176,14 +176,33 @@ All PC \vline & 6 & 0.8695\\
 
 # LDA
 
-# Ken's Investigation (Change title - just didn't know what to call it)
-
-# CA
-
 # Problems encountered
 
 - Despite a correlation of 0.9216, 'carat' was not a great predictor of 'price'
 
 - LDA did not work with the full dataset
+
+# Linear Discriminatory Analysis
+
+![LDA ordination plots](./LDA ordination plots.jpg)
+
+# Slicing the dataset 1
+
+![Carat vs Price vs Clarity](./coloured scatterplot carat vs price vs clarity 2.jpg)
+
+# Slicing the dataset 2
+
+![Carat vs Price vs Clarity: vertical slice](./scatterplot vertical slice.jpg)
+
+
+# Colour bands evident in sliced version
+
+
+![Carat vs Price vs Clarity: sliced 1](./carat vs price vs clarity 2.jpg)
+
+# Colour bands evident in sliced version 4
+
+
+![Carat vs Price vs Clarity: sliced 2](./carat vs price vs clarity sliced.jpg)
 
 # Conclusion 
