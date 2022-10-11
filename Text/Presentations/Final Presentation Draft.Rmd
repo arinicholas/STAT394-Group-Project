@@ -88,74 +88,23 @@ Mei Huang
 
 (List adapted from list at kaggle.com).
 
-# Summary of Numeric Variables 
-
-|                   |    carat|    depth|    table|    price|        x|        y|        z|
-|:------------------|--------:|--------:|--------:|--------:|--------:|--------:|--------:|
-|sample size        |    53940|    53940|    53940|    53940|    53940|    53940|    53940|
-|minimum            |     0.20|    43.00|    43.00|   326.00|     0.00|     0.00|     0.00|
-|first quartile     |     0.40|    61.00|    56.00|   950.00|     4.71|     4.72|     2.91|
-|median             |     0.70|    61.80|    57.00|  2401.00|     5.70|     5.71|     3.53|
-|mean               |     0.80|    61.75|    57.46|  3932.80|     5.73|     5.73|     3.54|
-|third quartile     |     1.04|    62.50|    59.00|  5324.25|     6.54|     6.54|     4.04|
-|maximum            |     5.01|    79.00|    95.00| 18823.00|    10.74|    58.90|    31.80|
-|IQR                |     0.64|     1.50|     3.00|  4374.25|     1.83|     1.82|     1.13|
-|standard deviation |     0.47|     1.43|     2.23|  3989.44|     1.12|     1.14|     0.71|
-|skewness           |     1.12|    -0.08|     0.80|     1.62|     0.38|     2.43|     1.52|
-|kurtosis           |     4.26|     8.74|     5.80|     5.18|     2.38|    94.21|    50.08|
-
-
-# Cateogrical Summary
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrr}
-  \hline
- Cut\vline & Fair & Good & Very Good & Premium & Ideal \\ 
-  \hline
-Count\vline & 1610 & 4960 & 12082 & 13791 & 21551\\
-   \hline
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrr}
-  \hline
- Color\vline & J & I & H & G & F & E & D \\ 
-  \hline
- Count\vline & 2808 & 5422 & 8304 & 11292 & 9542 & 9797 & 6775\\
-   \hline
-\end{tabular}
-\end{table}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrrrrrrr}
-  \hline
- Clarity\vline & I1 & SI2 & SI1 & VS2 & VS1 & VVS2 & VVS1 & IF \\ 
-  \hline
-  Count\vline & 741 & 9194 & 13065 & 12258 & 8171 & 5066 & 3655 & 1790\\
-   \hline
-\end{tabular}
-\end{table}
-
-
 # Pairs Plot
 
 ![Pairs plot](./pairs plot.jpg)
 
-# Normal QQ Plots
-
-![Normal QQ Plots](./Normal QQ Plots.jpeg){height=85%}
-
 # Correlation Plot
 
-![Correlation Plot](./Corrplot_diamonds.jpg){height=85%}
+![Correlation Plot](./Corrplot_diamonds.jpg){height=80%}
+
+
+# Normal QQ Plots
+
+![Normal QQ Plots](./Normal QQ Plots.jpeg){height=80%}
+
 
 # Price by Cateogrical 
 
-![Price by Categorical](./pricebycategorical.jpeg)
+![Price by Categorical](./pricebycategorical.jpeg){height=80%}
 
 # Leading Question 1
 
@@ -225,9 +174,16 @@ All PC \vline & 6 & 0.8695\\
 - The diamonds dataset includes 280 interactions between different levels of the categorical variables\linebreak
 - Our second leading question was to investigate if we could classify the diamonds data more simply using analytical techniques such as LDA and CA\linebreak 
 
+# LDA
+
+# Ken's Investigation (Change title - just didn't know what to call it)
+
+# CA
+
 # Problems encountered
 
 - Despite a correlation of 0.9216, 'carat' was not a great predictor of 'price'
 
 - LDA did not work with the full dataset
 
+# Conclusion 
