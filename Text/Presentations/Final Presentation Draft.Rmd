@@ -177,25 +177,25 @@ All PC \vline & 6 & 0.8695\\
 
 # Problems encountered
 
-- Despite a correlation of 0.9216, 'carat' was not a great predictor of 'price'
+- Despite a correlation of 0.9216, 'carat' (a measure of weight) was not a great predictor of 'price'
 
 - LDA not able to separate different levels of the categorical variables
 
-# Slicing the dataset 1
+# Colour-coded scatterplot
 
 ![Carat vs Price vs Clarity](./coloured scatterplot carat vs price vs clarity 2.jpg)
 
-# Slicing the dataset 2
+# Slicing the dataset vertically
 
 ![Carat vs Price vs Clarity: vertical slice](./scatterplot vertical slice.jpg)
 
 
-# Colour bands evident in sliced version
+# Zoomed in version of vertical slice
 
 
 ![Carat vs Price vs Clarity: sliced 1](./carat vs price vs clarity 2.jpg)
 
-# Colour bands evident in sliced version 4
+# Colour bands more evident in sliced version
 
 
 ![Carat vs Price vs Clarity: sliced 2](./carat vs price vs clarity sliced.jpg)
