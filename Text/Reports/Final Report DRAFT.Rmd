@@ -981,7 +981,7 @@ The first thing we notice from the LDA output is the the prior probabilities are
 ggord(LDApricerank, diamonds.Train$pricerank$pricerank, alpha= .5)
 ```
 
-(figure \@ref(fig:LDApricerank)) shows some evidence of the three groups being seperable with a linear function. There is still some overlap as well as some points (or groups of points) that seem to be far removed from the rest of the data. We will now see how this LDA performs as a classifier 
+The ordination plot (figure \@ref(fig:LDApricerank)) shows some evidence of the three groups being seperable with a linear function. There is still some overlap as well as some points (or groups of points) that seem to be far removed from the rest of the data. We will now see how this LDA performs as a classifier. 
 
 
 ```{r, echo = FALSE}
@@ -990,7 +990,7 @@ RCMPR <- table(RealisticPredictedPR, Actual = diamonds.Test$pricerank$pricerank)
 confusionMatrix(RCMPR)
 ```
 
-We see that LDA was reasonably successful at classifying diamonds into the three price levels of low, medium and high with an overall accuracy of 84%. As the prior probabilities of classes were not equal we should also check the within class accuracy. We see that all classes performed well with "low" having the highest balanced accuracy. We can conclude that we are able to predict the value of a diamond reasonably accurately with an LDA.  
+We see that LDA was reasonably successful at classifying diamonds into the three price levels of low, medium and high with an overall accuracy of 84%. As the prior probabilities of classes were not equal we should also check the within-class accuracy. We see that all classes performed well with "low" having the highest balanced accuracy. We can conclude that we are able to predict the value of a diamond reasonably accurately with an LDA.  
 
 ## LDA predicting categorical variables 
 
