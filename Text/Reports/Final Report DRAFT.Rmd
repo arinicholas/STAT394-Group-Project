@@ -47,7 +47,7 @@ options(xtable.timestamp = "")
 
 An exploratory data analysis (EDA) of the 'diamonds' dataset was undertaken. Based on the results of the EDA, the techniques of Principal Component Analysis (PCA), Linear Discriminant Analysis (LDA), Factor Analysis (FA) and Cluster Analysis (CA) were carried out. As these techniques were new to the project team and everyone was keen to learn, it was decided to experiment with each of them (with varying degrees of success). 
 
-The primary aim was to find the best predictor variables for 'price'. A secondary aim was to use the new techniques to see if classifications could be made. Other techniques used were single and multiple linear regression and testing to find the best regression model using the Akaike Information Criterion (AIC) and Bayes Information Criterion (BIC) tests.
+The primary aim was to find the best predictor variables for 'price'. A secondary aim was to use the new techniques of LDA and CA to see if simple classifications could be made. Other techniques used were single and multiple linear regression and testing to find the best regression model using the Akaike Information Criterion (AIC) and Bayes Information Criterion (BIC) tests.
 
 
 # Introduction  
@@ -88,7 +88,7 @@ We selected the diamonds dataset because it was easy to understand what the vari
 
 Our primary aim was to identify which variables best predictor the *price* of a given diamond. We hypothesised that increased diamond size ('x', 'y' and 'z') and weight ('carat') will be positively correlated with diamond price. We also expected to see increased prices for diamonds with higher levels of the categorical variables, all of which reflect the quality of the diamond. We were unsure how diamond depth and table percentage will relate to diamond price. 
 
-We also sought to explore the techniques of Principal Component Analysis (PCA), Factor Analysis (FA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) that we have learned in STAT394. The diamonds dataset has 280 unique possible interactions (5 x 7 x 8) between different levels of the categorical variables. Our secondary aim was to discover whether one of these techinques (PCA, FA, LDA or CA) could classify the data in a simpler manner, or predict into which level of a category a new observation would fall. Encouraged by our lecturer, we adopted an approach of 'playing' with the techniques with the aim of learning as much as possible, even if a more experienced statistician could see that they were not the correct tools to achieve our aims. We wanted to learn by doing, regardless of whether the results of these methods were successful for our project or not. 
+We also sought to explore the techniques of Principal Component Analysis (PCA), Factor Analysis (FA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) that we have learned in STAT394. The diamonds dataset has 280 unique possible interactions (5 x 7 x 8) between different levels of the categorical variables. Our secondary aim was to discover whether one of these techinques could classify the data in a simpler manner, or predict into which level of a category a new observation would fall. Encouraged by our lecturer, we adopted an approach of 'playing' with the techniques with the aim of learning as much as possible, even if a more experienced statistician could see that they were not the correct tools to achieve our aims. We wanted to learn by doing, regardless of whether the results of these methods were successful for our project or not. 
 
 # Methodology
 
@@ -946,7 +946,7 @@ Overall the hypothesis test gives a highly significant result meaning that two f
 
 # Linear Discriminant Analysis (LDA)
 
-As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables. This many factors is unlikely to be that useful as a classification tool. Nevertheless we will begin by attempting a Linear Discriminant Analysis using the factors.
+As discussed previously the diamonds data set has three categorical variables each with many levels. This means we have the possibility of 280 unique interactions between the levels of these categorical variables.This many factors is unlikely to be that useful as a classification tool. The secondary aim of our project was to investiage if we could classify the diamonds dataset more simply. We will begin by attempting a Linear Discriminant Analysis using the factors.
 
 ```{r, warning= FALSE, echo=FALSE}
 diamonds$Interaction <- interaction(diamonds$cut, diamonds$color, diamonds$clarity)
@@ -1028,7 +1028,7 @@ confusionMatrix(RCMcut)
 
 The confusion matrix clearly shows a large amount of errors for each individual class. We again get the overall accuracy measurement of 0.6258 with a 95% confidence interval of (0.6166,0.6349). In terms of the accuracy of classification for individual classes Ideal, Fair and Premium had higher accuracy ratings than Good or Very Good. It was important to check individual class accuracy as the prior probabilities of an observation belonging to each class were very different. 
 
-We conclude that the data is not linearly separable by using the levels of categorical variables as classes. It's possible performance may be better by using the 280 interactions as known classes but we couldn't see much real world use for such a complex classifier. 
+We conclude that using the levels of the categorical variables as classes was more successful than using the interactions with the cut variable returning the highest accuracy. Even this was not particularly succesful. We therefore conclude the data is not linearly separable by using the levels of categorical variables as classes. 
 
 
 ## Why prediction without the categorical variables is not working well
@@ -1182,17 +1182,20 @@ Figure \@ref(fig:optclust) shows that when the elbow method is used, we see that
 clusters <- kmeans(scale(smallersample[,-c((2:4),11)]), 
                    algorithm = "MacQueen", centers = 4, 
                    iter.max = 100, nstart = 50)
-clusters$withinss
 
-# print clusters means
+
 clusters$centers
-
-# print first 20 values
-clusters$cluster[1:20]
 
 ```
 
-We create four clusters with sizes of 127, 455, 137 and 281 respectively. We see clear differences in the mean of each numeric variable across the four clusters. The within cluster sum of squares indicates that the clusters are not very compact. We shall now visualize the clusters with a scatterplot using the first two principal components of our dataset as the two dimensions. The first two principal components account for over 86% of the variance so this should be an appropriate visualization.
+We create four clusters with sizes of 127, 455, 137 and 281 respectively. We see clear differences in the mean of each numeric variable across the four clusters. We see that cluster 3 contains diamonds with a higher mean price, carat, x, y and z. While cluster 2 contains smaller, less valuable diamonds. Diamonds in cluster 4 have larger absolute mean scores for depth and table compared to the other clusters. 
+
+
+```{r}
+clusters$withinss
+```
+
+The within cluster sum of squares indicates that the clusters are not very compact. We shall now visualize the clusters with a scatterplot using the first two principal components of our dataset as the two dimensions. The first two principal components account for over 86% of the variance so this should be an appropriate visualization.
 
 ## Cluster plot
 
@@ -1233,7 +1236,7 @@ The primary aims of our  multivariate statistical investigation on the diamonds 
 
 We had the most success with our first aim; predicting diamond price. This was first achieved using the multiple regression model with all variables except for 'y' and 'z', in other words the model; price = carat + cut + color + clarity + depth + table + x. The best model was obtained using stepwise AIC and BIC tests. The diagnostics for the multiple regression model showed that all the assumptions were violated, meaning the model might not produce accurate predictions.  Secondly, a principal components analysis using the numerical variables was successful in reducing the dimensionality of the dataset while still retaining a large proportion of the variance. We were able to use the first two principal components in a model using principal components regression and this performed almost as well as the "best" model identified through stepwise multiple regression despite being much more parsimonious. We did however note that a model including all principal components was more effective at predicting price. 
 
-An examination of the key principal components inspired us to conduct a factor analysis with the hypothesis that the factors "price + dimension" and "light conductance" might be sufficient to explain variation in the dataset. While we saw evidence of our hypothesized structure in the factor loadings two factors was not found to be sufficient to capture all the variation in the data. 
+An examination of the key principal components inspired us to conduct a factor analysis with the hypothesis that the factors "price + dimension" and "light conductance" might be sufficient to explain variation in the dataset. While we saw evidence of our hypothesized structure in the factor loadings, two factors was not found to be sufficient to capture all the variation in the data. 
 
 We attempted to address our second aim through the techniques of LDA and CA. A LDA was undertaken using each categorical variable as a classifier. This failed to reliably discriminate observations. As using known classes in the dataset was unsuccessful we attempted a cluster analysis. The cluster analysis identified four clusters as the optimal number to describe the data however there was significant overlap between these.  We conclude that the diamonds dataset presents a difficult classification problem and that the reason for this is the high number of possible interactions between levels of our three categorical variables.  
 
