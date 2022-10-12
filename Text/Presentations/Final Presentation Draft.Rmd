@@ -102,7 +102,7 @@ Mei Huang
 ![Normal QQ Plots](./Normal QQ Plots.jpeg){height=80%}
 
 
-# Price by Cateogrical 
+# Price by Categorical 
 
 ![Price by Categorical](./pricebycategorical.jpeg){height=80%}
 
@@ -177,6 +177,8 @@ All PC \vline & 6 & 0.8695\\
 
 # Problems encountered
 
+- Multiple regression: didn't work well without the categorical variables  
+ 
 - Despite a correlation of 0.9216, 'carat' (a measure of weight) was not a great predictor of 'price'
 
 - LDA not able to separate different levels of the categorical variables
