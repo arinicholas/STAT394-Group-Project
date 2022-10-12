@@ -142,7 +142,7 @@ PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 
 # Biplot
 
-![PCA Biplot](./Biplot PCA.jpeg){height=85%}
+![PCA Biplot](./color biplot.jpeg){height=85%}
 
 # Principal Components Regression
 
