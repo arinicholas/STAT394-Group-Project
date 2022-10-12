@@ -122,7 +122,7 @@ Mei Huang
 
 # Regression Assumptions
 
-![Regression Diagnostics](./Regression Diagnostics.jpeg)
+![Regression Diagnostics](./Regression Diagnostics.jpeg){height=75%}
 
 # Principal Components Analysis: Screeplot
 
@@ -138,11 +138,11 @@ PCA <- prcomp(smallersample, center = TRUE, scale = TRUE)
 # Principal Components Analysis: Eigenvectors
 
 
-![Plot of EigenVectors](./Eigenvector Plot.jpeg){height=85%}
+![Plot of Eigenvectors](./Eigenvector Plot.jpeg){height=75%}
 
 # Biplot
 
-![PCA Biplot](./color biplot.jpeg){height=85%}
+![PCA Biplot](./color biplot.jpeg){height=75%}
 
 # Principal Components Regression
 
