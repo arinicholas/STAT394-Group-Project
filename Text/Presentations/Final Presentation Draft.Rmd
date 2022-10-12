@@ -163,7 +163,6 @@ Full Model \vline & 9 & 0.9198\\
    \hline
 Best Model \vline & 7 & 0.9198\\
 \hline
-Numeric Model \vline & 7 & 0.8592\\
 Two PC \vline & 2 & 0.8092\\
 All PC \vline & 6 & 0.8695\\
 \end{tabular}
