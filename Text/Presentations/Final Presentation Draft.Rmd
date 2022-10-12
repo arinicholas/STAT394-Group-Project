@@ -104,7 +104,7 @@ Mei Huang
 
 # Price by Categorical 
 
-![Price by Categorical](./pricebycategorical.jpeg){height=80%}
+![Price by Categorical](./pricebycategorical.jpeg){height=75%}
 
 # Leading Question 1
 
