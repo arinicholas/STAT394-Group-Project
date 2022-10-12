@@ -169,11 +169,6 @@ All PC \vline & 6 & 0.8695\\
 \end{tabular}
 \end{table}
 
-# Leading Question 2 ... and the issues we encountered...
-
-- The diamonds dataset includes 280 interactions between different levels of the categorical variables\linebreak
-- Our second leading question was to investigate if we could classify the diamonds data more simply using analytical techniques such as LDA and CA\linebreak 
-
 
 # Problems encountered
 
@@ -214,7 +209,7 @@ All PC \vline & 6 & 0.8695\\
 
 - Regression using the PCs produced a reasonable result, even without the categorical variables  
 
-- LDA and CA did not work well due to the amount of overlap between the different levels of the categorical variables - the diamonds dataset presented a tricky classification problem
+- LDA did not work well due to the amount of overlap between the different levels of the categorical variables - the diamonds dataset presented a tricky classification problem
 
 - Lots of learning figuring out why things did not work!
 
