@@ -305,9 +305,9 @@ ggplot(subset(diamonds, cut == "Ideal"| cut == "Premium"| cut =="Good"| cut == "
   geom_density(aes(y = ..density..), alpha = .7)
 ```
 
-Figure \@ref(fig:dencut2) shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leves (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. 
+Figure \@ref(fig:dencut2) shows the density plots for the different levels of the 'price' variable. The legend on the right shows the level names and their order ('fair' = poorest, 'ideal' = best). Of note is the fact that the two best leveLs (premium and ideal) have significant peaks near the lower end of the price range compared with the other three. This is somewhat surprising, as intuitively one would imagine price to increase as the quality of cut increases. 
 
-We conducted a Analysis of Variance (ANOVA) for all three of the categorical variables to see if the observed differences in mean price across the various levels were significant. We also conducted a Levene's test to verfiy if the assumption of homogeneity of variance was violated.  If these tests showed violations of the ANOVA assumptions, we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of 'cut' we can see that not all of them have a shape consistent with being normally distributed. A one-way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The code for these tests may be found in the appendices. 
+We conducted a Analysis of Variance (ANOVA) for all three of the categorical variables to see if the observed differences in mean price across the various levels were significant. We also conducted a Levene's test to verify whether the assumption of homogeneity of variance was violated.  If these tests showed violations of the ANOVA assumptions, we then implemented a non-parametric Kruskal Wallis Test. From the graph of the distributions of price for different levels of 'cut' we can see that not all of them have a shape consistent with being normally distributed. A one-way ANOVA is reasonably robust to departures from normality, particularly as we have a very large sample. The code for these tests may be found in the appendices. 
 
 ```{r cutanotab, echo=FALSE}
 cutanovatab <- data.frame(Test=c("ANOVA","Levene's Test","Kruskal Wallis"),
@@ -393,7 +393,7 @@ Table \@ref(tab:colanotab) shows the results of the tests for the 'color' variab
 
 #### Mahalanobis Distance  
 \hfill\break
-We decided to investigate outliers and unusual points in our dataset. These points may have increased leverage or influence when we come to using variables to predict price.  
+We decided to investigate outliers and unusual points in our dataset. These points may have increased leverage or influence when we come to using variables to predict price. We proceeded with these tests despite knowing the data was not Normally distributed as the Mahalanobis Distance was new to us all and it was a useful learning exercise.   
 
 We began by using the Mahalanobis Distance to identify surprising and very surprising points. A 'somewhat surprising' point is one that is equal or greater than the 90th percentile, a 'surprising' point is one that is equal or greater than the 95th percentile, while a 'very surprising' point is one that is equal or greater than the 99th percentile. A 'typical' point is one that lies within the 90th percentile. 
 
@@ -466,7 +466,7 @@ Table \@ref(tab:mahalcol) shows the 'very surprising' Mahalanobis distances for 
 
 #### Zero Values 
 \hfill\break
-In this section we identify any zero values and determine whether or not they are errors. The code below shows the lowest values for each of the seven numerical variables. The number of elements to display was tweaked until the output showed all the zero values (if any). This was partially to discover whether the extreme values in the dataset were having undue influence on results. 
+In this section we identify any zero values and determine whether or not they are errors. This was something that came to the attention of the team after the initial EDA had been submitted, hence the reason for it's inclusion here. The code below shows the lowest values for each of the seven numerical variables. The number of elements to display was tweaked until the output showed all the zero values (if any). This was partially to discover whether the extreme values in the dataset were having undue influence on results. 
 
 ```{r}
 sort(decreasing=F, diamonds$carat)[1:10]
@@ -489,7 +489,7 @@ diamonds.df <- data.frame(diamonds)
 
 ```
 
-We now display the zero values for each of the variable, noting whether the other variables are consistent with zero readings, or whether they indicate that this is impossible. For example, the diamond in row 1 below with zero mm length ('x'), but 6.62 mm width ('y').
+We now display the zero values for each of the variables, noting whether the other variables are consistent with zero readings, or whether they indicate that this is impossible. For example, the diamond in row 1 below with zero mm length ('x'), but 6.62 mm width ('y').
 
 ```{r}
 # display the zero values for 'x'
@@ -557,7 +557,7 @@ diamonds.df[diamonds$z>=8,]
 
 ```
 
-Similarly with the extreme value of 'z' (31.80). The other dimensions of this diamond do not tally with the extreme depth value, nor does the relatively low price. The next highest value has been included for comparison (8.06). This is almost certainly an error.
+Similarly with the extreme value of 'z' (31.80). The other dimensions of this diamond do not tally with the extreme depth value, nor does the relatively low price. The next highest value has been included for comparison (8.06). So this outlier is almost certainly an error.
 
 ### The 'carat' variable: probably no upper value errors
 
@@ -639,7 +639,7 @@ Conversely, we can also see some heavier diamonds which are of lower quality and
 
 ### Interactions 
 
-As we have 3 categorical variables: color, clarity and cut with 7, 8 and 5 levels respectively we have 280 separate interactions in our data set. This makes it likely that there will be unknown classes in our data. 
+As we have 3 categorical variables: color, clarity and cut with 7, 8 and 5 levels respectively. This means there are 280 separate interactions in our data set.
 
 # Simple and Multiple Regression 
 
@@ -800,9 +800,9 @@ Figure \@ref(fig:pcascree) shows the scree plot for the Principal Components of 
 pca.diamonds$rotation
 ```
 
-Looking at the eigenvectors we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth and table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect there negative correlation. A visualization of the eigenvectors of the first two principal components is shown in figure \@ref(fig:eigenvectorplotpc)
+Looking at the eigenvectors (in the output above) we see that PC1 is primarily defined by carat, price, x, y and z. PC1 seems to be defined by dimension variables and, as we saw in the correlation matrix, price is closely associated with these variables. The variables with the most weight in PC2 are depth and table. We see a similar pattern in PC3 with depth and table having the largest weighting. This makes sense as in our examination of correlations between variables we saw that price, x, y, z and carat were all strongly correlated. The opposite loadings of depth and table in PC2 and PC3 reflect their negative correlation. 
 
-```{r, eigenvectorplotpc, echo=FALSE}
+```{r, eigenvectorplotpc, fig.cap="Visualisation of the Eigenvectors", echo=FALSE}
 Rotation.df <- data.frame(t(pca.diamonds$rotation))
 Rotation.df$PC <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7")
 Rotation.melt <- melt(Rotation.df, id.vars = "PC")
@@ -813,15 +813,14 @@ PC2eigen <- ggplot(Rotation.melt[c(2,9, 16,23,30,37,44),]) +
 ggarrange(PC1eigen, PC2eigen, ncol =1, nrow =2)
 ```
 
-
-A biplot of the data projected over the first two principal components is shown below.
+A visualization of the eigenvectors of the first two principal components is shown in figure \@ref(fig:eigenvectorplotpc).
 
 
 ```{r biplotpc, fig.cap="Biplot of Principal Components", echo=FALSE}
 ggbiplot(pca.diamonds, obs.scale =1, var.scale = 1)
 ```
 
-The large number of observations in the biplot of PC1 versus PC2 in figure \@ref(fig:biplotpc) and consequent overlapping of the dots makes interpretation difficult. We will take a smaller sample of 1000 from the diamonds data and redo the PCA after first checking that the smaller sample has similar properties to the full sample. Also of note in this biplot are two significant outliers to the far right, which are extreme values of PC1. We shall identify those before creating the smaller sample.
+A biplot of the data projected over the first two principal components is shown in figure \@ref(fig:biplotpc). The large number of observations of PC1 versus PC2 and consequent overlapping of the dots makes interpretation difficult. We will take a smaller sample of 1000 from the diamonds data and redo the PCA after first checking that the smaller sample has similar properties to the full sample. Also of note in this biplot are two significant outliers to the far right, which are extreme values of PC1. We shall identify those before creating the smaller sample.
 
 ## Identify the extreme PC1 values
 
@@ -866,7 +865,7 @@ ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5)
 
 Producing a biplot using the reduced dataset allows us to interpret the biplot much better (figure \@ref(fig:biplotpcared)). We see that carat, x, y, z and price are strongly influence the first PC. While depth and table strongly (and reasonably equally) influence the second PC. We see evidence of the negative correlation between table and depth and a close to zero correlation between these two variables and the variables that strongly influence PC1. We also have an indication that there is redundancy between carat, x, y, z and price.  The percentage of variation retained by each Principal Component is included in the axis labels.
 
-We also thought it would be interesting to examine the biplots with observations projected onto the first two principal components coded for different levels of our categorical variables and to examine if any patterns emerge. Unfortunately in figure \@ref(fig:colorcodedbiplots) we don't see any clear clustering or pattern emerge with through the categorical variables. This indicates it may be hard to classify the data using the categorical variables. 
+
 
 ```{r colourcodedbiplots, fig.cap="Colour Coded Biplot" , echo = FALSE}
 a1 <- ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5, groups = smallersample$cut)
@@ -875,11 +874,13 @@ c1 <- ggbiplot(reducedpca, obs.scale =1, var.scale = 1, varname.size = 5, groups
 ggarrange(a1, b1, c1, ncol = 2, nrow =2)
 ```
 
+We also thought it would be interesting to examine the biplots with observations projected onto the first two principal components coded for different levels of our categorical variables and to examine if any patterns emerge. Unfortunately in figure \@ref(fig:colourcodedbiplots) we don't see any clear clustering or pattern emerge with through the categorical variables. This indicates it may be hard to classify the data using the categorical variables. 
+
 In the above analysis we have shown we are able to us principal components analysis to reduce the number of dimensions in the dataset while still retaining a large proportion of its variation. In this investigation we are interested in predicting the price of diamonds. To do this we will perform a regression with principal components with price as the dependent variable and the other principal components as explanatory variables. 
 
 ## Principal Components Regression
 
-We will now perform a principal regression analysis with price as the response variable and and all other numerical variables as the explanatory variables. We Will again use the smaller sample to increase the ease of interpretation of the visual plots. Below we see an initial multiple regression using only the numeric variables
+We will now perform a principal regression analysis with price as the response variable and and all other numerical variables as the explanatory variables. We will again use the smaller sample to increase the ease of interpretation of the visual plots. Below we see an initial multiple regression using only the numeric variables.
 
 ```{r}
 numericlm <- lm(scale(price) ~ scale(carat) + scale(table) + scale(depth) + scale(x) + scale(y) + scale(z), data = diamonds_num)
@@ -914,11 +915,11 @@ PCAprice$rotation
 
 We see that in the first PC carat, x, y and z all have approximately equal weighting. Again this reflects the strong positive correlation between these two variables. In the second PC depth and table have the strongest weighting. We see that removing price from the PCA does not change much in terms of how much variation the first few components explain as well as which variables contribute most strongly to each component. This is because of how strongly price is correlated with the dimension variables. 
 
-```{r, echo=FALSE}
+```{r pcbiplot, fig.cap="Biplot of the PCs", echo=FALSE}
 ggbiplot(PCAprice, obs.scale =1, var.scale = 1, varname.size = 5)
 ```
 
-Even with price not included we still see the same general structure as the PCA with price.
+Even with price not included we still see the same general structure as the PCA with price (figure \@ref(fig:pcbiplot)).
 
 ```{r}
 PCApricevars <- prcomp(smallersample[,-c(2:4,7,11)],
@@ -929,7 +930,7 @@ diamondpricePCA <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2]
 summary(diamondpricePCA)
 ```
 
-We see that every single principal component is found to be significant in this model when the effects of the other principal components is taken into account. Therefore initially it seems we have failed to create a more parsimonious model for predicting price through using regression with principal components. However if we refit the model with just the first two principal components (see below) we still create a model that is able to explain over 81% of the variance in price with only two components. While this is not as good as the model with all the principal components (which explains 85%) it is still reasonably good and is much more simple. The original numeric multiple regression model explained 86% of the variation in price with 6 explanatory variables while our PCR model explains 81% with just the first two principal components. Principal components regression has allowed us to explain nearly the same amount of variation in price in a much more parsimonius way.  
+We see that every single principal component is found to be significant in this model when the effects of the other principal components are taken into account. Therefore initially it seems we have failed to create a more parsimonious model for predicting price through using regression with principal components. However if we refit the model with just the first two principal components (see below) we still create a model that is able to explain over 81% of the variance in price with only two components. While this is not as good as the model with all the principal components (which explains 85%) it is still reasonably good and is much more simple. The original numeric multiple regression model explained 86% of the variation in price with 6 explanatory variables while our PCR model explains 81% with just the first two principal components. Principal components regression has allowed us to explain nearly the same amount of variation in price in a much more parsimonius way.  
 
 ```{r}
 diamondpricePCA2 <- lm(smallersample$price ~ PCApricevars[,1] + PCApricevars[,2])
@@ -958,7 +959,10 @@ Overall the hypothesis test gives a highly significant result meaning that two f
 
 ## LDA Predicting Price 
 
-The secondary aim of our project was to investigate methods of classifying the diamonds dataset more simply. We decided to investigate whether, if we split diamond price into three subgroups (low, medium and high) we could accurately predict which of these groups a diamond should belong too. We split the diamonds into the three subgroups using the upper and lower quartiles. Diamonds were classed as having "low" price if they were in the LQ and classed as "high" if they were in the UQ. Diamonds were classed as having "medium" price if they were in between. We then used an LDA with the other numeric variables to see how well we could classify diamonds into there price levels. 
+We attempted a number of versions of LDA: one with price split into three categories; one with the full dataset; and one with a reduced slice. 
+### LDA - Price split into three categories
+
+The secondary aim of our project was to investigate methods of classifying the diamonds dataset more simply. We decided to investigate whether, if we split diamond price into three subgroups (low, medium and high) we could accurately predict which of these groups a diamond should belong too. We split the diamonds into the three subgroups using the upper and lower quartiles (UQ and LQ). Diamonds were classed as having "low" price if they were in the LQ and classed as "high" if they were in the UQ. Diamonds were classed as having "medium" price if they were in between. We then used an LDA with the other numeric variables to see how well we could classify diamonds into there price levels. 
 
 ```{r, echo = FALSE}
 diamonds$pricerank <- diamonds %>% mutate(pricerank = case_when(price <= 950 ~ 'low',
@@ -990,7 +994,7 @@ RCMPR <- table(RealisticPredictedPR, Actual = diamonds.Test$pricerank$pricerank)
 confusionMatrix(RCMPR)
 ```
 
-We see that LDA was reasonably successful at classifying diamonds into the three price levels of low, medium and high with an overall accuracy of 84%. As the prior probabilities of classes were not equal we should also check the within-class accuracy. We see that all classes performed well with "low" having the highest balanced accuracy. We can conclude that we are able to predict the value of a diamond reasonably accurately with an LDA.  
+We see that LDA was reasonably successful at classifying diamonds into the three price levels of low, medium and high with an overall accuracy of 84%. As the prior probabilities of classes were not equal we should also check the within-class accuracy. We see that all classes performed well with "low" having the highest balanced accuracy. We can conclude that on our modified price variable, we are able to predict the value of a diamond reasonably accurately with an LDA.  
 
 ## LDA predicting categorical variables 
 
@@ -1017,7 +1021,9 @@ RCMinteraction <- table(RPinteraction, actual = diamonds.Test2$Interaction)
 sum(diag(RCMinteraction))/sum(RCMinteraction)
 ```
 
-An overall accuracy of 0.065 is very low and therefore we can conclude that an LDA with all other variables does a poor job at predicting which factor level a diamond should be classified as. It's likely the data is not linearly separable into 280 classes. We will now see if a Linear Discriminant Analysis using the numerical variables can be used to accurately predict what level of a categorical variable a diamond belongs too. We will attempt this for each categorical variable. If successful we will have found a simple way to classify diamonds based on the numeric variables in the data set. This could be useful as the categorical variables are likely to be the most time consuming to assess, likely needing expert evaluation. If we can accurately predict what level of a categorical variable a diamond will belong to based on the other, more easily measured, variables this could have real-world, practical benefits. 
+An overall accuracy of 0.065 is very low and therefore we can conclude that an LDA with all other variables does a poor job at predicting which factor level a diamond should be classified as. It's likely the data is not linearly separable into 280 classes.   
+
+We will now see if a Linear Discriminant Analysis using the numerical variables can be used to accurately predict what level of a categorical variable a diamond belongs to. We will attempt this for each categorical variable. If successful, we will have found a simple way to classify diamonds based on the numeric variables in the data set. This could be useful as the categorical variables are likely to be the most time consuming to assess, likely needing expert evaluation. If we can accurately predict what level of a categorical variable a diamond will belong to based on the other, more easily measured, variables this could have real-world, practical benefits. 
  
 
 ```{r}
@@ -1069,7 +1075,7 @@ Table \@ref(tab:LDAacc) displays the accuracy of the classification achieved by 
 LDAcut
 ```
 
-The first thing we notice is that the prior probabilities for each class are very different. We see small amounts of variation in group means for different variables across different classes but there is nothing to striking. As the data are on different scales it is harder to interpret the group mean differences. The variables with strongest weight in LD1 are carat, x, y and table while the variables with the most weight in LD2 are x, y, carat and depth. LD1 retains almost 80% of the variation in the data while LD2 retains only 17%.
+The first thing we notice is that the prior probabilities for each class are very different. We see small amounts of variation in group means for different variables across different classes but there is nothing too striking. As the data are on different scales it is harder to interpret the group mean differences. The variables with strongest weight in LD1 are carat, x, y and table while the variables with the most weight in LD2 are x, y, carat and depth. LD1 retains almost 80% of the variation in the data while LD2 retains only 17%.
 
 ```{r}
 confusionMatrix(RCMcut)
@@ -1107,12 +1113,12 @@ ggplot(data=diamonds_car19_21, aes(x=carat, y=price, color=clarity))+
 
 Figure \@ref(fig:carat1to11clarity) shows a the scatterplot of 'price' vs 'carat' vs 'clarity', but just for values of 'carat' between 1 and 1.1, which helps us see the pattern more clearly. Firstly, note the vertical spread of the data points; most of the values begin at around 2500 USD and generally have extreme upper values larger than 15,000 USD, so a spread of approximately 10,000 USD. There are clear colour bands running horizontally, with the lowest quality 'clarity' diamonds near the bottom of the price range, while the highest values are near the top.
 
-So, using 'carat' alone to predict these prices clearly is not enough; given the spread of price for any given value of carat, the categorical variables play an important in determining where in the range any given diamond will be. This was the reason our regression models that excluded the categorical variables did not perform nearly as well as those that included them.
+So, using 'carat' alone to predict these prices clearly is not enough; given the spread of price for any given value of carat, the categorical variables play an important role in determining where in the range any given diamond will be. This was the reason our regression models that excluded the categorical variables did not perform nearly as well as those that included them.
 
 
 ## Discriminant analysis using the reduced dataset (price, carat and clarity)
 
-To address the issue above, we attempted another discriminant analysis using the reduced dataset above, that is, for 'carat' values between 1.0 and 1.1. The hope was that the relatively clear bands seen in figure \@ref(fig:carat1to11clarity) would enable the LDA to this time, as there is less overlap between levels in the reduced dataset than there is in the original.
+To address the issue above, we attempted another discriminant analysis using the reduced dataset above, that is, for 'carat' values between 1.0 and 1.1. The hope was that the relatively clear bands seen in figure \@ref(fig:carat1to11clarity) would enable the LDA to work this time, as there is less overlap between levels in the reduced dataset than there is in the original.
 
 So, we repeat the Linear Discriminant Analysis process using the reduced dataset.
 
@@ -1269,7 +1275,7 @@ sil <- silhouette(clusters$cluster, dist((scale(smallersample[,-c((2:4),11)]))))
 fviz_silhouette(sil)
 ```
 
-The silhouette plot (figure \@ref(fig:silh)) helps us to visualize how similar points each observation is to the cluster that it is assigned too. We see very few negative values indicating that very few observations have been assigned to the wrong cluster. However we do have a large proportion of values with low positive values indicating that these observations were close to the borderline between two clusters. We see that the average silhouette width is 0.38. 
+The silhouette plot (figure \@ref(fig:silh)) helps us to visualize how similar each observation is to the cluster that it is assigned too. We see very few negative values indicating that very few observations have been assigned to the wrong cluster. However we do have a large proportion of values with low positive values indicating that these observations were close to the borderline between two clusters. We see that the average silhouette width is 0.38. 
 
 # Conclusion
 
