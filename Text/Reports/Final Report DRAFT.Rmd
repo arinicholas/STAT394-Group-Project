@@ -87,7 +87,7 @@ We selected the diamonds dataset because it was easy to understand what the vari
 
 ### Aims
 
-Our primary aim was to identify which variables best predictor the *price* of a given diamond. We hypothesised that increased diamond size ('x', 'y' and 'z') and weight ('carat') will be positively correlated with diamond price. We also expected to see increased prices for diamonds with higher levels of the categorical variables, all of which reflect the quality of the diamond. We were unsure how diamond depth and table percentage will relate to diamond price. 
+Our primary aim was to identify which variables best predict the *price* of a given diamond. We hypothesised that increased diamond size ('x', 'y' and 'z') and weight ('carat') would be positively correlated with diamond price. We also expected to see increased prices for diamonds with higher levels of the categorical variables, all of which reflect the quality of the diamond. We were unsure how diamond depth and table percentage would relate to diamond price. 
 
 We also sought to explore the techniques of Principal Component Analysis (PCA), Factor Analysis (FA), Linear Discriminant Analysis (LDA) and Cluster Analysis (CA) that we have learned in STAT394. The diamonds dataset has 280 unique possible interactions (5 x 7 x 8) between different levels of the categorical variables. Our secondary aim was to discover whether one of these techinques could classify the data in a simpler manner, or predict into which level of a category a new observation would fall. Encouraged by our lecturer, we adopted an approach of 'playing' with the techniques with the aim of learning as much as possible, even if a more experienced statistician could see that they were not the correct tools to achieve our aims. We wanted to learn by doing, regardless of whether the results of these methods were successful for our project or not. 
 
@@ -263,7 +263,7 @@ ggcorrplot(cor(diamonds_num),
            type = "lower")
 ```
 
-Figure \@ref(fig:corrplot) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. As "x", "y" and "z" are all measures of size we should expect this and there may be some redundancy in these predictors.  The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. The strongest predictor of price is carat with length, width, depth also strongly correlated with price. Table is only very weakly correlated with price while depth is negatively correlated with price.
+Figure \@ref(fig:corrplot) shows the correlation plot for the numerical variables in the diamonds data. 'Carat', 'x', 'y', 'z' and 'price' all show very strong correlations with each other, as evidenced by the large red dots. As 'x', 'y' and 'z' are all measures of size we should expect this and there may be some redundancy in these predictors.  The 'table' variable is relatively uncorrelated with any of the others. 'Depth' and 'table' are negatively correlated (large purple dot), while depth is not correlated with any other variable. The strongest predictor of price is carat with length, width, depth also strongly correlated with price. Table is only very weakly correlated with price while depth is negatively correlated with price.
 
 ### Correlation Matrix
 
@@ -1100,7 +1100,7 @@ diamonds_car19_21[1:4,]
 # scatterplot of carat vs price, but also colouring the observations
 # by 'cut'
 ggplot(data=diamonds_car19_21, aes(x=carat, y=price, color=clarity))+
-  geom_point()+
+  geom_point(position = "jitter")+
   guides(colour=guide_legend(reverse = T))+
   labs(title = "'Carat' vs 'price', coloured by 'clarity'")
 ```
@@ -1108,6 +1108,7 @@ ggplot(data=diamonds_car19_21, aes(x=carat, y=price, color=clarity))+
 Figure \@ref(fig:carat1to11clarity) shows a the scatterplot of 'price' vs 'carat' vs 'clarity', but just for values of 'carat' between 1 and 1.1, which helps us see the pattern more clearly. Firstly, note the vertical spread of the data points; most of the values begin at around 2500 USD and generally have extreme upper values larger than 15,000 USD, so a spread of approximately 10,000 USD. There are clear colour bands running horizontally, with the lowest quality 'clarity' diamonds near the bottom of the price range, while the highest values are near the top.
 
 So, using 'carat' alone to predict these prices clearly is not enough; given the spread of price for any given value of carat, the categorical variables play an important in determining where in the range any given diamond will be. This was the reason our regression models that excluded the categorical variables did not perform nearly as well as those that included them.
+
 
 ## Discriminant analysis using the reduced dataset (price, carat and clarity)
 
